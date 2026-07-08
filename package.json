@@ -1,0 +1,22 @@
+{
+  "name": "wake-up-dev",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Juego 8-bit didáctico inspirado en Matrix — Trabajo de Fin de Máster (Desarrollo con IA)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "kaplay": "^3001.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

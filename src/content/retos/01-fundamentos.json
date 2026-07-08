@@ -1,0 +1,158 @@
+{
+  "modulo": {
+    "id": "01-fundamentos",
+    "nombre": "Fundamentos del Desarrollo de Software",
+    "descripcion": "Pensamiento computacional, ecosistema moderno, programación, sistemas, redes y lenguajes."
+  },
+  "retos": [
+    {
+      "id": "fun-001",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "Descomponer un problema grande en partes más pequeñas y manejables es un pilar de...",
+      "opciones": [
+        "El pensamiento computacional",
+        "La programación orientada a objetos",
+        "El despliegue continuo",
+        "La virtualización"
+      ],
+      "correcta": 0,
+      "explicacion": "La descomposición es uno de los pilares del pensamiento computacional, junto con la abstracción, el reconocimiento de patrones y los algoritmos.",
+      "dificultad": 1,
+      "tags": ["pensamiento-computacional"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-002",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál de estas estructuras de control repite un bloque de código mientras se cumpla una condición?",
+      "opciones": ["if / else", "switch", "while", "try / catch"],
+      "correcta": 2,
+      "explicacion": "El bucle `while` repite su bloque mientras la condición sea verdadera. `if/else` y `switch` son condicionales; `try/catch` maneja errores.",
+      "dificultad": 1,
+      "tags": ["programacion", "estructuras-de-control"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-003",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "En el modelo cliente-servidor de la web, ¿qué protocolo se usa para pedir y recibir páginas?",
+      "opciones": ["FTP", "HTTP/HTTPS", "SSH", "SMTP"],
+      "correcta": 1,
+      "explicacion": "HTTP (y su versión cifrada HTTPS) es el protocolo de la web. FTP transfiere archivos, SSH da acceso remoto seguro y SMTP envía correo.",
+      "dificultad": 1,
+      "tags": ["redes", "http"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-004",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué diferencia principal hay entre un lenguaje compilado y uno interpretado?",
+      "opciones": [
+        "El compilado traduce todo el código a binario antes de ejecutar; el interpretado se traduce línea a línea en ejecución",
+        "El compilado solo funciona en Windows",
+        "El interpretado no puede tener errores",
+        "No hay diferencia, son sinónimos"
+      ],
+      "correcta": 0,
+      "explicacion": "Un compilador traduce el programa completo antes de ejecutarlo (C, Rust, Go); un intérprete lo traduce mientras se ejecuta (Python, JavaScript clásico). Hay enfoques híbridos como el JIT.",
+      "dificultad": 2,
+      "tags": ["lenguajes"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-005",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "Git es...",
+      "opciones": [
+        "Un editor de código",
+        "Un sistema de control de versiones distribuido",
+        "Un lenguaje de programación",
+        "Una base de datos"
+      ],
+      "correcta": 1,
+      "explicacion": "Git registra la historia de cambios del código y permite trabajar en paralelo con ramas. GitHub/GitLab son plataformas que alojan repositorios Git.",
+      "dificultad": 1,
+      "tags": ["ecosistema", "git"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-006",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué estructura de datos funciona como una cola del supermercado (el primero que entra es el primero que sale)?",
+      "opciones": ["Pila (stack)", "Cola (queue)", "Árbol binario", "Diccionario / mapa"],
+      "correcta": 1,
+      "explicacion": "La cola es FIFO (first in, first out). La pila es LIFO: lo último que entra sale primero, como una pila de platos.",
+      "dificultad": 2,
+      "tags": ["estructuras-de-datos"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-007",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "Una dirección IP identifica...",
+      "opciones": [
+        "Un dispositivo dentro de una red",
+        "Una página web",
+        "Un archivo del sistema operativo",
+        "Un usuario de GitHub"
+      ],
+      "correcta": 0,
+      "explicacion": "La IP identifica a un dispositivo en la red. El DNS traduce nombres de dominio legibles (ej. google.com) a direcciones IP.",
+      "dificultad": 1,
+      "tags": ["redes"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-008",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el orden correcto de un algoritmo?",
+      "opciones": [
+        "Entrada → Proceso → Salida",
+        "Salida → Entrada → Proceso",
+        "Proceso → Salida → Entrada",
+        "Los algoritmos no tienen orden"
+      ],
+      "correcta": 0,
+      "explicacion": "Un algoritmo es una secuencia finita y ordenada de pasos: recibe datos de entrada, los procesa y produce una salida.",
+      "dificultad": 1,
+      "tags": ["algoritmos", "pensamiento-computacional"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-009",
+      "modulo": "01-fundamentos",
+      "tipo": "abierta",
+      "pregunta": "Explica con tus palabras qué es la abstracción en programación y da un ejemplo cotidiano.",
+      "rubrica": "Debe mencionar: (1) ocultar detalles internos / quedarse con lo esencial, (2) un ejemplo concreto válido (ej. conducir un coche sin saber mecánica, usar una función sin leer su código). No exige terminología exacta.",
+      "fallbackId": "fun-001",
+      "dificultad": 2,
+      "tags": ["pensamiento-computacional", "abstraccion"],
+      "bonus2026": false
+    },
+    {
+      "id": "fun-010",
+      "modulo": "01-fundamentos",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — En el desarrollo asistido por IA actual, ¿qué describe mejor el rol del developer?",
+      "opciones": [
+        "Escribir cada línea de código a mano, la IA solo autocompleta",
+        "Dirigir, especificar y verificar el trabajo que agentes de IA ejecutan",
+        "La IA reemplazó por completo al developer",
+        "Usar IA solo para documentación"
+      ],
+      "correcta": 1,
+      "explicacion": "En 2026 el developer actúa cada vez más como director técnico: especifica bien el problema, orquesta agentes (a veces varios en paralelo) y verifica el resultado. El criterio y los fundamentos importan más que nunca.",
+      "dificultad": 2,
+      "tags": ["ia", "flujo-desarrollo"],
+      "bonus2026": true
+    }
+  ]
+}
