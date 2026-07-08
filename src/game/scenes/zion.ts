@@ -16,7 +16,9 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
 
     st.bancos.forEach((banco, i) => {
       const prog = st.session.progreso.get(banco.modulo.id);
-      const estadoTxt = prog?.completado ? "[LIBERADO]" : "[EN LA MATRIX]";
+      // Sin corchetes: Kaplay los parsea como tags de texto estilado y lanza
+      // "unclosed tags" en cada frame (p.ej. con "[LIBERADO]").
+      const estadoTxt = prog?.completado ? "— LIBERADO —" : "— EN LA MATRIX —";
       k.add([
         k.text(`${i + 1}. ${banco.modulo.nombre} ${estadoTxt}`, { size: 20, width: 800 }),
         k.pos(ANCHO / 2, 170 + i * 60),
