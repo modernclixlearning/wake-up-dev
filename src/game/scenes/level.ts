@@ -1,4 +1,4 @@
-import { GameObj, KAPLAYCtx } from "kaplay";
+import { GameObj, KAPLAYCtx, KEventController } from "kaplay";
 import { QuizEngine } from "../../domain/quiz-engine";
 import { Reto, RetoMultipleChoice, esMultipleChoice } from "../../domain/reto";
 import { GameState } from "../state";
@@ -91,6 +91,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       }
       enEncuentro = true;
       const overlay: GameObj[] = [];
+      const teclas: KEventController[] = [];
 
       overlay.push(
         k.add([k.rect(ANCHO - 80, ALTO - 120), k.pos(40, 60), k.color(...NEGRO), k.outline(3, k.rgb(...VERDE)), k.opacity(0.95), k.z(10)]),
@@ -105,6 +106,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
 
       const cerrar = () => {
         overlay.forEach((o) => k.destroy(o));
+        // Cancelar los handlers de este encuentro: si quedan vivos, el próximo
+        // encuentro dispara los viejos primero y su overlay queda huérfano.
+        teclas.forEach((t) => t.cancel());
+        teclas.length = 0;
         enEncuentro = false;
       };
 
@@ -129,7 +134,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       };
 
       for (let i = 0; i < reto.opciones.length; i++) {
-        k.onKeyPress(String(i + 1) as never, () => responder(i));
+        teclas.push(k.onKeyPress(String(i + 1) as never, () => responder(i)));
       }
     };
 
