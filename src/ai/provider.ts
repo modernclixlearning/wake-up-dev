@@ -1,4 +1,4 @@
-import { RetoAbierta } from "../domain/reto";
+import { RetoAbierta, RetoMultipleChoice } from "../domain/reto";
 
 /** Resultado de evaluar una respuesta abierta contra su rúbrica. */
 export interface EvaluacionAbierta {
@@ -7,7 +7,7 @@ export interface EvaluacionAbierta {
 }
 
 /**
- * Contrato de la capa IA del juego. Implementaciones previstas:
+ * Contrato de la capa IA del juego. Implementaciones:
  * - AnthropicAdapter / OpenAIAdapter / GeminiAdapter (BYOK, browser) — F4
  * - ClaudeHeadlessAdapter (bridge local, modo "píldora roja") — F8
  * - StaticFallback (sin IA; el juego siempre funciona) — F3
@@ -20,4 +20,6 @@ export interface AIProvider {
   preguntarOraculo(contextoModulo: string, pregunta: string): Promise<string>;
   /** Califica una respuesta abierta contra la rúbrica del reto. */
   evaluarAbierta(reto: RetoAbierta, respuesta: string): Promise<EvaluacionAbierta>;
+  /** Smith adaptativo: pista breve que orienta sin revelar la respuesta. */
+  generarPista(reto: RetoMultipleChoice): Promise<string>;
 }

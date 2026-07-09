@@ -1,6 +1,13 @@
-import { RetoAbierta } from "../domain/reto";
+import { RetoAbierta, RetoMultipleChoice } from "../domain/reto";
 import { AIProvider, EvaluacionAbierta } from "./provider";
-import { parsearEvaluacion, promptEvaluacion, systemEvaluador, systemOraculo } from "./prompts";
+import {
+  parsearEvaluacion,
+  promptEvaluacion,
+  promptPista,
+  systemEvaluador,
+  systemOraculo,
+  systemPista,
+} from "./prompts";
 
 export class OpenAIAdapter implements AIProvider {
   readonly nombre = "openai";
@@ -8,7 +15,8 @@ export class OpenAIAdapter implements AIProvider {
   constructor(
     private apiKey: string,
     private model: string,
-    private fetchImpl: typeof fetch = fetch
+    // Envuelto en arrow para no perder el binding de window.fetch ("Illegal invocation").
+    private fetchImpl: typeof fetch = (...args) => fetch(...args)
   ) {}
 
   async disponible(): Promise<boolean> {
@@ -22,6 +30,10 @@ export class OpenAIAdapter implements AIProvider {
   async evaluarAbierta(reto: RetoAbierta, respuesta: string): Promise<EvaluacionAbierta> {
     const texto = await this.chat(systemEvaluador(), promptEvaluacion(reto, respuesta), true);
     return parsearEvaluacion(texto);
+  }
+
+  async generarPista(reto: RetoMultipleChoice): Promise<string> {
+    return this.chat(systemPista(), promptPista(reto));
   }
 
   private async chat(system: string, user: string, json = false): Promise<string> {

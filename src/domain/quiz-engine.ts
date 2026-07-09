@@ -33,6 +33,22 @@ export class QuizEngine {
     return this.pendientes.shift() ?? null;
   }
 
+  /**
+   * Smith adaptativo: saca el reto pendiente cuya dificultad esté más cerca
+   * del nivel del jugador (1 flojo · 2 normal · 3 dominando). A igual distancia
+   * respeta el orden del mazo.
+   */
+  siguienteAdaptativo(nivelJugador: 1 | 2 | 3): Reto | null {
+    if (this.pendientes.length === 0) return null;
+    let mejor = 0;
+    for (let i = 1; i < this.pendientes.length; i++) {
+      const dist = Math.abs(this.pendientes[i].dificultad - nivelJugador);
+      const distMejor = Math.abs(this.pendientes[mejor].dificultad - nivelJugador);
+      if (dist < distMejor) mejor = i;
+    }
+    return this.pendientes.splice(mejor, 1)[0];
+  }
+
   responderMultipleChoice(reto: RetoMultipleChoice, indice: number): ResultadoRespuesta {
     if (indice < 0 || indice >= reto.opciones.length) {
       throw new RangeError(`Índice de opción fuera de rango: ${indice}`);

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AnthropicAdapter } from "../src/ai/anthropic-adapter";
+import { ClaudeHeadlessAdapter } from "../src/ai/claude-headless-adapter";
 import { AIConfig, cargarConfig, configCompleta, guardarConfig } from "../src/ai/config";
 import { crearProvider, hayIA } from "../src/ai/factory";
 import { GeminiAdapter } from "../src/ai/gemini-adapter";
@@ -63,6 +64,10 @@ describe("config BYOK", () => {
     expect(configCompleta({ provider: "openai", apiKey: "  ", model: "" })).toBe(false);
     expect(configCompleta({ provider: "openai", apiKey: "k", model: "" })).toBe(true);
   });
+
+  it("el headless no necesita key", () => {
+    expect(configCompleta({ provider: "claude-headless", apiKey: "", model: "" })).toBe(true);
+  });
 });
 
 describe("factory", () => {
@@ -76,6 +81,7 @@ describe("factory", () => {
     ["anthropic", "anthropic"],
     ["openai", "openai"],
     ["gemini", "gemini"],
+    ["claude-headless", "claude-headless"],
   ];
   it.each(casos)("con key resuelve %s", (provider, nombre) => {
     const p = crearProvider({ provider, apiKey: "k", model: "" });
@@ -137,6 +143,45 @@ describe("GeminiAdapter (fetch mockeado)", () => {
       fetchFalso({ candidates: [{ content: { parts: [{ text: "hola " }, { text: "neo" }] } }] })
     );
     expect(await adapter.preguntarOraculo("ctx", "?")).toBe("hola neo");
+  });
+});
+
+describe("ClaudeHeadlessAdapter (fetch mockeado)", () => {
+  const retoMC = {
+    id: "x-0",
+    modulo: "x",
+    tipo: "multiple-choice" as const,
+    pregunta: "¿?",
+    opciones: ["a", "b"],
+    correcta: 0,
+    explicacion: "",
+    dificultad: 1 as const,
+    tags: [],
+    bonus2026: false,
+  };
+
+  it("disponible() devuelve true si /salud responde ok, false si no hay bridge", async () => {
+    expect(await new ClaudeHeadlessAdapter("http://x", fetchFalso({ ok: true })).disponible()).toBe(true);
+    const fetchCaido = (async () => {
+      throw new Error("ECONNREFUSED");
+    }) as unknown as typeof fetch;
+    expect(await new ClaudeHeadlessAdapter("http://x", fetchCaido).disponible()).toBe(false);
+  });
+
+  it("consulta al Oráculo vía /oraculo", async () => {
+    const adapter = new ClaudeHeadlessAdapter("http://x", fetchFalso({ respuesta: "seguí al conejo blanco" }));
+    expect(await adapter.preguntarOraculo("ctx", "?")).toBe("seguí al conejo blanco");
+  });
+
+  it("evalúa abiertas vía /evaluar", async () => {
+    const adapter = new ClaudeHeadlessAdapter("http://x", fetchFalso({ aprobado: true, feedback: "bien" }));
+    const r = await adapter.evaluarAbierta(retoAbierta, "respuesta");
+    expect(r.aprobado).toBe(true);
+  });
+
+  it("genera pistas vía /pista", async () => {
+    const adapter = new ClaudeHeadlessAdapter("http://x", fetchFalso({ pista: "pensá en FIFO" }));
+    expect(await adapter.generarPista(retoMC)).toBe("pensá en FIFO");
   });
 });
 

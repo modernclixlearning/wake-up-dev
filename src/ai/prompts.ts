@@ -1,4 +1,4 @@
-import { RetoAbierta } from "../domain/reto";
+import { RetoAbierta, RetoMultipleChoice } from "../domain/reto";
 import { EvaluacionAbierta } from "./provider";
 
 /** Prompts compartidos por todos los adapters — la lógica de negocio de la capa IA. */
@@ -26,6 +26,19 @@ export function systemEvaluador(): string {
     "Respondé SOLO con un JSON válido con esta forma exacta:",
     '{"aprobado": true|false, "feedback": "explicación breve y didáctica en español (máx 60 palabras)"}',
   ].join("\n");
+}
+
+export function systemPista(): string {
+  return [
+    "Sos el Oráculo de un juego educativo. El estudiante está trabado en una pregunta.",
+    "Dale UNA pista breve (máximo 30 palabras, en español) que lo oriente al concepto",
+    "correcto SIN revelar la respuesta ni descartar opciones explícitamente.",
+    "Respondé SOLO con la pista.",
+  ].join("\n");
+}
+
+export function promptPista(reto: RetoMultipleChoice): string {
+  return [`PREGUNTA: ${reto.pregunta}`, `OPCIONES: ${reto.opciones.join(" | ")}`].join("\n\n");
 }
 
 export function promptEvaluacion(reto: RetoAbierta, respuesta: string): string {

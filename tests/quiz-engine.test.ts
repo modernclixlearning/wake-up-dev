@@ -82,6 +82,43 @@ describe("QuizEngine", () => {
   });
 });
 
+describe("QuizEngine adaptativo (Smith)", () => {
+  const bancoDificultades: BancoModulo = {
+    modulo: { id: "t2", nombre: "T2", descripcion: "" },
+    retos: ([1, 3, 2, 1, 3] as const).map((dif, i) => ({
+      id: `d-${i}`,
+      modulo: "t2",
+      tipo: "multiple-choice",
+      pregunta: `p${i}`,
+      opciones: ["a", "b"],
+      correcta: 0,
+      explicacion: "e",
+      dificultad: dif,
+      tags: [],
+      bonus2026: false,
+    })),
+  };
+
+  it("con nivel 1 entrega primero los retos fáciles", () => {
+    const quiz = new QuizEngine(bancoDificultades, { barajar: false });
+    expect(quiz.siguienteAdaptativo(1)?.id).toBe("d-0"); // dificultad 1
+    expect(quiz.siguienteAdaptativo(1)?.id).toBe("d-3"); // dificultad 1
+    expect(quiz.siguienteAdaptativo(1)?.id).toBe("d-2"); // dificultad 2 (la más cercana)
+  });
+
+  it("con nivel 3 entrega primero los difíciles", () => {
+    const quiz = new QuizEngine(bancoDificultades, { barajar: false });
+    expect(quiz.siguienteAdaptativo(3)?.id).toBe("d-1"); // dificultad 3
+    expect(quiz.siguienteAdaptativo(3)?.id).toBe("d-4"); // dificultad 3
+  });
+
+  it("agota el mazo y devuelve null", () => {
+    const quiz = new QuizEngine(bancoDificultades, { barajar: false });
+    for (let i = 0; i < 5; i++) expect(quiz.siguienteAdaptativo(2)).not.toBeNull();
+    expect(quiz.siguienteAdaptativo(2)).toBeNull();
+  });
+});
+
 describe("GameSession", () => {
   it("suma score normal y bonus", () => {
     const s = new GameSession();
@@ -105,5 +142,18 @@ describe("GameSession", () => {
     const s = new GameSession();
     s.completarModulo("test");
     expect(s.progreso.get("test")?.completado).toBe(true);
+  });
+
+  it("nivelJugador refleja el desempeño en el módulo", () => {
+    const s = new GameSession();
+    expect(s.nivelJugador("m")).toBe(2); // sin historial
+    s.registrarAcierto("m", false);
+    s.registrarAcierto("m", false);
+    s.registrarAcierto("m", false);
+    expect(s.nivelJugador("m")).toBe(3); // 3 aciertos, 0 fallos
+    s.registrarFallo("m");
+    expect(s.nivelJugador("m")).toBe(2); // ya no está limpio
+    s.registrarFallo("m");
+    expect(s.nivelJugador("m")).toBe(1); // 2+ fallos
   });
 });

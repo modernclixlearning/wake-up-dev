@@ -33,6 +33,18 @@ export class GameSession {
     return this.vidas <= 0;
   }
 
+  /**
+   * Nivel de desempeño del jugador en un módulo (Smith adaptativo):
+   * 1 = flojo (2+ fallos), 3 = dominando (3+ aciertos sin fallos), 2 = resto.
+   */
+  nivelJugador(moduloId: string): 1 | 2 | 3 {
+    const p = this.progreso.get(moduloId);
+    if (!p) return 2;
+    if (p.fallos >= 2) return 1;
+    if (p.aciertos >= 3 && p.fallos === 0) return 3;
+    return 2;
+  }
+
   private progresoDe(moduloId: string): ProgresoModulo {
     let p = this.progreso.get(moduloId);
     if (!p) {

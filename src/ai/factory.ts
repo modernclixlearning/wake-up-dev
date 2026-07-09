@@ -1,4 +1,5 @@
 import { AnthropicAdapter } from "./anthropic-adapter";
+import { ClaudeHeadlessAdapter } from "./claude-headless-adapter";
 import { AIConfig, MODELOS_DEFAULT, configCompleta } from "./config";
 import { GeminiAdapter } from "./gemini-adapter";
 import { OpenAIAdapter } from "./openai-adapter";
@@ -16,6 +17,8 @@ export function crearProvider(config: AIConfig): AIProvider {
       return new OpenAIAdapter(config.apiKey, model);
     case "gemini":
       return new GeminiAdapter(config.apiKey, model);
+    case "claude-headless":
+      return new ClaudeHeadlessAdapter();
     default:
       return new StaticFallback();
   }

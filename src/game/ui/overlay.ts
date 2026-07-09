@@ -107,6 +107,7 @@ export function abrirAjustes(onGuardado: (config: AIConfig) => void): void {
     ["anthropic", "Anthropic (Claude)"],
     ["openai", "OpenAI (GPT)"],
     ["gemini", "Google (Gemini)"],
+    ["claude-headless", "🕶 Claude Code headless (bridge local, sin key)"],
   ]) {
     const opt = document.createElement("option");
     opt.value = valor;

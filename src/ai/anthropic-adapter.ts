@@ -1,7 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { RetoAbierta } from "../domain/reto";
+import { RetoAbierta, RetoMultipleChoice } from "../domain/reto";
 import { AIProvider, EvaluacionAbierta } from "./provider";
-import { parsearEvaluacion, promptEvaluacion, systemEvaluador, systemOraculo } from "./prompts";
+import {
+  parsearEvaluacion,
+  promptEvaluacion,
+  promptPista,
+  systemEvaluador,
+  systemOraculo,
+  systemPista,
+} from "./prompts";
 
 export class AnthropicAdapter implements AIProvider {
   readonly nombre = "anthropic";
@@ -23,17 +30,25 @@ export class AnthropicAdapter implements AIProvider {
   }
 
   async preguntarOraculo(contextoModulo: string, pregunta: string): Promise<string> {
+    return this.textoSimple(systemOraculo(contextoModulo), pregunta);
+  }
+
+  async generarPista(reto: RetoMultipleChoice): Promise<string> {
+    return this.textoSimple(systemPista(), promptPista(reto));
+  }
+
+  private async textoSimple(system: string, user: string): Promise<string> {
     const response = await this.client.messages.create({
       model: this.model,
       max_tokens: 500,
-      system: systemOraculo(contextoModulo),
-      messages: [{ role: "user", content: pregunta }],
+      system,
+      messages: [{ role: "user", content: user }],
     });
     const texto = response.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
       .join("");
-    if (!texto) throw new Error("El Oráculo no devolvió texto.");
+    if (!texto) throw new Error("El modelo no devolvió texto.");
     return texto;
   }
 

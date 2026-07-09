@@ -25,4 +25,8 @@ export class StaticFallback implements AIProvider {
       "StaticFallback no evalúa respuestas abiertas — usar la variante fallback del reto."
     );
   }
+
+  async generarPista(): Promise<string> {
+    throw new Error("StaticFallback no genera pistas — se requiere un provider de IA.");
+  }
 }

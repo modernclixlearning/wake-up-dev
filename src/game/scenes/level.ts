@@ -126,6 +126,32 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         );
       });
 
+      // Smith adaptativo (F9): si venís fallando y hay IA, podés pedir una pista.
+      const conPista = hayIA(st.ai) && st.session.nivelJugador(moduloId) === 1;
+      if (conPista) {
+        const aviso = k.add([
+          k.text("P) Pedir una pista al Oráculo", { size: 14 }),
+          k.pos(60, ALTO - 100),
+          k.color(...VERDE_OSCURO),
+          k.z(11),
+        ]);
+        overlay.push(aviso);
+        let pistaPedida = false;
+        teclas.push(
+          k.onKeyPress("p" as never, async () => {
+            if (!enEncuentro || pistaPedida) return;
+            pistaPedida = true;
+            aviso.text = "El Oráculo susurra...";
+            try {
+              const pista = await st.ai.generarPista(reto);
+              if (enEncuentro) aviso.text = `Oráculo: ${pista}`;
+            } catch {
+              if (enEncuentro) aviso.text = "El Oráculo guarda silencio (falló la conexión).";
+            }
+          })
+        );
+      }
+
       const cerrar = () => {
         overlay.forEach((o) => k.destroy(o));
         // Cancelar los handlers de este encuentro: si quedan vivos, el próximo
@@ -169,9 +195,11 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     };
 
     const iniciarEncuentro = (agente: GameObj) => {
-      let reto = quiz.siguiente();
+      // Smith adaptativo (F9): la dificultad del próximo reto sigue tu desempeño.
+      const nivel = () => st.session.nivelJugador(moduloId);
+      let reto = quiz.siguienteAdaptativo(nivel());
       // Salteá retos cuya variante ya se usó como fallback en esta partida.
-      while (reto && respondidos.has(reto.id)) reto = quiz.siguiente();
+      while (reto && respondidos.has(reto.id)) reto = quiz.siguienteAdaptativo(nivel());
       if (!reto) {
         k.destroy(agente);
         actualizarHud();
