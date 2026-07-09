@@ -15,9 +15,34 @@ export function hayOverlayAbierto(): boolean {
   return overlayActual !== null;
 }
 
+const TECLAS_JUEGO = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+
+/**
+ * Suelta las teclas de movimiento en el motor. Si el jugador llegó al overlay
+ * manteniendo una flecha, el keyup real ocurre con el overlay abierto y nunca
+ * pasa por los listeners del juego (el canvas es hermano del overlay en el DOM):
+ * Kaplay queda con la tecla "pisada" y al cerrar, Neo camina solo hacia el NPC
+ * en loop. Emitimos keyup sintéticos a todos los posibles targets del motor.
+ */
+function liberarTeclasDeJuego(): void {
+  const candidatos: Array<EventTarget | null> = [
+    document.querySelector("canvas"),
+    document.body,
+    document,
+    window,
+  ];
+  const targets = candidatos.filter((t): t is EventTarget => t !== null);
+  for (const key of TECLAS_JUEGO) {
+    for (const target of targets) {
+      target.dispatchEvent(new KeyboardEvent("keyup", { key, code: key, bubbles: true, cancelable: true }));
+    }
+  }
+}
+
 function cerrarOverlay(): void {
   overlayActual?.remove();
   overlayActual = null;
+  liberarTeclasDeJuego();
 }
 
 function crearOverlay(titulo: string, onCerrar?: () => void): HTMLDivElement {
@@ -43,7 +68,12 @@ function crearOverlay(titulo: string, onCerrar?: () => void): HTMLDivElement {
   root.appendChild(panel);
 
   // Que el juego no reciba las teclas mientras se escribe en el overlay.
-  for (const tipo of ["keydown", "keyup", "keypress"] as const) {
+  // Se corta la propagación de keydown/keypress para que el juego no reciba
+  // las teclas mientras se escribe. Los keyup se dejan pasar a propósito: si
+  // se tragan, Kaplay queda con la tecla "pisada" (p.ej. la flecha con la que
+  // llegaste al Oráculo) y al cerrar el overlay el jugador camina solo hacia
+  // el NPC, reabriéndolo en loop.
+  for (const tipo of ["keydown", "keypress"] as const) {
     root.addEventListener(tipo, (e) => {
       e.stopPropagation();
       if (tipo === "keydown" && (e as KeyboardEvent).key === "Escape") {
