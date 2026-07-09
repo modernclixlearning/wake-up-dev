@@ -1,0 +1,355 @@
+{
+  "modulo": {
+    "id": "03-arquitectura",
+    "nombre": "Arquitectura de Software",
+    "descripcion": "Decisiones estructurales, estilos (monolito modular, microservicios), Clean Architecture y comunicación entre servicios.",
+    "resumen": "La arquitectura es el conjunto de decisiones estructurales que determinan cómo se organiza y comunica un sistema para seguir siendo mantenible con el tiempo. Niveles: programación (bajo), diseño (medio), arquitectura (alto). Estilos: monolito modular vs microservicios. Clean Architecture: la regla de dependencias apunta siempre hacia el dominio (Infraestructura → Aplicación → Dominio); el dominio es puro; entidades tienen ID, value objects no; los casos de uso orquestan pero no calculan; puertos (interfaces) y adaptadores (implementaciones); patrón Result/Either para fallos de negocio; la composición ocurre en el borde. Comunicación: síncrona (HTTP) vs asíncrona basada en eventos (broker: RabbitMQ, Kafka; pub/sub; desacoplamiento temporal; consistencia eventual; Event Carried State Transfer)."
+  },
+  "retos": [
+    {
+      "id": "arq-001",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "La arquitectura de software es, ante todo...",
+      "opciones": [
+        "El conjunto de decisiones estructurales sobre cómo se organiza y comunica un sistema",
+        "El arte de dibujar diagramas UML",
+        "La elección del lenguaje de programación",
+        "El diseño visual de la interfaz"
+      ],
+      "correcta": 0,
+      "explicacion": "No es dibujar diagramas: es decidir qué módulos hay, cómo se relacionan, qué responsabilidades tiene cada uno y cómo evoluciona el sistema sin romperse. 'La arquitectura no es lo que defines al principio, sino lo que aguanta con el paso del tiempo'.",
+      "dificultad": 1,
+      "tags": ["arquitectura", "conceptos"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-002",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "Ordena los tres niveles de menor a mayor altura de abstracción:",
+      "opciones": [
+        "Programación → Diseño de software → Arquitectura",
+        "Arquitectura → Diseño de software → Programación",
+        "Diseño de software → Programación → Arquitectura",
+        "Son el mismo nivel con nombres distintos"
+      ],
+      "correcta": 0,
+      "explicacion": "Programación = cómo escribís el código (bajo). Diseño = cómo lo estructurás con patrones y SOLID (medio). Arquitectura = cómo organizás los grandes bloques y su comunicación (alto).",
+      "dificultad": 1,
+      "tags": ["arquitectura", "conceptos"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-003",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "Sin una buena arquitectura, ¿qué pasa con el coste de cambiar el sistema?",
+      "opciones": [
+        "Crece con el tiempo — cada cambio se vuelve más caro",
+        "Se mantiene constante",
+        "Disminuye porque el equipo aprende el código",
+        "Solo afecta al rendimiento, no al coste"
+      ],
+      "correcta": 0,
+      "explicacion": "El coste del cambio es el indicador clave: una mala arquitectura hace que añadir o modificar funcionalidades sea cada vez más caro y lento.",
+      "dificultad": 1,
+      "tags": ["arquitectura", "coste-del-cambio"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-004",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "En equipos modernos, ¿quién toma decisiones arquitectónicas?",
+      "opciones": [
+        "Cualquier desarrollador — es una responsabilidad compartida",
+        "Solo el arquitecto de software certificado",
+        "Solo el CTO",
+        "El equipo de QA"
+      ],
+      "correcta": 0,
+      "explicacion": "La arquitectura dejó de ser un rol exclusivo: cualquier developer toma decisiones arquitectónicas en su día a día, por eso todos deben entender sus fundamentos.",
+      "dificultad": 1,
+      "tags": ["arquitectura", "equipos"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-005",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "En Clean Architecture, ¿hacia dónde apuntan siempre las dependencias?",
+      "opciones": [
+        "Hacia dentro: Infraestructura → Aplicación → Dominio",
+        "Hacia fuera: Dominio → Aplicación → Infraestructura",
+        "En ambos sentidos según convenga",
+        "Solo entre módulos del mismo nivel"
+      ],
+      "correcta": 0,
+      "explicacion": "La regla de dependencias es el principio más fundamental: el dominio no conoce frameworks ni bases de datos; la infraestructura depende de la aplicación y esta del dominio — nunca al revés.",
+      "dificultad": 2,
+      "tags": ["clean-architecture", "regla-de-dependencias"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-006",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué diferencia a una entidad de un value object en el modelo de dominio?",
+      "opciones": [
+        "La entidad tiene ID y se puede referenciar; el value object es un tipo de dato enriquecido sin ID",
+        "La entidad va a la base de datos y el value object no",
+        "El value object tiene ID y la entidad no",
+        "Son sinónimos"
+      ],
+      "correcta": 0,
+      "explicacion": "Pedido o Usuario son entidades (tienen identidad). Precio o Moneda son value objects: tipos enriquecidos con invariantes (ej. un precio no puede ser negativo) que se usan dentro de las entidades.",
+      "dificultad": 2,
+      "tags": ["clean-architecture", "dominio", "value-objects"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-007",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "En Clean Architecture, los casos de uso...",
+      "opciones": [
+        "Orquestan el flujo, pero los cálculos pertenecen al dominio",
+        "Contienen todas las reglas de negocio y los cálculos",
+        "Acceden directamente a la base de datos",
+        "Definen la interfaz de usuario"
+      ],
+      "correcta": 0,
+      "explicacion": "Los casos de uso coordinan: validan la entrada, llaman al dominio y devuelven el resultado. Las reglas de negocio viven en el dominio y son puras (sin efectos secundarios).",
+      "dificultad": 2,
+      "tags": ["clean-architecture", "casos-de-uso"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-008",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "En el patrón puertos y adaptadores, ¿qué es un puerto?",
+      "opciones": [
+        "Una interfaz definida en la capa de aplicación que la infraestructura implementa",
+        "El número de red donde escucha el servidor",
+        "Una clase concreta que accede a la base de datos",
+        "Un endpoint HTTP"
+      ],
+      "correcta": 0,
+      "explicacion": "El puerto es el contrato (interfaz) que declara qué necesita la aplicación (ej. RepositorioDePedidos); el adaptador es la implementación concreta en infraestructura (ej. RepositorioPostgres). Así el dominio nunca conoce la tecnología.",
+      "dificultad": 2,
+      "tags": ["clean-architecture", "puertos-adaptadores"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-009",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué Clean Architecture prefiere el patrón Result/Either sobre lanzar excepciones para fallos de negocio?",
+      "opciones": [
+        "Porque hace explícito en el tipo de retorno que la operación puede fallar, y obliga a manejarlo",
+        "Porque las excepciones no existen en TypeScript",
+        "Porque Result es más rápido en tiempo de ejecución",
+        "Porque los frameworks lo exigen"
+      ],
+      "correcta": 0,
+      "explicacion": "Un fallo de negocio (saldo insuficiente, stock agotado) no es una situación excepcional: modelarlo en el tipo de retorno lo hace visible y verificable. `throw` queda para errores realmente inesperados.",
+      "dificultad": 3,
+      "tags": ["clean-architecture", "result-either"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-010",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Dónde ocurre la composición (el 'new' de las implementaciones concretas) en Clean Architecture?",
+      "opciones": [
+        "En el borde, en la capa de infraestructura",
+        "En el dominio, con singletons globales",
+        "En cada caso de uso",
+        "En el value object"
+      ],
+      "correcta": 0,
+      "explicacion": "La inversión de dependencias se materializa componiendo en el borde: la infraestructura instancia los adaptadores y los inyecta hacia dentro. No hay singletons mágicos en el dominio.",
+      "dificultad": 3,
+      "tags": ["clean-architecture", "inversion-de-dependencias"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-011",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "Un monolito modular es...",
+      "opciones": [
+        "Una sola aplicación desplegable, con módulos internos bien delimitados",
+        "Muchos servicios pequeños desplegados por separado",
+        "Un monolito sin ninguna estructura interna",
+        "Una base de datos con muchas tablas"
+      ],
+      "correcta": 0,
+      "explicacion": "Se despliega como una unidad, pero internamente los módulos tienen límites claros. Suele ser el punto de partida recomendado: da orden sin pagar la complejidad operativa de los microservicios.",
+      "dificultad": 2,
+      "tags": ["estilos", "monolito-modular"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-012",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál de estos es un MITO sobre los microservicios?",
+      "opciones": [
+        "\"Los microservicios siempre son mejores que un monolito\"",
+        "\"Los microservicios permiten escalar servicios de forma independiente\"",
+        "\"Los microservicios agregan complejidad operativa\"",
+        "\"Los microservicios permiten desplegar servicios por separado\""
+      ],
+      "correcta": 0,
+      "explicacion": "No son intrínsecamente mejores: aportan escalado y despliegue independientes a cambio de mucha complejidad (red, observabilidad, consistencia). Para muchos equipos, un monolito modular es la mejor decisión.",
+      "dificultad": 2,
+      "tags": ["estilos", "microservicios", "mitos"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-013",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué caracteriza a la comunicación asíncrona entre servicios?",
+      "opciones": [
+        "El emisor publica un mensaje o evento y sigue su ejecución sin esperar respuesta",
+        "El emisor espera bloqueado hasta recibir la respuesta",
+        "Solo funciona dentro del mismo proceso",
+        "Requiere que emisor y receptor estén disponibles a la vez"
+      ],
+      "correcta": 0,
+      "explicacion": "El productor publica y se olvida; el consumidor reacciona cuando puede. Eso da desacoplamiento temporal: no dependen el uno del otro en el tiempo (a diferencia de una llamada HTTP síncrona).",
+      "dificultad": 2,
+      "tags": ["comunicacion", "asincronia", "eventos"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-014",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es un broker de eventos?",
+      "opciones": [
+        "Un intermediario distribuido (RabbitMQ, Kafka...) que desacopla publicadores y consumidores",
+        "Un balanceador de carga HTTP",
+        "Una caché de base de datos",
+        "Un servidor DNS interno"
+      ],
+      "correcta": 0,
+      "explicacion": "El broker recibe los eventos publicados y los entrega a los suscriptores (patrón publisher/subscriber). Ejemplos: RabbitMQ, Kafka, Redis Streams, NATS.",
+      "dificultad": 2,
+      "tags": ["comunicacion", "eventos", "broker"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-015",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "En una arquitectura basada en eventos, 'consistencia eventual' significa que...",
+      "opciones": [
+        "No hay garantía de orden inmediato: los consumidores procesan cuando pueden y el sistema converge",
+        "Los datos nunca llegan a ser consistentes",
+        "Todas las operaciones son transaccionales e inmediatas",
+        "Los eventos se pierden eventualmente"
+      ],
+      "correcta": 0,
+      "explicacion": "Al desacoplar temporalmente, distintos consumidores reaccionan en paralelo y sin orden garantizado; el estado global converge 'eventualmente'. Es un trade-off a cambio de resiliencia y escalabilidad.",
+      "dificultad": 3,
+      "tags": ["comunicacion", "eventos", "consistencia"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-016",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "El patrón Event Carried State Transfer consiste en que...",
+      "opciones": [
+        "El propio evento lleva el estado necesario para que los consumidores actúen sin consultar al emisor",
+        "El estado se transfiere por FTP",
+        "Los eventos solo llevan un ID y siempre hay que consultar al emisor",
+        "El broker guarda el estado de todos los servicios"
+      ],
+      "correcta": 0,
+      "explicacion": "Si `PedidoCreado` incluye los datos del pedido, Pagos e Inventario pueden actuar sin llamar de vuelta al servicio de pedidos — más desacoplamiento a cambio de eventos más pesados.",
+      "dificultad": 3,
+      "tags": ["comunicacion", "eventos", "patrones"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-017",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "Ventaja clave de que Pagos, Inventario y Notificaciones reaccionen a un evento `PedidoCreado` en vez de ser llamados en cadena:",
+      "opciones": [
+        "Si uno falla (ej. Notificaciones), los demás continúan sin interrupción",
+        "El código queda en un solo archivo",
+        "Se elimina la necesidad de tests",
+        "La base de datos se vuelve más rápida"
+      ],
+      "correcta": 0,
+      "explicacion": "Resiliencia: los consumidores son independientes y paralelos. También gana escalabilidad y un registro natural de lo ocurrido. El costo: trazabilidad más difícil y consistencia eventual.",
+      "dificultad": 2,
+      "tags": ["comunicacion", "eventos", "resiliencia"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-018",
+      "modulo": "03-arquitectura",
+      "tipo": "abierta",
+      "pregunta": "Explica la regla de dependencias de Clean Architecture y por qué protege al dominio.",
+      "rubrica": "Debe incluir: (1) las dependencias apuntan hacia dentro (Infraestructura → Aplicación → Dominio) — aceptar formulaciones equivalentes, (2) el dominio no conoce frameworks/BD/tecnología concreta, (3) alguna consecuencia válida: cambiar de framework o BD sin tocar reglas de negocio, dominio testeable en aislamiento, o reglas de negocio protegidas del cambio tecnológico.",
+      "fallbackId": "arq-005",
+      "dificultad": 2,
+      "tags": ["clean-architecture", "regla-de-dependencias"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-019",
+      "modulo": "03-arquitectura",
+      "tipo": "abierta",
+      "pregunta": "¿Cuándo elegirías un monolito modular en vez de microservicios? Da al menos dos razones.",
+      "rubrica": "Debe dar 2+ razones válidas, p.ej.: equipo pequeño, menor complejidad operativa (sin red/observabilidad distribuida), producto en etapa temprana con dominio aún inestable, despliegue y debugging más simples, evitar consistencia eventual innecesaria, se puede migrar a microservicios después si los límites modulares son claros.",
+      "fallbackId": "arq-012",
+      "dificultad": 3,
+      "tags": ["estilos", "monolito-modular", "microservicios"],
+      "bonus2026": false
+    },
+    {
+      "id": "arq-020",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — En las arquitecturas con agentes de IA, ¿qué papel cumple MCP (Model Context Protocol)?",
+      "opciones": [
+        "Es la capa estándar de integración: define cómo un agente descubre y usa herramientas externas, como un 'puerto' universal",
+        "Reemplaza a las bases de datos relacionales",
+        "Es un framework de frontend",
+        "Comprime los modelos para que quepan en el navegador"
+      ],
+      "correcta": 0,
+      "explicacion": "MCP juega para los agentes el rol que los puertos/adaptadores juegan en Clean Architecture: un contrato estándar entre el agente y las capacidades externas (repos, APIs, datos), independiente de la implementación.",
+      "dificultad": 3,
+      "tags": ["ia", "mcp", "integracion"],
+      "bonus2026": true
+    },
+    {
+      "id": "arq-021",
+      "modulo": "03-arquitectura",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — Al diseñar sistemas que incluyen agentes de IA de larga duración, ¿qué patrón arquitectónico clásico se volvió aún más relevante?",
+      "opciones": [
+        "La comunicación asíncrona basada en eventos: el agente trabaja en background y notifica resultados",
+        "El acoplamiento fuerte entre módulos",
+        "Los singletons globales de estado",
+        "Renderizar todo en el servidor"
+      ],
+      "correcta": 0,
+      "explicacion": "Un agente puede tardar minutos u horas: bloquear una llamada síncrona no escala. Colas, eventos y webhooks (el mismo toolkit de EDA) son la forma natural de orquestar agentes — el orquestador delega y sigue.",
+      "dificultad": 3,
+      "tags": ["ia", "eventos", "agentes"],
+      "bonus2026": true
+    }
+  ]
+}

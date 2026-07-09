@@ -1,0 +1,333 @@
+{
+  "modulo": {
+    "id": "04-fundamentos-ia",
+    "nombre": "Fundamentos de la IA",
+    "descripcion": "LLMs y Transformers, embeddings, prompting, RAG, fine-tuning, agentes de IA e IA responsable.",
+    "resumen": "Un LLM entiende y genera lenguaje humano. La arquitectura Transformer aportó procesamiento en paralelo y el mecanismo de atención (priorizar las partes relevantes del contexto). Embeddings: palabras como vectores; la proximidad refleja similitud semántica (similitud del coseno). Tokenización: el texto se fragmenta en tokens. Alucinación: el modelo genera información inventada. RAG (Retrieval-Augmented Generation): conecta el LLM con conocimiento propio — chunking → embeddings → vector database (Pinecone, ChromaDB) → re-ranking → contexto al LLM → respuesta con fuentes; no modifica los parámetros del modelo (a diferencia del fine-tuning). AI agents: sistemas autónomos que planifican (planner), ejecutan (executor) y se monitorean (monitoring), usan herramientas externas y buscan alternativas si algo falla; MCP estandariza su conexión con servicios; el usuario pasa de operador a supervisor."
+  },
+  "retos": [
+    {
+      "id": "ia-001",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es un LLM (Large Language Model)?",
+      "opciones": [
+        "Un modelo de IA diseñado para entender y generar lenguaje humano",
+        "Un lenguaje de programación para machine learning",
+        "Una base de datos de palabras",
+        "Un protocolo de red para chatbots"
+      ],
+      "correcta": 0,
+      "explicacion": "No solo genera texto: también lo analiza y comprende. Los modelos fundacionales (ChatGPT, Claude, Gemini) son LLMs generalistas reutilizables en múltiples aplicaciones.",
+      "dificultad": 1,
+      "tags": ["llm", "conceptos"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-002",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué dos problemas resolvió la arquitectura Transformer?",
+      "opciones": [
+        "Procesar texto en paralelo y priorizar el contexto relevante mediante el mecanismo de atención",
+        "Reducir el precio de las GPUs y el tamaño de los datasets",
+        "Eliminar las alucinaciones y los sesgos",
+        "Traducir automáticamente entre todos los idiomas"
+      ],
+      "correcta": 0,
+      "explicacion": "Antes se leía palabra a palabra; el Transformer codifica todo como vectores y procesa en paralelo, y su mecanismo de atención (self-attention) identifica qué partes del contexto importan para cada respuesta.",
+      "dificultad": 2,
+      "tags": ["transformers", "atencion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-003",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Los embeddings son...",
+      "opciones": [
+        "Representaciones vectoriales del texto donde la proximidad refleja similitud semántica",
+        "Imágenes incrustadas en un documento",
+        "Los pesos finales de la red neuronal",
+        "Fragmentos de código dentro de un prompt"
+      ],
+      "correcta": 0,
+      "explicacion": "Cada palabra/fragmento se traduce a coordenadas en un espacio multidimensional. La cercanía entre vectores refleja similitud de significado; una métrica típica es la similitud del coseno.",
+      "dificultad": 2,
+      "tags": ["embeddings"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-004",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Sobre la tokenización, ¿cuál es la afirmación correcta?",
+      "opciones": [
+        "El texto se fragmenta en tokens, y un token no siempre equivale a una palabra",
+        "Un token es siempre exactamente una palabra",
+        "La tokenización solo se usa en modelos de imagen",
+        "Los tokens son las contraseñas de acceso a la API"
+      ],
+      "correcta": 0,
+      "explicacion": "El texto se trocea en unidades (tokens) antes de procesarse; la relación token/palabra varía según el idioma y el contexto. Por eso el costo y los límites de los modelos se miden en tokens.",
+      "dificultad": 1,
+      "tags": ["tokenizacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-005",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Una 'alucinación' de un LLM es...",
+      "opciones": [
+        "Cuando el modelo genera información incorrecta o inventada con apariencia convincente",
+        "Un error de compilación",
+        "Cuando el modelo se niega a responder",
+        "Un pico de consumo de GPU"
+      ],
+      "correcta": 0,
+      "explicacion": "Suele deberse a falta de datos, sobreentrenamiento en modelos pequeños o datos de baja calidad. Mitigaciones típicas: dar más contexto, RAG con fuentes citadas, y verificación humana.",
+      "dificultad": 1,
+      "tags": ["alucinaciones", "llm"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-006",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "La multimodalidad es la capacidad de un modelo de...",
+      "opciones": [
+        "Procesar y generar distintos tipos de datos (texto, imagen, audio, vídeo) codificados como embeddings",
+        "Ejecutarse en varios sistemas operativos",
+        "Responder en varios idiomas",
+        "Usar varias GPUs a la vez"
+      ],
+      "correcta": 0,
+      "explicacion": "Todos los tipos de dato se codifican al mismo espacio de embeddings, lo que permite al modelo trabajar con texto, imágenes, audio y vídeo de forma unificada.",
+      "dificultad": 1,
+      "tags": ["multimodalidad"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-007",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Para qué surge RAG (Retrieval-Augmented Generation)?",
+      "opciones": [
+        "Para que el LLM responda con información privada o actualizada, citando fuentes, sin modificar sus parámetros",
+        "Para reentrenar el modelo con datos de la empresa",
+        "Para comprimir los modelos y abaratarlos",
+        "Para generar imágenes a partir de texto"
+      ],
+      "correcta": 0,
+      "explicacion": "Los LLMs no acceden por sí solos a información privada ni reciente. RAG conecta el modelo con una base de conocimiento propia y las respuestas citan el origen — sin tocar los pesos del modelo (eso sería fine-tuning).",
+      "dificultad": 2,
+      "tags": ["rag"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-008",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el orden correcto del pipeline RAG?",
+      "opciones": [
+        "Consulta → embeddings → búsqueda en vector DB → re-ranking → contexto al LLM → respuesta con fuentes",
+        "Consulta → fine-tuning → respuesta",
+        "Chunking → respuesta → embeddings → consulta",
+        "Vector DB → consulta → chunking → respuesta"
+      ],
+      "correcta": 0,
+      "explicacion": "R-A-G: Retrieve (busca los chunks más similares), Augmented (re-rankea y arma el contexto, típicamente 3-5 chunks) y Generate (el LLM responde citando las fuentes).",
+      "dificultad": 2,
+      "tags": ["rag", "pipeline"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-009",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En un proyecto RAG, ¿qué parte suele consumir más horas de ingeniería?",
+      "opciones": [
+        "El chunking: decidir cómo trocear los documentos según las preguntas que se harán",
+        "Elegir el color del dashboard",
+        "Comprar las GPUs",
+        "Escribir el system prompt"
+      ],
+      "correcta": 0,
+      "explicacion": "El tamaño y tipo de los fragmentos condiciona todo el sistema; documentos con ruido (tablas, doble columna, formatos complejos) pierden información al trocear. El chunking es la parte artesanal de RAG.",
+      "dificultad": 3,
+      "tags": ["rag", "chunking"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-010",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es una vector database?",
+      "opciones": [
+        "Una base especializada en almacenar embeddings y buscar por similitud (Pinecone, Weaviate, ChromaDB)",
+        "Una hoja de cálculo con muchas columnas",
+        "Una base de datos que solo guarda imágenes",
+        "El disco donde se guardan los pesos del modelo"
+      ],
+      "correcta": 0,
+      "explicacion": "Almacena los vectores de los chunks y permite recuperar los más cercanos semánticamente a la consulta — el corazón del Retrieve en RAG.",
+      "dificultad": 2,
+      "tags": ["rag", "vector-db"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-011",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Diferencia clave entre RAG y fine-tuning:",
+      "opciones": [
+        "RAG añade conocimiento por contexto sin tocar el modelo; el fine-tuning modifica los parámetros entrenándolo con datos nuevos",
+        "RAG es más caro que el fine-tuning siempre",
+        "El fine-tuning no requiere datos",
+        "Son exactamente lo mismo"
+      ],
+      "correcta": 0,
+      "explicacion": "RAG: conocimiento actualizable al instante, citable, sin entrenar. Fine-tuning: ajusta los pesos para especializar comportamiento o estilo — más costoso y estático. A menudo se combinan.",
+      "dificultad": 2,
+      "tags": ["rag", "fine-tuning"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-012",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué distingue a un AI agent de un chatbot convencional?",
+      "opciones": [
+        "Es autónomo: planifica, descompone tareas, mantiene estado, usa herramientas externas y busca alternativas si algo falla",
+        "Responde más rápido",
+        "Tiene una interfaz más bonita",
+        "Usa un modelo más pequeño"
+      ],
+      "correcta": 0,
+      "explicacion": "Un chatbot solo responde dentro de su interfaz. Un agente ejecuta acciones reales: se conecta a email, archivos, APIs... y gestiona flujos complejos de forma proactiva. Un chatbot sobre documentación NO es un agente.",
+      "dificultad": 2,
+      "tags": ["agentes"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-013",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En la arquitectura de un agente, ¿qué módulo descompone la tarea principal en subtareas y orquesta el plan?",
+      "opciones": ["El planner", "El executor", "El monitoring", "La memoria"],
+      "correcta": 0,
+      "explicacion": "Planner descompone y orquesta; executor ejecuta cada subtarea; monitoring hace introspección (sabe en qué punto está el plan y detecta cuándo buscar alternativas); la memoria conserva contexto entre sesiones.",
+      "dificultad": 2,
+      "tags": ["agentes", "arquitectura"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-014",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Con los AI agents, el rol del usuario pasa de...",
+      "opciones": [
+        "Operador a supervisor: verifica que lo que hizo el agente es correcto",
+        "Supervisor a operador: ejecuta cada paso a mano",
+        "Usuario a programador de bajo nivel",
+        "No cambia en absoluto"
+      ],
+      "correcta": 0,
+      "explicacion": "El agente ejecuta de forma autónoma y el humano valida el resultado — el mismo principio del developer-arquitecto que valida lo que la IA construye.",
+      "dificultad": 1,
+      "tags": ["agentes", "rol-usuario"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-015",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué define el Model Context Protocol (MCP)?",
+      "opciones": [
+        "Cómo un LLM/agente se conecta a servicios externos para leer su estructura e interactuar con ellos",
+        "El formato de los archivos de configuración de Python",
+        "La velocidad máxima de generación de tokens",
+        "Un estándar de compresión de vídeo"
+      ],
+      "correcta": 0,
+      "explicacion": "Publicado por Anthropic, MCP es a los agentes lo que las APIs REST fueron a las aplicaciones web: un contrato estándar para conectarse a herramientas y datos. A2A (Google) apunta a la comunicación agente-a-agente.",
+      "dificultad": 2,
+      "tags": ["agentes", "mcp"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-016",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué hace un modelo 'razonador' a diferencia de un LLM clásico?",
+      "opciones": [
+        "Dedica cómputo a razonar internamente (pensar paso a paso) antes de responder",
+        "Responde siempre más rápido",
+        "No usa la arquitectura Transformer",
+        "Solo funciona sin conexión"
+      ],
+      "correcta": 0,
+      "explicacion": "Los modelos razonadores generan cadenas de razonamiento internas antes de la respuesta final, mejorando en matemática, código y planificación — a cambio de más latencia y costo por respuesta.",
+      "dificultad": 2,
+      "tags": ["razonadores", "estado-del-arte"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-017",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "abierta",
+      "pregunta": "Explica con tus palabras qué es RAG y por qué una empresa lo usaría en vez de reentrenar un modelo.",
+      "rubrica": "Debe incluir: (1) idea central — conectar el LLM a una base de conocimiento propia y pasarle los fragmentos relevantes como contexto, (2) que NO modifica los parámetros/pesos del modelo, (3) al menos un motivo empresarial válido: información privada o actualizada, respuestas con fuentes citadas/verificables, costo menor que reentrenar, actualización inmediata del conocimiento.",
+      "fallbackId": "ia-007",
+      "dificultad": 2,
+      "tags": ["rag"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-018",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "abierta",
+      "pregunta": "¿Qué diferencia a un AI agent de un chatbot? Menciona al menos dos capacidades propias de un agente.",
+      "rubrica": "Debe incluir: (1) el chatbot solo responde dentro de la conversación mientras el agente actúa de forma autónoma, y (2) al menos dos capacidades de agente: planificar/descomponer tareas, mantener estado, usar herramientas externas (email, APIs, archivos), buscar alternativas ante fallos (workaround), proactividad.",
+      "fallbackId": "ia-012",
+      "dificultad": 2,
+      "tags": ["agentes"],
+      "bonus2026": false
+    },
+    {
+      "id": "ia-019",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — ¿Cómo evolucionó el 'razonamiento' en los modelos frontera durante 2026?",
+      "opciones": [
+        "Se volvió adaptativo: el modelo decide cuánto pensar según la dificultad, en vez de usar un presupuesto fijo de tokens",
+        "Se eliminó por completo para ahorrar costos",
+        "Solo está disponible en modelos open source",
+        "Requiere hardware cuántico"
+      ],
+      "correcta": 0,
+      "explicacion": "La tendencia 2026: thinking adaptativo — el modelo calibra su esfuerzo de razonamiento por tarea (los presupuestos fijos de 'thinking tokens' quedaron obsoletos), con niveles de esfuerzo configurables por el desarrollador.",
+      "dificultad": 3,
+      "tags": ["razonadores", "estado-del-arte"],
+      "bonus2026": true
+    },
+    {
+      "id": "ia-020",
+      "modulo": "04-fundamentos-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — ¿Qué patrón se consolidó para el trabajo con agentes de código de larga duración?",
+      "opciones": [
+        "Orquestación multi-agente: un agente coordinador delega subtareas en agentes especializados y verifica sus resultados",
+        "Un único agente gigante que hace todo sin supervisión",
+        "Volver a escribir todo el código a mano",
+        "Agentes que solo funcionan con capturas de pantalla"
+      ],
+      "correcta": 0,
+      "explicacion": "El patrón director → orquestador → ejecutores se volvió estándar: agentes headless que trabajan en paralelo, un coordinador que integra, y gates humanos en los puntos irreversibles (merge, deploy).",
+      "dificultad": 3,
+      "tags": ["agentes", "orquestacion"],
+      "bonus2026": true
+    }
+  ]
+}

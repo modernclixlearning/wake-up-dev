@@ -34,6 +34,8 @@ export interface ModuloInfo {
   id: string;
   nombre: string;
   descripcion: string;
+  /** Contexto que se inyecta al Oráculo (IA) cuando el jugador pregunta en este módulo. */
+  resumen?: string;
 }
 
 export interface BancoModulo {

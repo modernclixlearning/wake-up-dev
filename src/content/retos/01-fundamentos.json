@@ -2,7 +2,8 @@
   "modulo": {
     "id": "01-fundamentos",
     "nombre": "Fundamentos del Desarrollo de Software",
-    "descripcion": "Pensamiento computacional, ecosistema moderno (Git/GitHub), programación, sistemas, redes, APIs, lenguajes y buenas prácticas."
+    "descripcion": "Pensamiento computacional, ecosistema moderno (Git/GitHub), programación, sistemas, redes, APIs, lenguajes y buenas prácticas.",
+    "resumen": "Pensamiento computacional: 4 pilares — descomposición, reconocimiento de patrones, abstracción y diseño de algoritmos; pseudocódigo y diagramas de flujo. Ecosistema: Git (motor local de control de versiones; áreas Working Directory → Staging → Repository; ramas, merge, conflictos) y GitHub (plataforma en la nube; Pull Requests y GitHub Flow). Programación: variables, estructuras de control (if/while/for), estructuras de datos (pila LIFO, cola FIFO, diccionarios), funciones, manejo de errores. Sistemas y redes: IP y DNS, HTTP como protocolo de la web, APIs como contratos (analogía del camarero), REST con recursos/endpoints, CRUD↔métodos HTTP, stateless, JSON, autenticación (quién sos) vs autorización (qué podés hacer), CORS. Lenguajes: compilados vs interpretados, POO (clases, objetos, encapsulación, herencia, polimorfismo), programación funcional, asincronía. Buenas prácticas: estilo, depuración, testing, deuda técnica (costo de los atajos) y refactorización (mejorar estructura interna sin cambiar comportamiento; regla de oro: tests primero)."
   },
   "retos": [
     {

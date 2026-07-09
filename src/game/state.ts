@@ -1,5 +1,6 @@
+import { cargarConfig } from "../ai/config";
+import { crearProvider } from "../ai/factory";
 import { AIProvider } from "../ai/provider";
-import { StaticFallback } from "../ai/static-fallback";
 import { BancoModulo } from "../domain/reto";
 import { GameSession } from "../domain/session";
 
@@ -14,6 +15,7 @@ export function crearEstadoInicial(bancos: BancoModulo[]): GameState {
   return {
     session: new GameSession(),
     bancos,
-    ai: new StaticFallback(),
+    // El provider sale de la config BYOK guardada; sin key = fallback estático.
+    ai: crearProvider(cargarConfig()),
   };
 }

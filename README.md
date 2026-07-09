@@ -52,10 +52,10 @@ tests/          # Tests del dominio
 ## Funcionalidades principales
 
 - ✅ Quiz-adventure 8-bit: movimiento, encuentros con Agentes, vidas y score.
-- ✅ Banco de retos data-driven con retos **bonus 2026** (actualizaciones del contenido del máster).
+- ✅ 3 niveles jugables (Fundamentos, Arquitectura, Fundamentos de IA) con bancos generados desde las notas reales del máster, incluyendo retos **bonus 2026**.
 - ✅ Fallback estático: jugable al 100% sin ninguna API key.
-- 🚧 El Oráculo: NPC conversacional con IA (BYOK Anthropic/OpenAI/Gemini).
-- 🚧 Evaluación de respuestas abiertas con rúbrica (IA como grader).
+- ✅ El Oráculo: NPC conversacional con IA y contexto del módulo actual (BYOK Anthropic/OpenAI/Gemini, ajustes con la tecla A en Zion).
+- ✅ Evaluación de respuestas abiertas con rúbrica (IA como grader; sin IA caen a su variante de opciones).
 - 🚧 Modo "píldora roja": bridge local que conecta el juego con instancias headless de Claude Code.
 - 🚧 Agente Smith adaptativo: variantes y pistas generadas según tu desempeño.
 

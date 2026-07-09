@@ -76,3 +76,7 @@ Reglas:
 | Banco | Generado | Revisado por humano | Retos |
 |---|---|---|---|
 | 01-fundamentos.json | 2026-07-09 (Claude, desde notas reales del módulo 01) | ⚠️ pendiente de revisión final del alumno | 33 (3 bonus 2026, 3 abiertas) |
+| 03-arquitectura.json | 2026-07-10 (Claude, desde notas reales del módulo 03) | ⚠️ pendiente de revisión final del alumno | 21 (2 bonus 2026, 2 abiertas) |
+| 04-fundamentos-ia.json | 2026-07-10 (Claude, desde notas reales del módulo 04) | ⚠️ pendiente de revisión final del alumno | 20 (2 bonus 2026, 2 abiertas) |
+
+Nota de schema: `modulo.resumen` (opcional) es el contexto que se inyecta al Oráculo en ese nivel.
