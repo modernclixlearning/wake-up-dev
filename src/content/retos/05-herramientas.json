@@ -1,0 +1,593 @@
+{
+  "modulo": {
+    "id": "05-herramientas",
+    "nombre": "Herramientas",
+    "descripcion": "IDEs con IA (VS Code, Cursor, JetBrains, Antigravity, Air), CLIs de IA, Copilot en GitHub, diseño y MVPs con IA, n8n, modelos locales, Warp, CodeRabbit y OpenClaw.",
+    "resumen": "Filosofía: la IA es un copiloto, no el piloto — delegar lo repetitivo, decidir lo importante, y nunca aplicar cambios sin revisarlos (el vibe coding de aceptar todo sin mirar es donde se pierde la calidad). La IA debe vivir dentro del IDE: Copilot tiene modo inline (autocompletado, pincel fino) y chat (tareas grandes, rodillo), más modo agente que edita ficheros con aprobación. Guardrails complementarios: Error Lens da visibilidad, Checkstyle aplica convenciones, SonarLint aporta calidad y seguridad. Codex, Junie y los agentes autónomos trabajan por tareas asíncronas en segundo plano, siempre con revisión del diff. Cursor: Cmd+K, modo Ask vs Agente, refactor masivo con vista previa y git como red de seguridad, y desde 3.0 vista agéntica multi-agente con modo Plan. JetBrains: refactors nativos seguros que cubren el 80% de los casos sin IA. Antigravity (Google) y Air (JetBrains) son entornos agent-first donde el dev orquesta agentes. MCP: protocolo que enseña a la IA a usar herramientas externas, mismo JSON en todos los IDEs. CLIs: Claude Code con /init genera CLAUDE.md; Gemini CLI con free tier; gh copilot solo explica y sugiere comandos. En GitHub: PR summaries, code review de Copilot que exige validación humana, CodeQL para vulnerabilidades y Dependabot para dependencias. Diseño: equivocarse barato con wireframes low-fi, design tokens, contraste 4.5 a 1. MVP: versión mínima funcional para validar mercado (v0, Lovable). n8n: workflows de nodos con triggers y webhooks. Modelos locales (Ollama, LM Studio): privacidad, offline y coste cero. CodeRabbit: code review IA que brilla en pull requests. OpenClaw: agente 24/7 con skills, canales y permisos que hay que limitar."
+  },
+  "retos": [
+    {
+      "id": "her-001",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Según la filosofía del módulo, ¿cuál es el rol correcto de la IA en el desarrollo?",
+      "opciones": [
+        "Copiloto: acelera el proceso, pero el criterio y las decisiones críticas son del desarrollador",
+        "Piloto: la IA decide arquitectura y patrones, el desarrollador solo supervisa el resultado final",
+        "Reemplazo: los proyectos modernos ya no requieren revisar el código generado",
+        "Herramienta de emergencia: solo se usa cuando el desarrollador se bloquea"
+      ],
+      "correcta": 0,
+      "explicacion": "La IA es como un junior que nunca se cansa: gestiona lo repetitivo pero se equivoca y necesita supervisión. Aceptar cambios sin revisarlos, el vibe coding de siguiente siguiente siguiente, es donde se pierde la calidad del software.",
+      "dificultad": 1,
+      "tags": ["filosofia", "criterio"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-002",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué conviene tener la IA integrada en el IDE en vez de usar un chat externo como ChatGPT en el navegador?",
+      "opciones": [
+        "El asistente integrado tiene contexto real del archivo y del proyecto, sin copiar y pegar",
+        "Los chats externos no saben generar código",
+        "El IDE cifra las conversaciones y el navegador no",
+        "Es solo una comodidad estética, el resultado es idéntico"
+      ],
+      "correcta": 0,
+      "explicacion": "Tener la IA fuera del flujo obliga a copiar y pegar y rompe la concentración; integrada, entiende el fichero activo e incluso todo el workspace, lo que mejora directamente la calidad de las respuestas.",
+      "dificultad": 1,
+      "tags": ["ides", "contexto"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-003",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En GitHub Copilot, ¿cuándo conviene el modo inline y cuándo el chat?",
+      "opciones": [
+        "Inline para detalles mientras escribís, es el pincel fino; chat para tareas grandes como refactorizar o generar módulos, es el rodillo",
+        "Inline para proyectos nuevos y chat solo para depurar errores",
+        "Chat para código y prosa; inline únicamente para comentarios",
+        "Son idénticos: la única diferencia es dónde se muestra la respuesta"
+      ],
+      "correcta": 0,
+      "explicacion": "El inline sugiere código en el momento y se acepta con Tab; el chat conversa con contexto de archivos o del workspace y tiene comandos como fix, test o doc. El modo agente del chat puede además modificar ficheros, siempre mostrando los cambios para aprobar.",
+      "dificultad": 1,
+      "tags": ["copilot", "vscode"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-004",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Error Lens, Checkstyle y SonarLint se recomiendan juntos como guardrails. ¿Por qué no se pisan entre sí?",
+      "opciones": [
+        "Son capas complementarias: visibilidad inmediata de errores, convenciones del proyecto, y calidad y seguridad en tiempo real",
+        "Porque cada una funciona en un lenguaje de programación distinto",
+        "Porque se ejecutan en momentos diferentes: commit, push y despliegue",
+        "Sí se pisan: hay que elegir solo una para evitar conflictos"
+      ],
+      "correcta": 0,
+      "explicacion": "Error Lens resalta errores en el código sin pasar el ratón, Checkstyle valida las convenciones configuradas del equipo y SonarLint detecta bugs, code smells y vulnerabilidades. La idea: la IA acelera, los guardrails aseguran que no se desvíe de los estándares.",
+      "dificultad": 2,
+      "tags": ["guardrails", "calidad"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-005",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia clave entre Copilot y un agente como Codex o Junie?",
+      "opciones": [
+        "Copilot asiste paso a paso mientras trabajás; el agente ejecuta tareas completas en segundo plano y presenta el diff al terminar",
+        "Copilot es de pago y los agentes autónomos son siempre gratuitos",
+        "El agente nunca necesita revisión humana porque valida sus propios cambios",
+        "Copilot solo funciona online y los agentes solo en local"
+      ],
+      "correcta": 0,
+      "explicacion": "El asistente trabaja contigo de forma síncrona; el agente autónomo recibe una tarea (incluso desde un comentario TODO), la ejecuta de forma asíncrona y muestra los cambios para aceptar o rechazar. La revisión del diff sigue siendo obligatoria en ambos casos.",
+      "dificultad": 2,
+      "tags": ["agentes", "codex", "copilot"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-006",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En Cursor lanzás un prompt esperando una respuesta y de repente empieza a modificar ficheros. ¿Qué pasó?",
+      "opciones": [
+        "Estaba activo el modo Agente en vez del modo Ask; hay que revisar el modo antes de lanzar el prompt",
+        "Cursor detectó errores y los corrige automáticamente sin poder evitarlo",
+        "Se agotó la ventana de contexto y el modelo alucina",
+        "El plan gratuito no permite hacer preguntas, solo ediciones"
+      ],
+      "correcta": 0,
+      "explicacion": "En modo Ask, Cursor responde sin tocar nada; en modo Agente crea y modifica ficheros directamente. Es un error habitual cambiar de modo sin darse cuenta, así que conviene mirar cuál está activo antes de cada prompt.",
+      "dificultad": 2,
+      "tags": ["cursor", "modos"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-007",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Vas a delegar a la IA un refactor masivo sobre todo el proyecto. ¿Cuál es la práctica de seguridad imprescindible?",
+      "opciones": [
+        "Tener git inicializado y revisar los cambios en diff antes de aplicarlos",
+        "Cerrar todos los archivos abiertos para que no interfieran",
+        "Desactivar los tests para que no fallen durante el proceso",
+        "Hacerlo en horario nocturno cuando nadie usa el repositorio"
+      ],
+      "correcta": 0,
+      "explicacion": "La vista previa fichero a fichero permite aceptar o rechazar antes de escribir al disco, y git es la red de seguridad para volver a cualquier estado. Cursor suma además el Timeline, que registra cada guardado y permite restaurar sin commits explícitos.",
+      "dificultad": 2,
+      "tags": ["cursor", "refactor", "git"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-008",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué hace el modo Plan en un agente de código como el de Cursor 3.0?",
+      "opciones": [
+        "El agente primero elabora un plan revisable con stack, arquitectura y fases, y recién implementa cuando lo aprobás",
+        "Planifica el calendario del sprint y asigna tareas al equipo",
+        "Ejecuta los cambios más rápido saltándose las confirmaciones",
+        "Solo funciona con proyectos que ya tienen documentación completa"
+      ],
+      "correcta": 0,
+      "explicacion": "Para desarrollos de alcance, el agente analiza y propone antes de tocar código, y vos aprobás el plan. La vista agéntica permite además varios agentes en paralelo, cada uno en su tarea, revisables de forma asíncrona.",
+      "dificultad": 2,
+      "tags": ["cursor", "agentes", "plan"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-009",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué hace el plugin Key Promoter X de JetBrains?",
+      "opciones": [
+        "Avisa cada vez que usás el ratón para una acción que tiene atajo de teclado, forzando su aprendizaje",
+        "Promociona tu perfil de desarrollador en la comunidad JetBrains",
+        "Genera atajos nuevos automáticamente según tu uso",
+        "Bloquea el ratón para obligarte a usar solo el teclado"
+      ],
+      "correcta": 0,
+      "explicacion": "Es el plugin de ergonomía por excelencia: cada aviso te enseña el atajo que existía para lo que hiciste con el ratón, y con el tiempo el uso del teclado se vuelve natural y más rápido.",
+      "dificultad": 1,
+      "tags": ["jetbrains", "productividad"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-010",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuándo conviene el refactor nativo de JetBrains (Rename, Extract Method, Change Signature) en vez de pedírselo a la IA?",
+      "opciones": [
+        "En el 80% de los casos habituales: el refactor nativo es seguro, rápido y actualiza todos los usos automáticamente",
+        "Nunca: la IA siempre refactoriza mejor que el IDE",
+        "Solo cuando el proyecto no tiene git inicializado",
+        "Solo en proyectos Java antiguos sin soporte de IA"
+      ],
+      "correcta": 0,
+      "explicacion": "Los refactors nativos son deterministas: renombrar actualiza todas las referencias sin alucinar. La IA queda para los casos creativos que el IDE no cubre, como migraciones complejas o renombrados masivos con cambio de idioma.",
+      "dificultad": 2,
+      "tags": ["jetbrains", "refactor"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-011",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el riesgo típico de darle libertad a un asistente de IA en modo agente, según se vio con JetBrains AI Assistant?",
+      "opciones": [
+        "Sobreingeniería: implementa funcionalidades que nadie pidió",
+        "Borra el historial de git del proyecto",
+        "Consume la batería del equipo hasta agotarla",
+        "Convierte todo el código a otro lenguaje sin avisar"
+      ],
+      "correcta": 0,
+      "explicacion": "Los agentes tienden a agregar extras no solicitados cuando el prompt deja margen. Por eso conviene acotar la tarea, revisar el diff completo y recordar el principio YAGNI también para el código generado por IA.",
+      "dificultad": 2,
+      "tags": ["agentes", "riesgos"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-012",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué significa que Antigravity, el IDE de Google, sea Agent First?",
+      "opciones": [
+        "El IDE es un gestor de agentes en paralelo y el desarrollador actúa como orquestador que revisa artefactos",
+        "El primer agente que responde es el que aplica los cambios",
+        "Solo se puede usar con la cuenta del agente principal",
+        "Los agentes escriben directamente en producción sin revisión"
+      ],
+      "correcta": 0,
+      "explicacion": "En vez de un editor con IA añadida, es un mission control: varios agentes trabajan tareas distintas, generan artefactos verificables en markdown que podés editar para guiarlos, y piden permiso cuando salen de su allow list.",
+      "dificultad": 2,
+      "tags": ["antigravity", "agentes"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-013",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En Air, el ADE de JetBrains, cada tarea de agente puede ejecutarse en distintos targets. ¿Cuáles?",
+      "opciones": [
+        "Local, una rama de git específica, o un contenedor Docker aislado",
+        "Solo en la nube de JetBrains",
+        "En el navegador, en el móvil o en el escritorio",
+        "En cualquier IDE de la suite JetBrains simultáneamente"
+      ],
+      "correcta": 0,
+      "explicacion": "Esos targets permiten paralelismo sin conflictos de ficheros: varios agentes trabajando a la vez, cada uno en su contexto. ADE, Agent Development Environment, es el término emergente para estos entornos que ponen los agentes al frente.",
+      "dificultad": 3,
+      "tags": ["air", "ade", "agentes"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-014",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es el MCP (Model Context Protocol)?",
+      "opciones": [
+        "Un protocolo que le explica a la IA qué herramientas externas existen y cómo usarlas, con una configuración JSON igual en todos los IDEs",
+        "Un modelo de lenguaje especializado en programación",
+        "El formato de compresión que usan los IDEs para el contexto",
+        "Una integración nativa que cada IDE implementa de forma incompatible"
+      ],
+      "correcta": 0,
+      "explicacion": "Es como un mapa: describe la herramienta (Supabase, Firebase, un navegador) y qué se puede hacer con ella. El JSON de mcpServers es intercambiable: lo que funciona en Cursor sirve en Air, Antigravity o Windsurf.",
+      "dificultad": 2,
+      "tags": ["mcp", "integraciones"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-015",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué hace el comando /init en Claude Code CLI y por qué es imprescindible?",
+      "opciones": [
+        "Analiza el proyecto y genera un CLAUDE.md con arquitectura, comandos y reglas que la IA usa como contexto",
+        "Inicializa el repositorio git y hace el primer commit",
+        "Descarga el modelo de lenguaje para trabajar sin conexión",
+        "Crea una cuenta nueva de Anthropic para el proyecto"
+      ],
+      "correcta": 0,
+      "explicacion": "Sin ese contexto inicial la herramienta pierde gran parte de su valor: el fichero de proyecto le dice a la IA cómo está organizado todo y qué convenciones seguir. Gemini CLI tiene su equivalente GEMINI.md.",
+      "dificultad": 1,
+      "tags": ["cli", "claude-code", "contexto"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-016",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué puede hacer GitHub Copilot CLI (gh copilot) y qué NO puede hacer?",
+      "opciones": [
+        "Explica y sugiere comandos de terminal, pero no edita ni crea archivos",
+        "Edita archivos del proyecto directamente desde la terminal",
+        "Gestiona pull requests y hace merge automático",
+        "Ejecuta cualquier comando que sugiere sin confirmación"
+      ],
+      "correcta": 0,
+      "explicacion": "gh copilot explain aclara qué hace un comando y gh copilot suggest propone el comando para una tarea descrita en lenguaje natural (git, gh o shell). Para editar ficheros desde la terminal necesitás Claude Code o Gemini CLI.",
+      "dificultad": 2,
+      "tags": ["cli", "copilot", "github"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-017",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Asignás a Copilot como revisor de tus pull requests en GitHub. ¿Cuál es su limitación principal?",
+      "opciones": [
+        "Comenta buenas prácticas pero no entiende la arquitectura ni el negocio: la validación humana sigue siendo necesaria",
+        "Solo puede revisar pull requests de menos de diez líneas",
+        "Rechaza automáticamente las PRs con conflictos",
+        "Únicamente revisa código escrito por otros bots"
+      ],
+      "correcta": 0,
+      "explicacion": "El review automático acelera y detecta problemas comunes, y con el fichero de copilot-instructions se le dan reglas del repo; pero las decisiones de arquitectura, negocio y ética siguen siendo humanas.",
+      "dificultad": 2,
+      "tags": ["github", "code-review", "copilot"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-018",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En GitHub, ¿qué papel cumplen Code Scanning con CodeQL y Dependabot?",
+      "opciones": [
+        "CodeQL busca vulnerabilidades analizando el código como una base de datos; Dependabot abre PRs para actualizar dependencias vulnerables",
+        "CodeQL formatea el código y Dependabot ejecuta los tests",
+        "Ambos hacen lo mismo: escanear secretos filtrados en los commits",
+        "CodeQL despliega a producción y Dependabot revierte despliegues fallidos"
+      ],
+      "correcta": 0,
+      "explicacion": "CodeQL detecta patrones como inyecciones SQL o XSS; Dependabot vigila versiones vulnerables o desactualizadas. Ojo: ninguna sustituye una auditoría de seguridad real ni la validación humana.",
+      "dificultad": 2,
+      "tags": ["github", "seguridad", "dependabot"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-019",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué se recomienda diseñar antes de construir, empezando por wireframes low-fi?",
+      "opciones": [
+        "Porque equivocarse en diseño es mucho más barato que equivocarse en código, y el low-fi prioriza la jerarquía sin distraerse en colores",
+        "Porque los wireframes se convierten automáticamente en código de producción",
+        "Porque los clientes solo entienden diseños en blanco y negro",
+        "Porque las herramientas de diseño son gratuitas y los IDEs no"
+      ],
+      "correcta": 0,
+      "explicacion": "Un brief de una o dos páginas más bocetos sin color permiten validar jerarquía, flujos y estados (error, vacío, carga) antes de invertir en desarrollo. Fallar rápido y fracasar barato.",
+      "dificultad": 1,
+      "tags": ["diseno", "wireframes"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-020",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué son los design tokens y qué problema evitan al pasar el diseño a código?",
+      "opciones": [
+        "Colores, espaciados y tipografías definidos como valores reutilizables: reducen la deuda técnica al portar el diseño",
+        "Créditos de pago que consumen las herramientas de diseño con IA",
+        "Contraseñas que protegen los archivos de Figma",
+        "Los componentes exportados en formato PNG"
+      ],
+      "correcta": 0,
+      "explicacion": "Si el diseño define sus valores como tokens con nombre, el código los replica una sola vez y de forma consistente, en vez de esparcir colores y tamaños mágicos por toda la interfaz.",
+      "dificultad": 2,
+      "tags": ["diseno", "design-tokens"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-021",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Para accesibilidad, ¿qué contraste mínimo debe haber entre texto y fondo?",
+      "opciones": [
+        "4.5 a 1",
+        "2 a 1",
+        "10 a 1",
+        "No existe un mínimo: es una decisión estética"
+      ],
+      "correcta": 0,
+      "explicacion": "Es el umbral estándar para texto normal. La accesibilidad del módulo suma además estados vacíos con acción, labels claros y foco visible: detalles que separan un prototipo de un producto usable.",
+      "dificultad": 2,
+      "tags": ["accesibilidad", "diseno"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-022",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia entre un prototipo y un MVP?",
+      "opciones": [
+        "El prototipo simula la idea con mockups; el MVP es un producto usable con funcionalidad básica real",
+        "Son sinónimos: ambos son maquetas navegables",
+        "El prototipo tiene backend y el MVP solo frontend",
+        "El MVP incluye todas las features y el prototipo solo la mitad"
+      ],
+      "correcta": 0,
+      "explicacion": "El MVP se centra en el core del negocio para validar con usuarios reales si hay mercado antes de invertir meses. Menos es más: nada de features secundarias, y ojo, un MVP exitoso tampoco garantiza el éxito del producto.",
+      "dificultad": 2,
+      "tags": ["mvp", "validacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-023",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué ventaja distintiva tiene Lovable frente a v0 al iterar un MVP?",
+      "opciones": [
+        "Permite seleccionar un componente concreto y modificarlo con IA, sin un prompt genérico que rehaga toda la web",
+        "Genera aplicaciones móviles nativas para iOS y Android",
+        "No necesita conexión a internet para generar el código",
+        "Incluye un equipo de diseñadores humanos que revisan cada pantalla"
+      ],
+      "correcta": 0,
+      "explicacion": "La edición por selección de componente da control fino sobre la iteración. Lovable suma integración directa con Supabase para la base de datos y un security scan antes de publicar; v0 destaca por el despliegue en Vercel con un clic.",
+      "dificultad": 3,
+      "tags": ["mvp", "lovable", "v0"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-024",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En n8n, ¿cómo se relacionan trigger, nodo y workflow?",
+      "opciones": [
+        "El workflow es la secuencia de nodos conectados y el trigger es el nodo que lo inicia",
+        "El nodo contiene varios workflows y el trigger los detiene",
+        "El trigger es la salida final del workflow",
+        "Workflow y nodo son sinónimos; el trigger es el servidor donde corren"
+      ],
+      "correcta": 0,
+      "explicacion": "Cada nodo hace una cosa (recibir datos, procesarlos, enviarlos) y encadena su output al input del siguiente. El trigger arranca el flujo: un formulario, un webhook, un cron o un evento de GitHub.",
+      "dificultad": 1,
+      "tags": ["n8n", "automatizacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-025",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Tu webhook de n8n funcionaba en pruebas pero en producción nadie puede dispararlo con seguridad. ¿Qué dos cosas hay que recordar?",
+      "opciones": [
+        "Usar la URL de producción con el workflow activo, y proteger el webhook con autenticación por header",
+        "Reiniciar el servidor y cambiar el método GET por DELETE",
+        "Usar siempre la URL de test, que es la más estable",
+        "Desactivar el workflow para que acepte peticiones externas"
+      ],
+      "correcta": 0,
+      "explicacion": "n8n genera dos URLs: la de test solo escucha en modo manual; la de producción funciona con el workflow activo. Y sin header auth, cualquiera que conozca la URL puede disparar tu flujo.",
+      "dificultad": 2,
+      "tags": ["n8n", "webhooks", "seguridad"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-026",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuáles son las tres ventajas principales de ejecutar modelos de IA en local con Ollama o LM Studio?",
+      "opciones": [
+        "Privacidad (los datos no salen del equipo), disponibilidad offline y coste cero por uso",
+        "Mayor velocidad, más inteligencia y mejor soporte técnico",
+        "Actualizaciones automáticas, escalado infinito y cifrado cuántico",
+        "No tienen ventajas: solo se usan para aprender"
+      ],
+      "correcta": 0,
+      "explicacion": "El coste es el consumo de recursos propios. LM Studio suma RAG local para consultar tus PDFs sin subirlos a la nube y una API compatible con el formato de OpenAI, que permite conectar el modelo local a otras apps.",
+      "dificultad": 1,
+      "tags": ["modelos-locales", "ollama", "lm-studio"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-027",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En Warp, ¿qué es un workflow y cómo se parametriza?",
+      "opciones": [
+        "Un comando reutilizable invocable con numeral y nombre, con variables entre dobles llaves que se rellenan al usarlo",
+        "Una rama de git que Warp crea automáticamente",
+        "Un script de CI que corre en la nube de Warp",
+        "Un alias del sistema operativo sin parámetros posibles"
+      ],
+      "correcta": 0,
+      "explicacion": "Los workflows guardan comandos con partes variables y valores por defecto, y Warp Drive los sincroniza entre dispositivos. Suma los bloques (cada comando es seleccionable y adjuntable como contexto para la IA) y la terminal se vuelve programable.",
+      "dificultad": 2,
+      "tags": ["warp", "terminal", "productividad"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-028",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Según la experiencia del módulo, ¿dónde brilla realmente CodeRabbit?",
+      "opciones": [
+        "En la revisión automática de pull requests de proyectos grandes",
+        "En el autocompletado de código dentro del IDE",
+        "En proyectos pequeños, donde el retorno justifica el coste",
+        "En el despliegue continuo a producción"
+      ],
+      "correcta": 0,
+      "explicacion": "Al abrir una PR genera walkthrough, comentarios línea a línea, diagrama del flujo y hasta commits con la sugerencia aplicada. El plugin de IDE y la CLI son un pre-check limitado, y en proyectos chicos el coste no compensa.",
+      "dificultad": 2,
+      "tags": ["coderabbit", "code-review"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-029",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "En OpenClaw, ¿cuál es la diferencia entre una skill y un plugin?",
+      "opciones": [
+        "La skill le enseña una capacidad al agente con instrucciones en markdown y a veces scripts; el plugin es una integración de infraestructura, como conectar Telegram",
+        "La skill es de pago y el plugin gratuito",
+        "El plugin lo escribe el usuario y la skill viene siempre de fábrica",
+        "Son lo mismo con nombres distintos según la versión"
+      ],
+      "correcta": 0,
+      "explicacion": "Una skill mínima es un fichero skill.md con nombre, descripción (lo que la IA lee para decidir activarla) e instrucciones en lenguaje natural. Los plugins conectan proveedores y canales a nivel de sistema.",
+      "dificultad": 2,
+      "tags": ["openclaw", "skills", "agentes"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-030",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "Un agente 24/7 como OpenClaw tiene acceso al sistema, email y navegador. ¿Cuál es la medida de seguridad clave del módulo?",
+      "opciones": [
+        "Limitar permisos y skills por agente: un agente sin acceso a internet o al email no puede filtrar esa información aunque falle",
+        "Ejecutarlo siempre como administrador para evitar errores de permisos",
+        "Darle todas las skills desde el inicio para que no improvise",
+        "Confiar en cualquier skill del marketplace porque ya está revisada"
+      ],
+      "correcta": 0,
+      "explicacion": "Cada agente tiene su perfil de acceso a herramientas (mínimo, coding, message, full o a medida). Ante el riesgo de prompt injection, la defensa es sentido común y mínimo privilegio: no dar acceso ni credenciales innecesarias.",
+      "dificultad": 2,
+      "tags": ["openclaw", "seguridad", "permisos"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-031",
+      "modulo": "05-herramientas",
+      "tipo": "abierta",
+      "pregunta": "Explicá la diferencia entre un asistente de IA como Copilot y un agente autónomo como Codex o Junie, y da un ejemplo de tarea adecuada para cada uno.",
+      "rubrica": "Debe explicar que el asistente trabaja de forma síncrona junto al desarrollador (autocompletado, chat, cambios pequeños guiados) y que el agente autónomo recibe una tarea y la ejecuta de forma asíncrona en segundo plano, presentando los cambios en diff al terminar. Debe dar un ejemplo razonable para cada uno (asistente: completar una función, explicar un error, un cambio puntual; agente: implementar una tarea completa, resolver un TODO, una migración acotada). Debe mencionar que en ambos casos la revisión humana de los cambios es obligatoria. No se acepta decir que el agente no necesita revisión.",
+      "fallbackId": "her-005",
+      "dificultad": 2,
+      "tags": ["agentes", "copilot", "criterio"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-032",
+      "modulo": "05-herramientas",
+      "tipo": "abierta",
+      "pregunta": "Tu equipo va a adoptar IA generativa en el día a día y te piden que la calidad no se resienta. Proponé al menos tres guardrails concretos y justificá cada uno.",
+      "rubrica": "Debe proponer al menos tres medidas concretas de entre estas familias: revisión humana obligatoria de todo cambio generado (no aceptar a ciegas), herramientas de análisis estático o linting (Error Lens, Checkstyle, SonarLint o equivalentes), tests automatizados como red de seguridad, git como mecanismo de reversibilidad, reglas o instrucciones de proyecto para la IA (copilot-instructions, CLAUDE.md o equivalente), o limitar permisos del agente. Cada medida debe tener una justificación de qué riesgo mitiga. No se acepta como respuesta prohibir la IA ni medidas vagas tipo tener cuidado.",
+      "fallbackId": "her-004",
+      "dificultad": 3,
+      "tags": ["guardrails", "calidad", "criterio"],
+      "bonus2026": false
+    },
+    {
+      "id": "her-033",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — El MCP nació en un solo proveedor pero hoy es otra cosa. ¿Qué pasó con el protocolo?",
+      "opciones": [
+        "Lo adoptaron los grandes proveedores y ecosistemas de IDEs, convirtiéndolo en el estándar de facto para conectar agentes con herramientas",
+        "Fue reemplazado por un protocolo propietario distinto en cada IDE",
+        "Se abandonó porque los agentes ya no usan herramientas externas",
+        "Quedó restringido por ley a aplicaciones empresariales"
+      ],
+      "correcta": 0,
+      "explicacion": "Anthropic lo publicó como estándar abierto y OpenAI, Google, Microsoft y los IDEs agénticos lo fueron adoptando: hoy el mismo servidor MCP sirve para Cursor, Antigravity, Air o Claude Code, tal como anticipaba el módulo con su JSON portable.",
+      "dificultad": 2,
+      "tags": ["mcp", "estandares", "bonus"],
+      "bonus2026": true
+    },
+    {
+      "id": "her-034",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — Las skills que el módulo mostró en OpenClaw evolucionaron a un formato abierto entre herramientas. ¿Cuál es la idea?",
+      "opciones": [
+        "Carpetas con un SKILL.md (descripción más instrucciones y scripts opcionales) que cualquier agente compatible puede descubrir y cargar cuando la tarea lo amerita",
+        "Binarios compilados que se instalan en el sistema operativo",
+        "Modelos de IA pequeños entrenados para una sola tarea",
+        "Plantillas de prompts que solo funcionan en un proveedor"
+      ],
+      "correcta": 0,
+      "explicacion": "El patrón que el módulo enseñó (instrucciones en markdown con nombre y descripción que la IA lee para decidir si activarla) se consolidó como formato portable: las skills se comparten entre agentes y marketplaces igual que los MCP servers.",
+      "dificultad": 2,
+      "tags": ["skills", "agentes", "bonus"],
+      "bonus2026": true
+    },
+    {
+      "id": "her-035",
+      "modulo": "05-herramientas",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — Se llama trifecta letal a la combinación más peligrosa en agentes de IA. ¿Cuál es?",
+      "opciones": [
+        "Acceso a datos privados, exposición a contenido no confiable y capacidad de comunicarse hacia afuera, juntos en el mismo agente",
+        "Tres agentes trabajando en paralelo sobre el mismo fichero",
+        "Usar tres modelos de IA distintos en un mismo workflow",
+        "Tener MCP, skills y plugins instalados a la vez"
+      ],
+      "correcta": 0,
+      "explicacion": "Si un agente lee contenido externo (una web, un email), tiene datos sensibles y puede exfiltrarlos (enviar mensajes, hacer requests), una prompt injection puede robarlos. La mitigación es la del módulo: mínimo privilegio y quitar al menos una de las tres patas.",
+      "dificultad": 3,
+      "tags": ["seguridad", "agentes", "bonus"],
+      "bonus2026": true
+    }
+  ]
+}

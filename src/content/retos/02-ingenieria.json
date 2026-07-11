@@ -1,0 +1,593 @@
+{
+  "modulo": {
+    "id": "02-ingenieria",
+    "nombre": "Ingeniería de Software",
+    "descripcion": "Ciclo de vida, metodologías, análisis de requisitos, UML, paradigmas, principios SOLID, patrones y Spec Driven Development.",
+    "resumen": "El SDLC define fases: requisitos, diseño, desarrollo, pruebas, despliegue y mantenimiento. Metodologías: cascada (requisitos estables, alta regulación), ágil (iteraciones cortas con feedback continuo del usuario — lo que hace ágil a un proceso es el flujo de trabajo, no las ceremonias), espiral (análisis de riesgos y prototipos ante incertidumbre técnica), iterativo/incremental (entregas por cortes) y DevOps (CI/CD, automatización, ownership). Un buen requisito es claro, útil y comprobable; se formaliza con historias de usuario (Como/Quiero/Para) y criterios de aceptación Dado/Cuando/Entonces, se prioriza con MoSCoW. Validación = construir lo correcto; verificación = construirlo correctamente. UML: el diagrama de secuencia muestra la interacción cronológica entre sistemas. Paradigmas: imperativo (cómo), declarativo (qué), OOP (encapsulación, herencia, polimorfismo, composición sobre herencia), funcional (funciones puras, inmutabilidad, map/filter/reduce). SOLID: SRP una razón de cambio, OCP abierto a extensión cerrado a modificación, LSP los subtipos sustituyen al padre sin sorpresas, ISP interfaces pequeñas, DIP depender de abstracciones. DRY con matiz (mejor repetir que abstraer prematuramente), KISS, YAGNI. Antipatrones: spaghetti code, God Object, acoplamiento fuerte, martillo de oro. Spec Driven Development: guiar a la IA con especificaciones formales en vez de vibe coding; niveles Spec First, Spec Anchored y Spec Source."
+  },
+  "retos": [
+    {
+      "id": "ing-001",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el orden correcto de las fases del ciclo de vida del desarrollo de software?",
+      "opciones": [
+        "Requisitos, diseño, desarrollo, pruebas, despliegue, mantenimiento",
+        "Diseño, requisitos, pruebas, desarrollo, despliegue, mantenimiento",
+        "Desarrollo, requisitos, diseño, despliegue, pruebas, mantenimiento",
+        "Requisitos, desarrollo, diseño, despliegue, mantenimiento, pruebas"
+      ],
+      "correcta": 0,
+      "explicacion": "Primero se entiende qué construir (requisitos), luego cómo (diseño), se construye, se prueba, se despliega y se mantiene. El mantenimiento es un ciclo continuo: el software que no se mantiene acaba muriendo.",
+      "dificultad": 1,
+      "tags": ["sdlc", "ciclo-de-vida"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-002",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿En qué contexto tiene más sentido la metodología en cascada?",
+      "opciones": [
+        "Requisitos muy claros y estables, con alta regulación y coste alto del error",
+        "Startups que necesitan pivotar el producto cada semana",
+        "Proyectos donde el usuario final participa validando cada iteración",
+        "Equipos que despliegan a producción varias veces al día"
+      ],
+      "correcta": 0,
+      "explicacion": "Cascada es secuencial y poco flexible, pero no mala: brilla cuando los requisitos no van a cambiar y el coste de equivocarse es alto, como en pagos, facturación o sector regulado.",
+      "dificultad": 2,
+      "tags": ["metodologias", "cascada"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-003",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Una empresa hace dailys y retrospectivas pero el usuario no participa nunca del proceso. ¿Qué determina realmente que un proceso sea ágil?",
+      "opciones": [
+        "El flujo de trabajo con feedback continuo del usuario, no las ceremonias",
+        "Hacer todas las reuniones que define Scrum",
+        "Usar tableros Kanban y sprints de dos semanas",
+        "Tener un Product Owner asignado al equipo"
+      ],
+      "correcta": 0,
+      "explicacion": "Es el antipatrón de la cascada disfrazada de ágil: reuniones de Scrum sin usuario en el proceso. Agile es una filosofía de iteración corta con validación constante; Scrum es solo un marco que se pone encima.",
+      "dificultad": 2,
+      "tags": ["metodologias", "agile", "antipatrones"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-004",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Tu proyecto integra con un sistema antiguo sin documentación y romper producción costaría mucho dinero. ¿Qué modelo de ciclo de vida encaja mejor?",
+      "opciones": [
+        "Espiral: ciclos con análisis de riesgos y prototipos de validación",
+        "Cascada: definir todo al principio y ejecutar de una vez",
+        "Ágil puro: iterar rápido y arreglar lo que se rompa",
+        "Incremental: lanzar el módulo entero en el primer corte"
+      ],
+      "correcta": 0,
+      "explicacion": "El desarrollo en espiral está pensado para alta incertidumbre técnica: en cada ciclo se analizan riesgos y se hacen pequeñas pruebas controladas que validan que lo planeado es posible antes de avanzar.",
+      "dificultad": 2,
+      "tags": ["metodologias", "espiral", "riesgo"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-005",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué mide el MTTR (Mean Time To Recovery)?",
+      "opciones": [
+        "El tiempo entre detectar un error en producción y tenerlo arreglado",
+        "El tiempo desde que surge una idea hasta que llega a producción",
+        "El porcentaje de despliegues que fallan en producción",
+        "El porcentaje de código cubierto por tests automatizados"
+      ],
+      "correcta": 0,
+      "explicacion": "MTTR mide cuánto tardas en recuperarte de un fallo. El tiempo de idea a producción es el Lead Time, y las otras dos opciones son la tasa de fallos y la cobertura de tests: los otros KPIs clásicos del proceso.",
+      "dificultad": 2,
+      "tags": ["kpis", "devops"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-006",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "La aplicación debe estar disponible el 99,99% del tiempo. ¿Qué tipo de requisito es?",
+      "opciones": [
+        "No funcional: define qué significa hacerlo bien, vinculado a calidad",
+        "Funcional: define una capacidad que el sistema debe ofrecer",
+        "Una restricción impuesta desde fuera del proyecto",
+        "Un requisito de datos e integraciones"
+      ],
+      "correcta": 0,
+      "explicacion": "Los funcionales dicen qué hace el sistema (registrar usuarios, procesar pagos); los no funcionales dicen qué tan bien lo hace: rendimiento, seguridad, usabilidad, disponibilidad o compatibilidad, siempre con números concretos.",
+      "dificultad": 1,
+      "tags": ["requisitos", "no-funcionales"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-007",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuáles son las tres características fundamentales de un buen requisito?",
+      "opciones": [
+        "Claro, útil y comprobable",
+        "Ambicioso, flexible y negociable",
+        "Detallado, técnico y definitivo",
+        "Breve, priorizado y aprobado por el cliente"
+      ],
+      "correcta": 0,
+      "explicacion": "Un requisito debe ser claro (sin ambigüedades tipo rápido o intuitivo), útil (aportar valor real al negocio) y comprobable (poder validar con criterios medibles si se cumple o no).",
+      "dificultad": 1,
+      "tags": ["requisitos"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-008",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "En una historia de usuario bien escrita, ¿qué NO debería aparecer?",
+      "opciones": [
+        "La solución técnica concreta, como el botón o el endpoint a crear",
+        "El tipo de usuario que tiene la necesidad",
+        "El objetivo que ese usuario quiere lograr",
+        "El beneficio que obtiene al lograrlo"
+      ],
+      "correcta": 0,
+      "explicacion": "El formato es: como tipo de usuario, quiero objetivo, para beneficio. Plantea el problema y el valor; la solución técnica la decide después el equipo de diseño y desarrollo, no la historia.",
+      "dificultad": 2,
+      "tags": ["requisitos", "historias-de-usuario"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-009",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué los criterios de aceptación en formato Dado/Cuando/Entonces son tan valiosos?",
+      "opciones": [
+        "Cada criterio se puede traducir casi directamente a un test automatizado",
+        "Permiten saltarse la fase de pruebas porque ya describen el comportamiento",
+        "Sustituyen a las historias de usuario y las hacen innecesarias",
+        "Garantizan que los requisitos nunca cambien durante el desarrollo"
+      ],
+      "correcta": 0,
+      "explicacion": "Dado un contexto, cuando ocurre una acción, entonces se espera un resultado: esa estructura es esencialmente un test. Incluso se puede pedir a la IA que los convierta en tests ejecutables.",
+      "dificultad": 2,
+      "tags": ["requisitos", "criterios-aceptacion", "testing"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-010",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "En la priorización MoSCoW, ¿qué significa la S?",
+      "opciones": [
+        "Should: debería estar porque aporta mucho valor, pero no es imprescindible",
+        "Simple: lo más fácil de implementar primero",
+        "Security: los requisitos de seguridad tienen prioridad propia",
+        "Sprint: lo que entra en la iteración actual"
+      ],
+      "correcta": 0,
+      "explicacion": "MoSCoW clasifica en Must (imprescindible), Should (debería), Could (podría, es un extra) y Won't (no se hará). Se desarrollan primero los Must; si todo es prioridad alta, nada lo es.",
+      "dificultad": 1,
+      "tags": ["requisitos", "moscow", "priorizacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-011",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Un cliente pide directamente: quiero que uses microservicios y un botón en el menú superior. ¿Cuál es el problema?",
+      "opciones": [
+        "Está disfrazando soluciones como requisitos en vez de plantear el problema",
+        "Ninguno: el cliente siempre define la solución técnica",
+        "Que los microservicios son una tecnología obsoleta",
+        "Que faltan los criterios de aceptación de ese botón"
+      ],
+      "correcta": 0,
+      "explicacion": "Un requisito debe plantear el problema y el objetivo; la solución la propone el equipo. Cuando el cliente trae soluciones cerradas, hay que investigar la problemática real que hay detrás.",
+      "dificultad": 2,
+      "tags": ["requisitos", "problemas-comunes"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-012",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Tu app pasa todos los tests y cumple todos los criterios de aceptación, pero nadie la usa. ¿Qué falló?",
+      "opciones": [
+        "La validación: no se comprobó que se estuviera construyendo lo correcto",
+        "La verificación: los tests estaban mal escritos",
+        "El despliegue: los usuarios no encontraron la aplicación",
+        "La documentación: faltó explicar cómo usarla"
+      ],
+      "correcta": 0,
+      "explicacion": "Verificar es comprobar que lo construido cumple los requisitos; validar es comprobar que esos requisitos resuelven un problema real del usuario. Se puede verificar perfecto algo que nunca debió construirse.",
+      "dificultad": 2,
+      "tags": ["validacion", "verificacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-013",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué necesita un A/B test antes de lanzarse para no ser una prueba a ciegas?",
+      "opciones": [
+        "Métricas de negocio bien definidas para comparar las dos variantes",
+        "Que las dos variantes se muestren al 50% de los usuarios exactamente",
+        "Un grupo de usuarios beta que haya firmado un acuerdo",
+        "Que la variante nueva haya pasado por un RFC aprobado"
+      ],
+      "correcta": 0,
+      "explicacion": "Sin métricas definidas (conversión, tiempo de checkout, abandono) no hay forma de decidir qué variante gana. La variante nueva se expone a un porcentaje pequeño y solo se hace rollout si mejora los números.",
+      "dificultad": 2,
+      "tags": ["validacion", "ab-testing", "metricas"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-014",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué diagrama UML representa la interacción cronológica entre las partes del sistema, con mensajes y respuestas en el tiempo?",
+      "opciones": [
+        "El diagrama de secuencia",
+        "El diagrama de casos de uso",
+        "El diagrama de clases",
+        "El diagrama de componentes"
+      ],
+      "correcta": 0,
+      "explicacion": "En el diagrama de secuencia cada columna es un sistema o actor y el eje vertical es el tiempo: ideal para documentar flujos como un checkout entre frontend, API, pagos y base de datos. Es de los más útiles en Design Docs.",
+      "dificultad": 2,
+      "tags": ["uml", "diagramas"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-015",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la ventaja principal de herramientas de diagramas como código, tipo Mermaid o PlantUML?",
+      "opciones": [
+        "Los diagramas se versionan en Git y modificarlos es editar texto",
+        "Generan el código de la aplicación a partir del diagrama",
+        "No requieren conocimientos técnicos para usarse",
+        "Renderizan los diagramas con mejor calidad visual que las herramientas gráficas"
+      ],
+      "correcta": 0,
+      "explicacion": "La documentación debe ser algo vivo: con diagramas como código puedes ver el historial de cambios y actualizar sin redibujar. La contrapartida es que hace falta alguien técnico para modificarlos.",
+      "dificultad": 1,
+      "tags": ["uml", "documentacion", "herramientas"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-016",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Un Design Doc lleva semanas en revisión RFC porque el equipo discute si usar un if o un switch. ¿Cuál es el problema?",
+      "opciones": [
+        "Parálisis de diseño: el Design Doc debe quedarse en alto nivel, no en detalles de implementación",
+        "El RFC debería aprobarlo una sola persona para ir más rápido",
+        "Faltan snippets de código exactos para poder decidir",
+        "El documento debería ser inmutable una vez escrito"
+      ],
+      "correcta": 0,
+      "explicacion": "El Design Doc define contexto, objetivos, alternativas evaluadas y diseño a alto nivel. El detalle fino se resuelve en la implementación; buscar la perfección en el documento retrasa el desarrollo sin aportar valor.",
+      "dificultad": 2,
+      "tags": ["design-docs", "rfc", "documentacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-017",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia esencial entre el paradigma imperativo y el declarativo?",
+      "opciones": [
+        "El imperativo describe cómo se hace paso a paso; el declarativo describe qué se quiere obtener",
+        "El imperativo es más moderno que el declarativo",
+        "El declarativo solo existe en lenguajes compilados",
+        "El imperativo no permite usar funciones"
+      ],
+      "correcta": 0,
+      "explicacion": "Un bucle con condicionales que acumula un resultado es imperativo; un filter más un reduce que expresan la intención es declarativo. Un mismo lenguaje multiparadigma como TypeScript permite ambos estilos.",
+      "dificultad": 1,
+      "tags": ["paradigmas", "imperativo", "declarativo"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-018",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "El clásico problema del murciélago que vuela pero es mamífero rompe la jerarquía de clases. ¿Qué principio lo resuelve?",
+      "opciones": [
+        "Composición sobre herencia: inyectar comportamientos como componentes",
+        "Crear una clase intermedia MamiferoVolador que herede de ambas",
+        "Duplicar la función volar en cada clase que la necesite",
+        "Usar variables globales para los comportamientos compartidos"
+      ],
+      "correcta": 0,
+      "explicacion": "Las jerarquías profundas generan contradicciones y explosión de clases. Con composición, el comportamiento volar es un componente que se inyecta a quien lo necesite; se recomienda no pasar de un nivel de herencia.",
+      "dificultad": 2,
+      "tags": ["poo", "composicion", "herencia"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-019",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué condiciones cumple una función pura?",
+      "opciones": [
+        "No modifica estado externo y devuelve siempre lo mismo para los mismos parámetros",
+        "Está escrita en una sola línea y no usa variables",
+        "Solo puede recibir un parámetro de entrada",
+        "No puede llamar a ninguna otra función"
+      ],
+      "correcta": 0,
+      "explicacion": "Sin efectos secundarios y matemáticamente predecible: eso hace a las funciones puras extremadamente fáciles de testear. La contrapartida de la inmutabilidad es un mayor consumo de memoria por las copias.",
+      "dificultad": 1,
+      "tags": ["funcional", "funciones-puras"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-020",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Quieres sumar los precios de una lista de productos en estilo funcional. ¿Qué operación usas?",
+      "opciones": [
+        "reduce: compacta la lista en un solo valor usando un acumulador",
+        "map: transforma cada elemento de la lista",
+        "filter: selecciona los elementos que cumplen una condición",
+        "some: comprueba si al menos un elemento cumple una condición"
+      ],
+      "correcta": 0,
+      "explicacion": "reduce recibe una función con el acumulado y el item actual, más un valor inicial. Encadenando filter, map y reduce se montan pipelines completos de transformación de datos en pocas líneas.",
+      "dificultad": 2,
+      "tags": ["funcional", "reduce", "pipelines"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-021",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué significa realmente el Single Responsibility Principle según su autor?",
+      "opciones": [
+        "Cada clase debe tener una única razón para ser modificada",
+        "Cada clase debe hacer exactamente una sola cosa",
+        "Cada clase debe tener un único método público",
+        "Cada función debe ocupar como máximo una línea"
+      ],
+      "correcta": 0,
+      "explicacion": "Es el principio más malentendido de SOLID. Una función que envía correo, Slack y newsletter no lo viola si su única razón de cambio es el pipeline de notificaciones; interpretarlo como hacer una sola cosa fragmenta el código innecesariamente.",
+      "dificultad": 2,
+      "tags": ["solid", "srp"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-022",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Un DiscountCalculator con una cadena de condicionales por tipo de cliente obliga a modificarlo con cada tipo nuevo. ¿Qué principio viola y cómo se arregla?",
+      "opciones": [
+        "Viola Open/Closed; se arregla con el patrón Strategy inyectando la estrategia de descuento",
+        "Viola Liskov; se arregla haciendo que cada tipo herede del calculador",
+        "Viola DRY; se arregla copiando el calculador para cada tipo de cliente",
+        "Viola KISS; se arregla juntando todos los descuentos en una sola función"
+      ],
+      "correcta": 0,
+      "explicacion": "Abierto para extensión, cerrado para modificación: cada descuento vive en su propia clase o función y añadir uno nuevo no toca el código estable. Menos riesgo de romper lo que ya funcionaba.",
+      "dificultad": 2,
+      "tags": ["solid", "ocp", "strategy"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-023",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Una clase Penguin hereda de Bird y lanza un error en el método fly porque los pingüinos no vuelan. ¿Qué principio rompe?",
+      "opciones": [
+        "Liskov Substitution: la subclase no puede sustituir al padre sin romper el contrato",
+        "Interface Segregation: la interfaz tiene demasiados métodos",
+        "Dependency Inversion: depende de una implementación concreta",
+        "Single Responsibility: la clase tiene demasiadas razones de cambio"
+      ],
+      "correcta": 0,
+      "explicacion": "Toda subclase debe comportarse como su tipo base sin sorpresas. La solución es rediseñar la jerarquía, por ejemplo con FlyingBird y SwimmingBird, para que cada ave cumpla el contrato que declara.",
+      "dificultad": 2,
+      "tags": ["solid", "lsp"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-024",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Un Robot implementa la interfaz Worker y se ve obligado a definir los métodos comer y dormir que no usa. ¿Qué recomienda el Interface Segregation Principle?",
+      "opciones": [
+        "Varias interfaces pequeñas y específicas que cada clase compone según lo que necesita",
+        "Una interfaz única y completa que cubra todos los casos posibles",
+        "Que el robot lance excepciones en los métodos que no aplican",
+        "Eliminar las interfaces y usar clases concretas directamente"
+      ],
+      "correcta": 0,
+      "explicacion": "Los clientes no deben depender de lo que no usan. Segregando en Workable, Eatable o Programmable, cada clase implementa solo sus capacidades reales, los mocks de test son más pequeños y se evita código defensivo.",
+      "dificultad": 2,
+      "tags": ["solid", "isp"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-025",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Según el Dependency Inversion Principle, ¿de qué debe depender el núcleo de tu aplicación?",
+      "opciones": [
+        "De abstracciones como interfaces, con las implementaciones concretas inyectadas",
+        "De la implementación concreta más eficiente disponible",
+        "De la base de datos, que es la pieza más estable del sistema",
+        "De ninguna otra pieza: el núcleo no debe tener dependencias"
+      ],
+      "correcta": 0,
+      "explicacion": "Si los servicios dependen de una interfaz Database en vez de MySQL directamente, cambiar de base de datos o mockear en tests es trivial. La inyección por constructor, explícita, es la forma recomendada.",
+      "dificultad": 2,
+      "tags": ["solid", "dip", "inyeccion-dependencias"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-026",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Dos fragmentos de código idénticos calculan el IVA de pedidos y de facturas, pero cada uno puede evolucionar distinto. ¿Qué dice el matiz importante de DRY?",
+      "opciones": [
+        "Es preferible la repetición a una abstracción prematura con forma incorrecta",
+        "Toda repetición debe eliminarse inmediatamente extrayendo una función común",
+        "DRY solo aplica cuando el código se repite más de tres veces",
+        "La repetición se resuelve siempre con herencia de una clase base"
+      ],
+      "correcta": 0,
+      "explicacion": "Si el código repetido siempre cambia junto, unifícalo; si tiene caminos de evolución distintos por razones de dominio, la repetición es la opción sana. Las abstracciones prematuras son deuda difícil de deshacer.",
+      "dificultad": 3,
+      "tags": ["dry", "abstracciones"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-027",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "En un lenguaje con funciones de primera clase como TypeScript, ¿cuál es la alternativa moderna al patrón Strategy con clases?",
+      "opciones": [
+        "Pasar la función de comportamiento directamente como parámetro",
+        "Usar herencia múltiple para combinar estrategias",
+        "Un singleton global que registre todas las estrategias",
+        "No existe alternativa: Strategy requiere siempre interfaces y clases"
+      ],
+      "correcta": 0,
+      "explicacion": "Los 23 patrones del Gang of Four resolvían limitaciones de lenguajes puramente orientados a objetos. Con funciones como ciudadanos de primera clase, inyectar la función es más simple; montar la infraestructura de clases puede ser sobreingeniería.",
+      "dificultad": 3,
+      "tags": ["patrones", "strategy", "multiparadigma"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-028",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Una clase UserManager crea usuarios, autentica, gestiona permisos, envía notificaciones y genera reportes. ¿Qué antipatrón es?",
+      "opciones": [
+        "God Object: una clase que acumula responsabilidades hasta ser el núcleo de todo",
+        "Spaghetti Code: código sin estructura ni jerarquía",
+        "Golden Hammer: usar la misma herramienta para todo",
+        "Deuda técnica: una decisión consciente para entregar más rápido"
+      ],
+      "correcta": 0,
+      "explicacion": "Se llama objeto Dios no por su tamaño sino porque nadie se atreve a tocarlo. Tiene infinitas razones de cambio; la salida es segregar con SRP en repositorio, autenticación, permisos y notificaciones, de forma gradual y con tests.",
+      "dificultad": 1,
+      "tags": ["antipatrones", "god-object"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-029",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "En Spec Driven Development, ¿qué distingue al nivel Spec Anchored del nivel Spec First?",
+      "opciones": [
+        "La spec es un documento vivo que evoluciona junto con el código en cada iteración",
+        "La spec se escribe después de terminar el código, como documentación",
+        "No hay spec: se trabaja con prompts directos en el chat",
+        "La spec la escribe siempre la IA sin intervención humana"
+      ],
+      "correcta": 0,
+      "explicacion": "Spec First escribe toda la especificación antes de generar código, al estilo cascada; Spec Anchored la mantiene viva junto al código, al estilo ágil; y en Spec Source la spec es la única fuente de verdad y el desarrollador ya no toca el código.",
+      "dificultad": 2,
+      "tags": ["sdd", "ia", "metodologias"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-030",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "Según la matriz de decisión de Martin Fowler, ¿cuándo brilla el Spec Driven Development?",
+      "opciones": [
+        "En problemas medianos o grandes con requisitos suficientemente claros",
+        "En cualquier bug pequeño, para dejar constancia documental",
+        "Cuando los requisitos todavía no están formados, para descubrirlos",
+        "Siempre: toda tarea con IA debería empezar por una spec completa"
+      ],
+      "correcta": 0,
+      "explicacion": "Con requisitos difusos primero hay que aclararlos, y en cambios triviales la spec es overhead puro: un prompt directo basta. Usar Spec First para todo acaba en una montaña de documentos desactualizados que nadie lee.",
+      "dificultad": 3,
+      "tags": ["sdd", "ia", "criterio"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-031",
+      "modulo": "02-ingenieria",
+      "tipo": "abierta",
+      "pregunta": "Explicá con tus palabras la diferencia entre validación y verificación de requisitos, y dá un ejemplo de una técnica concreta para cada una.",
+      "rubrica": "Debe explicar que verificar es comprobar que lo construido cumple los requisitos definidos (construirlo correctamente) y que validar es comprobar que se está construyendo lo correcto, es decir que aporta valor real al usuario. Debe dar al menos una técnica de verificación (tests automatizados desde criterios de aceptación, peer review con pull requests) y al menos una de validación (demos con usuarios, prueba piloto o beta, A/B test con métricas). No se acepta usar los dos términos como sinónimos.",
+      "fallbackId": "ing-012",
+      "dificultad": 2,
+      "tags": ["validacion", "verificacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-032",
+      "modulo": "02-ingenieria",
+      "tipo": "abierta",
+      "pregunta": "El cliente pide: el login tiene que ser rápido. Reescribilo como una historia de usuario con al menos un criterio de aceptación medible.",
+      "rubrica": "Debe incluir una historia con el formato como tipo de usuario, quiero objetivo, para beneficio. Debe incluir al menos un criterio de aceptación con estructura dado/cuando/entonces o equivalente, y una métrica concreta y medible (por ejemplo, el login responde en menos de 500 milisegundos o un umbral de tiempo explícito). No se acepta dejar el término rápido u otro adjetivo vago sin cuantificar, ni describir una solución técnica en lugar del problema.",
+      "fallbackId": "ing-009",
+      "dificultad": 2,
+      "tags": ["requisitos", "historias-de-usuario", "criterios-aceptacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "ing-033",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — GitHub publicó Spec Kit, un toolkit open source para Spec Driven Development. ¿Cuál es su flujo de trabajo?",
+      "opciones": [
+        "Specify, plan y tasks: la spec se refina en fases antes de que el agente implemente",
+        "Un chat libre donde el agente decide la arquitectura sin documentos",
+        "Generar la spec automáticamente a partir del código ya escrito",
+        "Un linter que bloquea commits si no existe un archivo de spec"
+      ],
+      "correcta": 0,
+      "explicacion": "Spec Kit lleva a la práctica el SDD del módulo: comandos como specify, plan y tasks generan artefactos de especificación que guían al agente (Copilot, Claude Code, Gemini CLI u otros) antes de escribir código, igual que el flujo de Kiro.",
+      "dificultad": 2,
+      "tags": ["sdd", "herramientas", "bonus"],
+      "bonus2026": true
+    },
+    {
+      "id": "ing-034",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — El archivo AGENTS.md se consolidó como estándar abierto entre herramientas de IA. ¿Qué papel cumple en un repositorio?",
+      "opciones": [
+        "Es un README para agentes: instrucciones de contexto, comandos y convenciones del proyecto",
+        "Reemplaza al README.md para los desarrolladores humanos",
+        "Lista los empleados autorizados a usar IA en el proyecto",
+        "Configura los permisos de sistema operativo del agente"
+      ],
+      "correcta": 0,
+      "explicacion": "Adoptado por herramientas como Codex, Cursor, Copilot o Claude Code (con su CLAUDE.md equivalente), concentra las reglas y el contexto que el agente necesita: conecta con la idea del módulo de que la calidad del resultado depende del contexto que le des a la IA.",
+      "dificultad": 2,
+      "tags": ["ia", "contexto", "bonus"],
+      "bonus2026": true
+    },
+    {
+      "id": "ing-035",
+      "modulo": "02-ingenieria",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — Los últimos informes DORA sobre IA en desarrollo llegan a una conclusión clave. ¿Cuál?",
+      "opciones": [
+        "La IA amplifica al equipo: acelera el throughput pero puede aumentar la inestabilidad si el proceso es débil",
+        "La IA reduce siempre los errores en producción, sin importar el proceso",
+        "Los equipos con IA ya no necesitan medir KPIs como el MTTR",
+        "La IA solo aporta valor en equipos que usan cascada"
+      ],
+      "correcta": 0,
+      "explicacion": "DORA observa que la IA actúa como amplificador: los equipos con buenos fundamentos (CI/CD, tests, lotes pequeños) mejoran más, y los que tienen procesos débiles amplifican sus problemas. Los KPIs del módulo siguen siendo la vara de medir.",
+      "dificultad": 3,
+      "tags": ["devops", "kpis", "ia", "bonus"],
+      "bonus2026": true
+    }
+  ]
+}

@@ -1,7 +1,10 @@
 import kaplay from "kaplay";
 import bancoFundamentos from "./content/retos/01-fundamentos.json";
+import bancoIngenieria from "./content/retos/02-ingenieria.json";
 import bancoArquitectura from "./content/retos/03-arquitectura.json";
 import bancoFundamentosIA from "./content/retos/04-fundamentos-ia.json";
+import bancoHerramientas from "./content/retos/05-herramientas.json";
+import bancoFlujoIA from "./content/retos/09-flujo-desarrollo-ia.json";
 import { BancoModulo } from "./domain/reto";
 import { crearEstadoInicial, GameState } from "./game/state";
 import { ANCHO, ALTO } from "./game/theme";
@@ -12,8 +15,11 @@ import { registrarGameover } from "./game/scenes/gameover";
 
 const bancos: BancoModulo[] = [
   bancoFundamentos as BancoModulo,
+  bancoIngenieria as BancoModulo,
   bancoArquitectura as BancoModulo,
   bancoFundamentosIA as BancoModulo,
+  bancoHerramientas as BancoModulo,
+  bancoFlujoIA as BancoModulo,
 ];
 
 let estado: GameState = crearEstadoInicial(bancos);
