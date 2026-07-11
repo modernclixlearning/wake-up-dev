@@ -83,3 +83,7 @@ Reglas:
 | 09-flujo-desarrollo-ia.json | 2026-07-11 (Claude, desde notas reales del módulo 09; el submódulo 04 de APIs aún no tiene notas) | ⚠️ pendiente de revisión final del alumno | 30 (3 bonus 2026, 2 abiertas) |
 
 Nota de schema: `modulo.resumen` (opcional) es el contexto que se inyecta al Oráculo en ese nivel.
+
+### Bloqueados (sin notas reales del alumno todavía)
+
+Los módulos `10-calidad`, `11-infraestructura-cloud`, `12-seguridad` y `13-desarrollo-potenciado-ia` no tienen banco: todas sus clases en la bóveda son plantillas ("Escribe aquí tus notas", 200 caracteres). Ídem el submódulo `04-integracion-de-apis-y-plataformas-ia-populares` de `09-flujo-desarrollo-ia` (solo `00` y `01` tienen contenido real; del `02` al `14` son plantillas). El pipeline exige generar desde notas reales — no fabricar contenido. Reintentar la generación cuando el alumno complete esas notas en la bóveda.

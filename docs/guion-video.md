@@ -9,9 +9,9 @@ Duración objetivo: **5–8 minutos**. Grabá la pantalla (OBS, Loom o similar) 
 
 ## 2. Demo del loop de juego (90s)
 
-- ENTER → Zion: mostrar los 3 módulos y el estado de IA.
+- ENTER → Zion: mostrar los 6 módulos y el estado de IA.
 - Entrar a Fundamentos: moverse, tocar un Agente, responder bien (score) y responder mal (vida perdida + explicación didáctica).
-- Mencionar: 74 retos generados desde tus notas reales del curso, con retos bonus 2026.
+- Mencionar: ~174 retos generados desde tus notas reales del curso, con retos bonus 2026.
 
 ## 3. La IA como gameplay (2 min)
 
@@ -29,7 +29,7 @@ Duración objetivo: **5–8 minutos**. Grabá la pantalla (OBS, Loom o similar) 
 ## 5. Ingeniería detrás (90s)
 
 - VS Code: estructura del proyecto (dominio puro / contenido JSON / capa ai / game).
-- Mostrar: los 51 tests corriendo (`npm test`), el pipeline de contenido (tools/pipeline-contenido.md) y el CI+deploy en GitHub Actions.
+- Mostrar: los 66 tests corriendo (`npm test`), el pipeline de contenido (tools/pipeline-contenido.md) y el CI+deploy en GitHub Actions.
 - Mencionar: arquitectura limpia (el dominio no conoce Kaplay ni a los providers), fallback estático (funciona sin IA), gate de contenido en CI.
 
 ## 6. Proceso con IA + cierre (60s)

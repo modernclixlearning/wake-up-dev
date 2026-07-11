@@ -25,7 +25,7 @@ El proyecto demuestra el máster en dos planos:
 
 - **TypeScript** + **Vite** — build y dev server.
 - **Kaplay** — motor 2D estilo retro sobre canvas.
-- **Vitest** — 51 tests del dominio y la capa IA (adapters testeados con fetch mockeado).
+- **Vitest** — 66 tests del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con fetch mockeado).
 - **GitHub Actions** — CI (typecheck + tests + build) y deploy automático a GitHub Pages.
 - **@anthropic-ai/sdk** — adapter oficial de Anthropic en el browser (BYOK).
 - **Node.js** — bridge headless local (`bridge/server.mjs`, sin dependencias).
@@ -72,7 +72,7 @@ docs/           # Guión del vídeo y outline de las slides (entregables TFM)
 ## 5. Funcionalidades principales
 
 - ✅ Quiz-adventure 8-bit: movimiento, encuentros con Agentes, vidas, score y portal de salida.
-- ✅ 3 niveles jugables (Fundamentos, Arquitectura, Fundamentos de IA) con **74 retos** generados desde las notas reales del máster, incluyendo retos **bonus 2026**.
+- ✅ 6 niveles jugables (Fundamentos, Ingeniería de Software, Arquitectura, Fundamentos de IA, Herramientas, Flujo de Desarrollo con IA) con **~174 retos** generados desde las notas reales del máster, incluyendo retos **bonus 2026**.
 - ✅ Fallback estático: jugable al 100% sin ninguna API key.
 - ✅ **El Oráculo**: NPC conversacional con IA y contexto del módulo actual.
 - ✅ **Evaluación de respuestas abiertas** con rúbrica (IA como grader; sin IA caen a su variante de opciones, sin penalizar).
