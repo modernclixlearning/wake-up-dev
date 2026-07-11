@@ -71,7 +71,8 @@ docs/           # Guión del vídeo y outline de las slides (entregables TFM)
 
 ## 5. Funcionalidades principales
 
-- ✅ Quiz-adventure 8-bit: movimiento, encuentros con Agentes, vidas, score y portal de salida.
+- ✅ Combate arcade 8-bit inspirado en la acción/artes marciales de Matrix: personajes con siluetas animadas dibujadas 100% por código (sin sprites externos), esquive "bullet time" antes de cada pregunta, Agentes con barra de HP (varios golpes para caer) y un Agente Smith **Jefe** al cerrar cada módulo.
+- ✅ Escenarios con identidad visual propia por módulo (paleta y decorado distintos: grillas, "planos" en Ingeniería/Arquitectura, nodos en IA, lluvia de código en Flujo de IA).
 - ✅ 6 niveles jugables (Fundamentos, Ingeniería de Software, Arquitectura, Fundamentos de IA, Herramientas, Flujo de Desarrollo con IA) con **~174 retos** generados desde las notas reales del máster, incluyendo retos **bonus 2026**.
 - ✅ Fallback estático: jugable al 100% sin ninguna API key.
 - ✅ **El Oráculo**: NPC conversacional con IA y contexto del módulo actual.

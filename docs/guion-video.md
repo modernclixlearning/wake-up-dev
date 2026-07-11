@@ -10,8 +10,9 @@ Duración objetivo: **5–8 minutos**. Grabá la pantalla (OBS, Loom o similar) 
 ## 2. Demo del loop de juego (90s)
 
 - ENTER → Zion: mostrar los 6 módulos y el estado de IA.
-- Entrar a Fundamentos: moverse, tocar un Agente, responder bien (score) y responder mal (vida perdida + explicación didáctica).
-- Mencionar: ~174 retos generados desde tus notas reales del curso, con retos bonus 2026.
+- Entrar a Fundamentos: moverse (silueta animada de Neo), tocar un Agente, mostrar el esquive "bullet time" (esquivar la bala con la flecha correcta), responder bien (golpe al Agente, baja su barra de HP) y responder mal (vida perdida + explicación didáctica).
+- Pelear hasta derrotar a un Agente normal (2 golpes) y mostrar el Jefe de nivel al limpiar el módulo.
+- Mencionar: ~174 retos generados desde tus notas reales del curso, con retos bonus 2026, y que cada módulo tiene su propio decorado (paleta y patrón).
 
 ## 3. La IA como gameplay (2 min)
 
