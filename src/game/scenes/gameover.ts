@@ -1,4 +1,5 @@
 import { KAPLAYCtx } from "kaplay";
+import { detenerMusica, sfx } from "../audio";
 import { GameState } from "../state";
 import { ANCHO, ALTO, ROJO, BLANCO, VERDE } from "../theme";
 
@@ -9,6 +10,9 @@ export function registrarGameover(
 ): void {
   k.scene("gameover", () => {
     const st = estado();
+    // Silencio dramático: se corta la música de combate y suena la caída.
+    detenerMusica();
+    sfx.fallo();
 
     k.add([
       k.text("LOS AGENTES TE ATRAPARON", { size: 40 }),

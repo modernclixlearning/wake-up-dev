@@ -1,13 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
-  BONUS_ESQUIVE_PERFECTO,
-  BONUS_POR_BALA_ESQUIVADA,
-  calcularBonusEsquive,
+  BONUS_FASE_SIN_DANO,
+  BONUS_POR_GOLPE_CONECTADO,
+  calcularBonusFase,
+  conectarGolpe,
   crearCombate,
+  crearFase,
   derrotado,
+  enemigoAturdido,
+  GOLPES_PARA_ATURDIR,
   golpear,
   HP_AGENTE_NORMAL,
   HP_JEFE,
+  recibirGolpe,
 } from "../src/domain/combate";
 
 describe("combate — HP por golpes", () => {
@@ -48,24 +53,55 @@ describe("combate — HP por golpes", () => {
   });
 });
 
-describe("combate — bonus de esquive", () => {
-  it("sin balas esquivadas no da bonus", () => {
-    expect(calcularBonusEsquive(0, 3)).toBe(0);
+describe("combate — fase arcade (piñas/tiros antes de la pregunta)", () => {
+  it("arranca sin golpes y sin enemigo aturdido", () => {
+    const fase = crearFase();
+    expect(fase.golpesConectados).toBe(0);
+    expect(fase.golpesRecibidos).toBe(0);
+    expect(enemigoAturdido(fase)).toBe(false);
   });
 
-  it("suma el bonus lineal por bala esquivada", () => {
-    expect(calcularBonusEsquive(2, 3)).toBe(2 * BONUS_POR_BALA_ESQUIVADA);
+  it("aturde al enemigo al conectar los golpes necesarios", () => {
+    let fase = crearFase();
+    for (let i = 0; i < GOLPES_PARA_ATURDIR - 1; i++) {
+      fase = conectarGolpe(fase);
+      expect(enemigoAturdido(fase)).toBe(false);
+    }
+    fase = conectarGolpe(fase);
+    expect(enemigoAturdido(fase)).toBe(true);
   });
 
-  it("esquive perfecto suma el extra", () => {
-    expect(calcularBonusEsquive(3, 3)).toBe(3 * BONUS_POR_BALA_ESQUIVADA + BONUS_ESQUIVE_PERFECTO);
+  it("recibir golpes no aturde al enemigo", () => {
+    let fase = crearFase();
+    for (let i = 0; i < GOLPES_PARA_ATURDIR + 1; i++) fase = recibirGolpe(fase);
+    expect(enemigoAturdido(fase)).toBe(false);
+    expect(fase.golpesRecibidos).toBe(GOLPES_PARA_ATURDIR + 1);
   });
 
-  it("ignora casos degenerados (total 0)", () => {
-    expect(calcularBonusEsquive(0, 0)).toBe(0);
+  it("no muta la fase original (inmutable)", () => {
+    const original = crearFase();
+    conectarGolpe(original);
+    recibirGolpe(original);
+    expect(original.golpesConectados).toBe(0);
+    expect(original.golpesRecibidos).toBe(0);
   });
 
-  it("no cuenta más esquives que balas totales", () => {
-    expect(calcularBonusEsquive(5, 3)).toBe(calcularBonusEsquive(3, 3));
+  it("sin golpes conectados no hay bonus", () => {
+    expect(calcularBonusFase(crearFase())).toBe(0);
+    expect(calcularBonusFase(recibirGolpe(crearFase()))).toBe(0);
+  });
+
+  it("suma el bonus lineal por golpe conectado", () => {
+    let fase = recibirGolpe(crearFase());
+    fase = conectarGolpe(conectarGolpe(fase));
+    expect(calcularBonusFase(fase)).toBe(2 * BONUS_POR_GOLPE_CONECTADO);
+  });
+
+  it("fase sin daño recibido suma el extra", () => {
+    let fase = crearFase();
+    for (let i = 0; i < GOLPES_PARA_ATURDIR; i++) fase = conectarGolpe(fase);
+    expect(calcularBonusFase(fase)).toBe(
+      GOLPES_PARA_ATURDIR * BONUS_POR_GOLPE_CONECTADO + BONUS_FASE_SIN_DANO
+    );
   });
 });

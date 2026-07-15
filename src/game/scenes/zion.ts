@@ -1,5 +1,6 @@
 import { KAPLAYCtx } from "kaplay";
 import { crearProvider } from "../../ai/factory";
+import { reproducirMusica } from "../audio";
 import { GameState } from "../state";
 import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO } from "../theme";
 import { abrirAjustes, hayOverlayAbierto } from "../ui/overlay";
@@ -8,6 +9,9 @@ import { abrirAjustes, hayOverlayAbierto } from "../ui/overlay";
 export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
   k.scene("zion", () => {
     const st = estado();
+    // Si venís del title sigue la misma pista sin reiniciarse; si volvés de un
+    // nivel, corta la música de combate y retoma la del menú.
+    reproducirMusica("musica-menu.mp3");
 
     k.add([
       k.text("ZION — Elige tu módulo", { size: 32 }),

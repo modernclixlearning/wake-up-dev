@@ -1,6 +1,8 @@
 /** Estado de la partida — vidas, score y progreso por módulo. */
 
-export const VIDAS_INICIALES = 3;
+// 5 desde F12: con el combate arcade hay dos fuentes de daño (fallar preguntas
+// y comer golpes físicos) — con 3 vidas el nivel quedaba injustamente cruel.
+export const VIDAS_INICIALES = 5;
 export const PUNTOS_POR_ACIERTO = 100;
 export const PUNTOS_BONUS_2026 = 150;
 
@@ -23,6 +25,14 @@ export class GameSession {
   registrarFallo(moduloId: string): void {
     this.vidas--;
     this.progresoDe(moduloId).fallos++;
+  }
+
+  /**
+   * Golpe físico de un enemigo (F12): cuesta una vida pero NO cuenta como
+   * fallo del módulo — el Smith adaptativo mide conocimiento, no reflejos.
+   */
+  recibirGolpeFisico(): void {
+    this.vidas--;
   }
 
   completarModulo(moduloId: string): void {

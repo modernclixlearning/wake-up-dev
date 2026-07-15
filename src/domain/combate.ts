@@ -24,16 +24,45 @@ export function derrotado(estado: EstadoCombate): boolean {
   return estado.hpActual <= 0;
 }
 
-export const BONUS_POR_BALA_ESQUIVADA = 10;
-export const BONUS_ESQUIVE_PERFECTO = 30;
+/**
+ * Fase de combate arcade (F12): antes de cada pregunta hay que pelear de
+ * verdad — conectar golpes (piñas contra Smiths, tiros contra el Jefe) hasta
+ * aturdir al enemigo. Recién ahí se abre la pregunta, que es la que baja el
+ * HP real del Agente. Si no peleás, el enemigo te pega a vos y perdés vidas.
+ */
+
+export const GOLPES_PARA_ATURDIR = 3;
+export const BONUS_POR_GOLPE_CONECTADO = 10;
+export const BONUS_FASE_SIN_DANO = 30;
+
+export interface FaseCombate {
+  golpesConectados: number;
+  golpesRecibidos: number;
+}
+
+export function crearFase(): FaseCombate {
+  return { golpesConectados: 0, golpesRecibidos: 0 };
+}
+
+export function conectarGolpe(fase: FaseCombate): FaseCombate {
+  return { ...fase, golpesConectados: fase.golpesConectados + 1 };
+}
+
+export function recibirGolpe(fase: FaseCombate): FaseCombate {
+  return { ...fase, golpesRecibidos: fase.golpesRecibidos + 1 };
+}
+
+/** El enemigo queda aturdido (y se abre la pregunta) al conectarle suficientes golpes. */
+export function enemigoAturdido(fase: FaseCombate): boolean {
+  return fase.golpesConectados >= GOLPES_PARA_ATURDIR;
+}
 
 /**
- * Bonus de score de la secuencia de esquive "bullet time" previa a cada ronda.
- * Esquivar todas las balas suma un extra sobre el bonus lineal.
+ * Bonus de score al completar una fase de combate: lineal por golpe conectado,
+ * con extra si el jugador no recibió ningún golpe en la fase.
  */
-export function calcularBonusEsquive(esquivadas: number, total: number): number {
-  if (total <= 0 || esquivadas <= 0) return 0;
-  const esquivadasClamp = Math.min(esquivadas, total);
-  const base = esquivadasClamp * BONUS_POR_BALA_ESQUIVADA;
-  return esquivadasClamp === total ? base + BONUS_ESQUIVE_PERFECTO : base;
+export function calcularBonusFase(fase: FaseCombate): number {
+  if (fase.golpesConectados <= 0) return 0;
+  const base = fase.golpesConectados * BONUS_POR_GOLPE_CONECTADO;
+  return fase.golpesRecibidos === 0 ? base + BONUS_FASE_SIN_DANO : base;
 }

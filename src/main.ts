@@ -7,6 +7,7 @@ import bancoHerramientas from "./content/retos/05-herramientas.json";
 import bancoFlujoIA from "./content/retos/09-flujo-desarrollo-ia.json";
 import { BancoModulo } from "./domain/reto";
 import { cargarSprites } from "./game/actores";
+import { iniciarAudio } from "./game/audio";
 import { crearEstadoInicial, GameState } from "./game/state";
 import { ANCHO, ALTO } from "./game/theme";
 import { registrarTitle } from "./game/scenes/title";
@@ -41,6 +42,7 @@ const k = kaplay({
 });
 
 cargarSprites(k);
+iniciarAudio();
 
 registrarTitle(k);
 registrarZion(k, getEstado);

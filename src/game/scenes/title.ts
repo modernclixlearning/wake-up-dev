@@ -1,8 +1,12 @@
 import { KAPLAYCtx } from "kaplay";
+import { reproducirMusica } from "../audio";
 import { ANCHO, ALTO, CHARS_MATRIX, VERDE, VERDE_OSCURO, BLANCO } from "../theme";
 
 export function registrarTitle(k: KAPLAYCtx): void {
   k.scene("title", () => {
+    // El primer play suele quedar bloqueado por el autoplay del navegador:
+    // iniciarAudio() lo reintenta con la primera tecla (el ENTER de despertar).
+    reproducirMusica("musica-menu.mp3");
     // Lluvia de código
     k.loop(0.06, () => {
       const char = k.add([
