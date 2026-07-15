@@ -1,20 +1,33 @@
 import { GameObj, KAPLAYCtx } from "kaplay";
-import { BLANCO, NEGRO, ROJO, VERDE, VERDE_OSCURO } from "./theme";
+import { BLANCO, NEGRO, ROJO, VERDE } from "./theme";
 
 /**
- * Personajes 100% dibujados por código: siluetas simples (cabeza + torso +
- * piernas) armadas con primitivas de Kaplay — sin sprites ni assets externos.
+ * Personajes del juego (F11 v3): sprites reales de 64x80 generados desde
+ * referencias IA con el pipeline de tools/pixel-art/ (reducir + componer).
  * El objeto padre define la posición y el área de colisión (mismos tags que
- * antes: "player" / "agente" / "oraculo"); las partes del cuerpo son hijos
- * puramente visuales posicionados en relativo (anchor top-left, igual que el
- * resto del juego).
+ * siempre: "player" / "agente" / "oraculo"); el sprite es un hijo puramente
+ * visual (anchor top-left, igual que el resto del juego) escalado a una
+ * fracción exacta del frame para que la reducción sea uniforme.
  */
 
-export const ANCHO_NEO = 20;
-export const ALTO_NEO = 30;
-export const ANCHO_AGENTE = 22;
-export const ALTO_AGENTE = 32;
-export const ESCALA_JEFE = 1.45;
+const FRAME_ANCHO = 64;
+const FRAME_ALTO = 80;
+
+// En pantalla cada personaje va a 96x160 — pedido del alumno tras el playtest:
+// personajes grandes (~3x) achican el pasillo relativo y hacen a los Agentes
+// más difíciles de esquivar. La escala es ANISOTRÓPICA a propósito (x1.5 de
+// ancho, x2 de alto): las referencias del alumno tienen proporción ~0.55
+// (ancho/alto) pero el frame maestro 64x80 es 0.8 — el pipeline los aplastó al
+// encajarlos en ese lienzo, y a este tamaño se nota. Estirar el alto en
+// pantalla recupera la silueta de la referencia; el canvas ya se re-escala con
+// letterbox, así que no hay grilla de píxeles perfecta que preservar (`crisp`
+// mantiene los bordes duros).
+export const ANCHO_NEO = FRAME_ANCHO * 1.5;
+export const ALTO_NEO = FRAME_ALTO * 2;
+export const ANCHO_AGENTE = FRAME_ANCHO * 1.5;
+export const ALTO_AGENTE = FRAME_ALTO * 2;
+/** El Jefe usa su propio sheet (más corpulento) y además se dibuja 1.5x (144x240). */
+export const ESCALA_JEFE = 1.5;
 
 export interface ActorAgente {
   root: GameObj;
@@ -22,66 +35,182 @@ export interface ActorAgente {
   alto: number;
 }
 
-interface Piernas {
-  izquierda: GameObj;
-  derecha: GameObj;
-}
-
 /**
- * Contorno claro para toda pieza de silueta: sin esto, el relleno negro de
- * trajes/piernas se funde con el fondo negro del canvas (`background: [0,0,0]`
- * en main.ts) y el personaje "desaparece" salvo por sus piezas de color
- * (cabeza, corbata, etc.) — bug real encontrado en el playtest de F11.
+ * Carga los sprites externos del juego (F11 v3). Llamar una sola vez tras
+ * inicializar Kaplay, antes de entrar a las escenas: Kaplay muestra su
+ * pantalla de carga hasta que los assets estén listos.
+ *
+ * Sheets generados con `npm run pixel:sheet` desde los frames aprobados de
+ * `tools/pixel-art/salida/64x80/`.
  */
-function contorno(k: KAPLAYCtx) {
-  return k.outline(1.5, k.rgb(...BLANCO));
-}
-
-function agregarPiernas(
-  k: KAPLAYCtx,
-  actor: GameObj,
-  ancho: number,
-  alto: number,
-  color: [number, number, number]
-): { piernas: Piernas; yBase: number } {
-  const anchoPierna = ancho * 0.32;
-  const altoPierna = alto * 0.3;
-  const yBase = alto - altoPierna;
-  const izquierda = actor.add([
-    k.rect(anchoPierna, altoPierna),
-    k.pos(ancho * 0.08, yBase),
-    k.color(...color),
-    contorno(k),
-  ]);
-  const derecha = actor.add([
-    k.rect(anchoPierna, altoPierna),
-    k.pos(ancho * 0.6, yBase),
-    k.color(...color),
-    contorno(k),
-  ]);
-  return { piernas: { izquierda, derecha }, yBase };
-}
-
-/** Ciclo de caminata: alterna la altura de las piernas según lo que se movió el actor este frame. */
-function animarCaminata(k: KAPLAYCtx, actor: GameObj, piernas: Piernas, yBase: number): void {
-  let anterior = actor.pos.clone();
-  let t = 0;
-  actor.onUpdate(() => {
-    const distancia = actor.pos.dist(anterior);
-    anterior = actor.pos.clone();
-    if (distancia > 0.5) {
-      t += k.dt() * 14;
-      const offset = Math.sin(t) * 3;
-      piernas.izquierda.pos.y = yBase + offset;
-      piernas.derecha.pos.y = yBase - offset;
-    } else {
-      piernas.izquierda.pos.y = yBase;
-      piernas.derecha.pos.y = yBase;
-    }
+export function cargarSprites(k: KAPLAYCtx): void {
+  const animsCombate = {
+    idle: 0,
+    walk: { from: 1, to: 2, speed: 6, loop: true },
+    ataque: 3,
+    derrota: 4,
+  };
+  k.loadSprite("neo", "sprites/neo.png", {
+    sliceX: 5,
+    sliceY: 1,
+    anims: {
+      idle: 0,
+      walk: { from: 1, to: 2, speed: 6, loop: true },
+      ataque: 3,
+      alerta: 4,
+    },
+  });
+  k.loadSprite("smith", "sprites/smith.png", { sliceX: 5, sliceY: 1, anims: animsCombate });
+  k.loadSprite("jefe", "sprites/jefe.png", { sliceX: 5, sliceY: 1, anims: animsCombate });
+  k.loadSprite("oraculo", "sprites/oraculo.png", {
+    sliceX: 3,
+    sliceY: 1,
+    anims: { idle: 0, habla: 1, bye: 2 },
   });
 }
 
-/** Idle bob: leve oscilación vertical constante para que nada quede estático en pantalla. */
+/**
+ * Corrección de proporciones por pose. El pipeline estampó CADA referencia a
+ * llenar el frame 64x80 completo, así que cada frame tiene una distorsión
+ * distinta: las poses anchas (ataque con el brazo extendido, caídas) quedan
+ * comprimidas horizontalmente si se dibujan con la escala base. Los factores
+ * salen de medir los bounding boxes de las refs (docs/character-refs/):
+ * `fw` = ancho de la pose / ancho del idle, `fh` = alto de la pose / alto del
+ * idle — es decir, cuánto más ancho/alto es ese frame que el idle A ESCALA
+ * REAL del personaje. Los frames cuyo contenido no llena el 64x80 (quedan
+ * 64x71 alineados abajo: jefe-ataque, smith-derrota) llevan además el factor
+ * 80/71 en fh para compensar el margen transparente.
+ */
+interface FactorPose {
+  fw: number;
+  fh: number;
+}
+
+const POSES_NEO: Record<string, FactorPose> = {
+  ataque: { fw: 1.81, fh: 0.86 },
+  alerta: { fw: 1.37, fh: 0.89 },
+};
+const POSES_SMITH: Record<string, FactorPose> = {
+  ataque: { fw: 2.32, fh: 0.94 },
+  derrota: { fw: 2.19, fh: 1.22 },
+};
+const POSES_JEFE: Record<string, FactorPose> = {
+  ataque: { fw: 1.52, fh: 0.81 },
+  derrota: { fw: 1.55, fh: 0.89 },
+};
+
+interface EstadoSprite {
+  skin: GameObj;
+  ancho: number;
+  alto: number;
+  /** Pose manual fijada desde la escena; null = walk/idle automático según movimiento. */
+  pose: string | null;
+  animActual: string;
+  mirandoIzquierda: boolean;
+  poses: Record<string, FactorPose>;
+}
+
+const estadosSprite = new WeakMap<GameObj, EstadoSprite>();
+
+function aplicarSprite(estado: EstadoSprite, anim: string): void {
+  if (estado.animActual !== anim) {
+    estado.animActual = anim;
+    estado.skin.play(anim);
+  }
+  const factor = estado.poses[anim];
+  const ancho = estado.ancho * (factor?.fw ?? 1);
+  const alto = estado.alto * (factor?.fh ?? 1);
+  estado.skin.scale.x = ancho / FRAME_ANCHO;
+  estado.skin.scale.y = alto / FRAME_ALTO;
+  estado.skin.flipX = estado.mirandoIzquierda;
+  // Pies en el piso (las poses más bajas no deben flotar) y, si el frame está
+  // espejado, el ancho extra de la pose crece hacia la izquierda — el cuerpo
+  // queda sobre el actor y el brazo/caída se extiende hacia el rival.
+  estado.skin.pos.y = estado.alto - alto;
+  estado.skin.pos.x = estado.mirandoIzquierda ? estado.ancho - ancho : 0;
+}
+
+/**
+ * Monta el sprite visual de un actor y su animación automática: camina cuando
+ * el actor se mueve (con flip según la dirección), idle cuando está quieto, y
+ * respeta la pose manual fijada con `fijarPose` mientras esté activa.
+ */
+function montarSprite(
+  k: KAPLAYCtx,
+  actor: GameObj,
+  nombre: string,
+  ancho: number,
+  alto: number,
+  opciones: { caminata: boolean; poses?: Record<string, FactorPose> }
+): EstadoSprite {
+  const skin = actor.add([
+    k.sprite(nombre, { anim: "idle" }),
+    k.pos(0, 0),
+    // Escala por eje (ver nota sobre las proporciones junto a ANCHO_NEO).
+    k.scale(k.vec2(ancho / FRAME_ANCHO, alto / FRAME_ALTO)),
+  ]);
+  const estado: EstadoSprite = {
+    skin,
+    ancho,
+    alto,
+    pose: null,
+    animActual: "idle",
+    mirandoIzquierda: false,
+    poses: opciones.poses ?? {},
+  };
+  estadosSprite.set(actor, estado);
+
+  let anterior = actor.pos.clone();
+  let tPaso = 0;
+  actor.onUpdate(() => {
+    const dx = actor.pos.x - anterior.x;
+    const distancia = actor.pos.dist(anterior);
+    anterior = actor.pos.clone();
+    if (Math.abs(dx) > 0.5) estado.mirandoIzquierda = dx < 0;
+    if (estado.pose) {
+      aplicarSprite(estado, estado.pose);
+      return;
+    }
+    const caminando = opciones.caminata && distancia > 0.5;
+    aplicarSprite(estado, caminando ? "walk" : "idle");
+    // Mini-bob de 1px al ritmo de los pasos (~3 por segundo, igual que la
+    // anim walk de 6fps con 2 frames): vende el pisado y evita el efecto
+    // "deslizamiento". Solo para actores que caminan — el Oráculo flota con
+    // su propia oscilación (animarIdle) y no hay que pisársela.
+    if (opciones.caminata) {
+      if (caminando) {
+        tPaso += k.dt() * Math.PI * 6;
+        estado.skin.pos.y = Math.sin(tPaso) > 0 ? -1 : 0;
+      } else {
+        tPaso = 0;
+        estado.skin.pos.y = 0;
+      }
+    }
+  });
+  return estado;
+}
+
+/** Fija (o libera, con null) una pose manual — ataque/alerta de Neo, ataque/derrota de Agentes, habla/bye del Oráculo. */
+export function fijarPose(actor: GameObj, pose: string | null): void {
+  const estado = estadosSprite.get(actor);
+  if (!estado) return;
+  estado.pose = pose;
+  aplicarSprite(estado, pose ?? "idle");
+}
+
+/**
+ * Orienta a un actor hacia una x del mundo — las poses manuales no deben
+ * heredar la última dirección de caminata: el ataque mira al rival y la
+ * alerta de Neo a las balas (que siempre entran por la derecha).
+ */
+export function orientarHacia(actor: GameObj, xObjetivo: number): void {
+  const estado = estadosSprite.get(actor);
+  if (!estado) return;
+  estado.mirandoIzquierda = xObjetivo < actor.pos.x + estado.ancho / 2;
+  aplicarSprite(estado, estado.animActual);
+}
+
+/** Idle bob: leve oscilación vertical constante (el Oráculo "flota"). */
 function animarIdle(k: KAPLAYCtx, parte: GameObj, amplitud = 1.5): void {
   const base = parte.pos.y;
   let t = Math.random() * 10;
@@ -96,39 +225,16 @@ function areaRectangular(k: KAPLAYCtx, ancho: number, alto: number) {
   return k.area({ shape: new k.Rect(k.vec2(0, 0), ancho, alto) });
 }
 
-/** Neo (jugador): gabardina verde sobre traje oscuro, gafas negras. */
+/** Neo (jugador): idle, ciclo de caminata, ataque y alerta. El frame de alerta
+ * cae con la cabeza hacia la izquierda; sin flip cuando el rival está a la
+ * derecha, Neo se arquea hacia atrás, alejándose del golpe (pedido del alumno). */
 export function crearNeo(k: KAPLAYCtx, x: number, y: number): GameObj {
   const neo = k.add([k.pos(x, y), areaRectangular(k, ANCHO_NEO, ALTO_NEO), k.z(2), "player"]);
-  const { piernas, yBase } = agregarPiernas(k, neo, ANCHO_NEO, ALTO_NEO, NEGRO);
-  neo.add([
-    k.rect(ANCHO_NEO + 4, ALTO_NEO * 0.55),
-    k.pos(-2, ALTO_NEO * 0.2),
-    k.color(...VERDE_OSCURO),
-    contorno(k),
-  ]); // gabardina, más ancha que el torso
-  neo.add([
-    k.rect(ANCHO_NEO, ALTO_NEO * 0.5),
-    k.pos(0, ALTO_NEO * 0.22),
-    k.color(...VERDE),
-    contorno(k),
-  ]); // torso
-  const cabeza = neo.add([
-    k.rect(ANCHO_NEO * 0.55, ALTO_NEO * 0.22),
-    k.pos(ANCHO_NEO * 0.22, 0),
-    k.color(...BLANCO),
-    contorno(k),
-  ]);
-  neo.add([
-    k.rect(ANCHO_NEO * 0.55, ALTO_NEO * 0.08),
-    k.pos(ANCHO_NEO * 0.22, ALTO_NEO * 0.06),
-    k.color(...NEGRO),
-  ]); // gafas
-  animarCaminata(k, neo, piernas, yBase);
-  animarIdle(k, cabeza);
+  montarSprite(k, neo, "neo", ANCHO_NEO, ALTO_NEO, { caminata: true, poses: POSES_NEO });
   return neo;
 }
 
-/** Agente Smith: traje negro, corbata roja, gafas — el Jefe es la misma silueta escalada. */
+/** Agente Smith / Jefe: idle, caminata (persecución), ataque (te quita una vida) y derrota (antes de la explosión). */
 export function crearAgente(k: KAPLAYCtx, x: number, y: number, esJefe = false): ActorAgente {
   const escala = esJefe ? ESCALA_JEFE : 1;
   const ancho = ANCHO_AGENTE * escala;
@@ -138,41 +244,20 @@ export function crearAgente(k: KAPLAYCtx, x: number, y: number, esJefe = false):
   if (esJefe) {
     root.add([k.rect(ancho + 6, alto + 6), k.pos(-3, -3), k.color(...ROJO), k.opacity(0.18), k.z(-1)]);
   }
-  const { piernas, yBase } = agregarPiernas(k, root, ancho, alto, NEGRO);
-  root.add([k.rect(ancho, alto * 0.5), k.pos(0, alto * 0.22), k.color(...NEGRO), contorno(k)]); // traje
-  root.add([
-    k.rect(ancho * 0.16, alto * 0.32),
-    k.pos(ancho * 0.42, alto * 0.24),
-    k.color(...ROJO),
-    contorno(k),
-  ]); // corbata
-  const cabeza = root.add([
-    k.rect(ancho * 0.55, alto * 0.22),
-    k.pos(ancho * 0.22, 0),
-    k.color(...BLANCO),
-    contorno(k),
-  ]);
-  root.add([k.rect(ancho * 0.55, alto * 0.08), k.pos(ancho * 0.22, alto * 0.06), k.color(...NEGRO)]); // gafas
-  animarCaminata(k, root, piernas, yBase);
-  animarIdle(k, cabeza, esJefe ? 2.2 : 1.4);
+  montarSprite(k, root, esJefe ? "jefe" : "smith", ancho, alto, {
+    caminata: true,
+    poses: esJefe ? POSES_JEFE : POSES_SMITH,
+  });
   return { root, ancho, alto };
 }
 
-/** El Oráculo: silueta serena, sin piernas (flota), aura suave detrás. */
+/** El Oráculo: NPC sereno que flota (el aura verde viene incorporada en el sprite). */
 export function crearOraculo(k: KAPLAYCtx, x: number, y: number): GameObj {
-  const ancho = 26;
-  const alto = 30;
+  const ancho = ANCHO_AGENTE;
+  const alto = ALTO_AGENTE;
   const oraculo = k.add([k.pos(x, y), areaRectangular(k, ancho, alto), k.z(1), "oraculo"]);
-  oraculo.add([k.rect(ancho + 8, alto + 6), k.pos(-4, -3), k.color(...VERDE_OSCURO), k.opacity(0.25)]); // aura
-  oraculo.add([k.rect(ancho, alto * 0.62), k.pos(0, alto * 0.3), k.color(...BLANCO), contorno(k)]); // túnica
-  const cabeza = oraculo.add([
-    k.rect(ancho * 0.6, alto * 0.28),
-    k.pos(ancho * 0.2, 0),
-    k.color(...BLANCO),
-    contorno(k),
-  ]);
-  oraculo.add([k.rect(ancho * 0.6, alto * 0.08), k.pos(ancho * 0.2, alto * 0.28), k.color(...VERDE)]); // franja
-  animarIdle(k, cabeza, 1.2);
+  const estado = montarSprite(k, oraculo, "oraculo", ancho, alto, { caminata: false });
+  animarIdle(k, estado.skin, 1.2);
   return oraculo;
 }
 
@@ -192,11 +277,11 @@ export function flashGolpe(
 /** Explosión simple al derrotar a un Agente: partículas = rects que se dispersan y desaparecen. */
 export function crearExplosion(k: KAPLAYCtx, x: number, y: number): void {
   const colores: Array<[number, number, number]> = [ROJO, BLANCO, NEGRO];
-  for (let i = 0; i < 6; i++) {
-    const angulo = (Math.PI * 2 * i) / 6 + k.rand(-0.3, 0.3);
-    const velocidad = k.rand(60, 140);
+  for (let i = 0; i < 10; i++) {
+    const angulo = (Math.PI * 2 * i) / 10 + k.rand(-0.3, 0.3);
+    const velocidad = k.rand(90, 200);
     const particula = k.add([
-      k.rect(4, 4),
+      k.rect(6, 6),
       k.pos(x, y),
       k.color(...k.choose(colores)),
       k.opacity(0.9),
@@ -213,8 +298,8 @@ export interface BarraHP {
 
 /** Barra de HP como hija del actor: sigue su posición automáticamente al moverse. */
 export function crearBarraHP(k: KAPLAYCtx, actor: GameObj, ancho: number): BarraHP {
-  const alto = 4;
-  const y = -8;
+  const alto = 6;
+  const y = -12;
   actor.add([k.rect(ancho, alto), k.pos(0, y), k.color(...NEGRO), k.z(4)]);
   const relleno = actor.add([k.rect(ancho, alto), k.pos(0, y), k.color(...VERDE), k.z(5)]);
   return {

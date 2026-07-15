@@ -13,7 +13,9 @@ import { QuizEngine } from "../../domain/quiz-engine";
 import { Reto, RetoAbierta, RetoMultipleChoice } from "../../domain/reto";
 import {
   ActorAgente,
+  ALTO_AGENTE,
   ALTO_NEO,
+  ANCHO_AGENTE,
   ANCHO_NEO,
   BarraHP,
   crearAgente,
@@ -21,7 +23,9 @@ import {
   crearExplosion,
   crearNeo,
   crearOraculo,
+  fijarPose,
   flashGolpe,
+  orientarHacia,
 } from "../actores";
 import { dibujarEscenario } from "../escenario";
 import { GameState } from "../state";
@@ -49,15 +53,15 @@ interface Combate {
   activo: boolean;
 }
 
-/** Balas del esquive bullet-time: reutiliza las flechas de movimiento, sin inputs nuevos. */
+/** Golpes del esquive bullet-time: reutiliza las flechas de movimiento, sin inputs nuevos. */
 const FLECHAS: Array<{ tecla: Key; simbolo: string }> = [
   { tecla: "up", simbolo: "^" },
   { tecla: "down", simbolo: "v" },
   { tecla: "left", simbolo: "<" },
   { tecla: "right", simbolo: ">" },
 ];
-const BALAS_POR_RONDA = 3;
-const DURACION_BALA = 0.9;
+const GOLPES_POR_RONDA = 3;
+const DURACION_GOLPE = 0.9;
 
 export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
   k.scene("level", ({ moduloId }: { moduloId: string }) => {
@@ -70,6 +74,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const quiz = new QuizEngine(banco);
     const respondidos = new Set<string>();
     const combates = new Map<GameObj, Combate>();
+    /** Agentes en su animación de derrota (F11 v3): siguen en pantalla ~0.6s
+     * antes de explotar, pero ya no deben disparar encuentros nuevos. */
+    const muriendo = new Set<GameObj>();
     let enEncuentro = false;
     let jefeApareceUnaVez = false;
     const bloqueado = () => enEncuentro || hayOverlayAbierto();
@@ -90,8 +97,13 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const player = crearNeo(k, 60, ALTO / 2);
 
     // El Oráculo (NPC): cerca del inicio del pasillo.
-    crearOraculo(k, 70, CARRIL_SUPERIOR + 20);
-    k.add([k.text("Oráculo", { size: 11 }), k.pos(70, CARRIL_SUPERIOR + 54), k.color(...VERDE_OSCURO), k.z(1)]);
+    const oraculo = crearOraculo(k, 70, CARRIL_SUPERIOR + 20);
+    k.add([
+      k.text("Oráculo", { size: 12 }),
+      k.pos(70, CARRIL_SUPERIOR + 20 + ALTO_AGENTE + 6),
+      k.color(...VERDE_OSCURO),
+      k.z(1),
+    ]);
 
     // Cola de Agentes normales en orden de aparición (F11 v2): solo el primero
     // persigue a Neo; el resto queda quieto hasta que le toca su turno.
@@ -102,7 +114,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       const combate = combates.get(agente);
       if (!combate || combate.activo) return;
       combate.activo = true;
-      agente.add([k.text("!", { size: 16 }), k.pos(combate.ancho / 2 - 4, -24), k.color(...ROJO), k.z(6)]);
+      agente.add([k.text("!", { size: 20 }), k.pos(combate.ancho / 2 - 5, -38), k.color(...ROJO), k.z(6)]);
     };
 
     // Al caer el Agente activo, le pasa el turno al siguiente de la cola que siga con vida.
@@ -140,7 +152,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     // Agentes Smith: repartidos a lo largo del pasillo, en el mismo orden en que se enfrentan.
     for (let i = 0; i < nAgentes; i++) {
       const x = MARGEN_INICIO + (i + 1) * SEPARACION_AGENTE;
-      const y = k.rand(CARRIL_SUPERIOR + 10, CARRIL_INFERIOR - 40);
+      const y = k.rand(CARRIL_SUPERIOR + 10, CARRIL_INFERIOR - ALTO_AGENTE);
       const info = crearAgente(k, x, y);
       registrarCombate(info, HP_AGENTE_NORMAL);
       colaAgentes.push(info.root);
@@ -180,16 +192,18 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         return;
       }
       st.session.completarModulo(moduloId);
+      // Portal a escala de Neo (160 de alto): una salida más baja que el
+      // jugador se veía absurda con los sprites 3x.
       const portal = k.add([
-        k.rect(36, 60),
-        k.pos(anchoNivel - 70, ALTO / 2 - 30),
+        k.rect(56, 180),
+        k.pos(anchoNivel - 100, ALTO / 2 - 90),
         k.area(),
         k.color(...VERDE_OSCURO),
         k.outline(3, k.rgb(...VERDE)),
         k.z(1),
         "portal",
       ]);
-      portal.add([k.text("EXIT", { size: 10 }), k.pos(4, 24), k.color(...VERDE)]);
+      portal.add([k.text("EXIT", { size: 12 }), k.pos(13, 84), k.color(...VERDE)]);
       player.onCollide("portal", () => k.go("zion"));
     };
 
@@ -197,6 +211,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const spawnJefe = () => {
       mostrarFeedback(true, "Un Agente Smith más fuerte bloquea la salida...");
       const info = crearAgente(k, anchoNivel - MARGEN_PORTAL - 80, ALTO / 2, true);
+      // Centrado vertical en el carril: con 240 de alto, ALTO/2 lo dejaría
+      // con los pies fuera del límite inferior.
+      info.root.pos.y = CARRIL_SUPERIOR + (CARRIL_INFERIOR - CARRIL_SUPERIOR - info.alto) / 2;
       registrarCombate(info, HP_JEFE);
       marcarActivo(info.root);
       actualizarHud();
@@ -218,15 +235,25 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         }
         combate.estado = golpear(combate.estado);
         combate.barra.actualizar(combate.estado.hpActual, combate.estado.hpMaximo);
+        // Pose de ataque (F11 v3): acompaña al flash de golpe sobre el Agente.
+        orientarHacia(player, agente.pos.x + combate.ancho / 2);
+        fijarPose(player, "ataque");
+        k.wait(0.35, () => fijarPose(player, null));
         flashGolpe(k, agente, combate.ancho, combate.alto, BLANCO);
         if (derrotado(combate.estado)) {
+          // Derrota (F11 v3): el Agente cae (frame "derrota") y recién después
+          // explota — `muriendo` evita que dispare encuentros en esa ventana.
           combates.delete(agente);
-          crearExplosion(k, agente.pos.x + combate.ancho / 2, agente.pos.y + combate.alto / 2);
-          k.destroy(agente);
+          muriendo.add(agente);
+          fijarPose(agente, "derrota");
           mostrarFeedback(true, feedback);
-          actualizarHud();
-          activarSiguienteEnCola();
-          comprobarNivelLimpio();
+          k.wait(0.6, () => {
+            crearExplosion(k, agente.pos.x + combate.ancho / 2, agente.pos.y + combate.alto / 2);
+            k.destroy(agente);
+            actualizarHud();
+            activarSiguienteEnCola();
+            comprobarNivelLimpio();
+          });
           return;
         }
         mostrarFeedback(true, `${feedback}  (Agente ${combate.estado.hpActual}/${combate.estado.hpMaximo} HP)`);
@@ -235,10 +262,21 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         return;
       }
       st.session.registrarFallo(moduloId);
+      // El Agente conecta su golpe (F11 v3): pose de ataque mirando a Neo.
+      const combateAgente = combates.get(agente);
+      if (combateAgente) {
+        orientarHacia(agente, player.pos.x + ANCHO_NEO / 2);
+        fijarPose(agente, "ataque");
+        k.wait(0.5, () => {
+          if (agente.exists()) fijarPose(agente, null);
+        });
+      }
       flashGolpe(k, player, ANCHO_NEO, ALTO_NEO, ROJO);
       // Rebote hacia atrás (no un teleport al inicio del pasillo): te aleja del
       // Agente sin regalarte terreno recorrido ni perder la orientación del nivel.
-      player.pos = k.vec2(k.clamp(agente.pos.x - 90, 0, anchoNivel - ANCHO_NEO), player.pos.y);
+      // El offset descuenta el ancho de Neo: con el sprite 3x, un margen fijo
+      // chico lo dejaba todavía en colisión y reabría el encuentro al instante.
+      player.pos = k.vec2(k.clamp(agente.pos.x - (ANCHO_NEO + 60), 0, anchoNivel - ANCHO_NEO), player.pos.y);
       mostrarFeedback(false, feedback);
       actualizarHud();
       if (st.session.derrotado) {
@@ -381,18 +419,32 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       encuentroMultipleChoice(agente, reto);
     };
 
-    // Esquive "bullet time" (F11): antes de cada pregunta, unas balas que se esquivan con las
-    // mismas flechas del movimiento. No bloquea el flujo: al terminar, siempre se muestra la pregunta.
-    const ejecutarEsquive = (): Promise<{ esquivadas: number; total: number }> => {
+    // Esquive "bullet time" (F11, re-tematizado en F11 v3): antes de cada
+    // pregunta, el Agente que te alcanzó tira una ráfaga de puñetazos en
+    // cámara lenta que se esquivan con las mismas flechas del movimiento —
+    // coherente con el combate cuerpo a cuerpo (antes eran balazos desde
+    // fuera de pantalla, de cuando los Agentes eran shapes sin sprite).
+    // No bloquea el flujo: al terminar, siempre se muestra la pregunta.
+    const ejecutarEsquive = (agente: GameObj): Promise<{ esquivadas: number; total: number }> => {
       return new Promise((resolve) => {
         let esquivadas = 0;
         let indice = 0;
         const overlay: GameObj[] = [];
         const teclas: KEventController[] = [];
+        const combate = combates.get(agente);
+        const anchoAgente = combate?.ancho ?? ANCHO_AGENTE;
+        const altoAgente = combate?.alto ?? ALTO_AGENTE;
+
+        // Poses de la ráfaga (F11 v3): el Agente golpea y Neo queda en alerta,
+        // cada uno encarando al otro.
+        orientarHacia(player, agente.pos.x + anchoAgente / 2);
+        orientarHacia(agente, player.pos.x + ANCHO_NEO / 2);
+        fijarPose(player, "alerta");
+        fijarPose(agente, "ataque");
 
         overlay.push(
           k.add([
-            k.text("ESQUIVE — pulsá la flecha antes del impacto", { size: 14 }),
+            k.text("ESQUIVE — pulsá la flecha antes del golpe", { size: 14 }),
             k.pos(ANCHO / 2, 40),
             k.anchor("center"),
             k.color(...VERDE),
@@ -402,57 +454,62 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         );
 
         const limpiar = () => {
+          fijarPose(player, null);
+          if (agente.exists()) fijarPose(agente, null);
           overlay.forEach((o) => k.destroy(o));
           overlay.length = 0;
           teclas.forEach((t) => t.cancel());
           teclas.length = 0;
         };
 
-        const siguienteBala = () => {
-          if (indice >= BALAS_POR_RONDA) {
+        const siguienteGolpe = () => {
+          if (indice >= GOLPES_POR_RONDA) {
             limpiar();
-            resolve({ esquivadas, total: BALAS_POR_RONDA });
+            resolve({ esquivadas, total: GOLPES_POR_RONDA });
             return;
           }
           indice++;
           const opcion = k.choose(FLECHAS);
           let resuelta = false;
-          // La cámara está fija durante el encuentro: la bala nace en el borde
-          // derecho de la pantalla ACTUAL (relativo a la cámara), no del mundo.
-          const xInicial = k.getCamPos().x + ANCHO / 2 - 40;
-          const xImpacto = player.pos.x + ANCHO_NEO + 20;
-          const velocidad = Math.max(1, (xInicial - xImpacto) / DURACION_BALA);
+          // El puño sale del cuerpo del Agente hacia Neo, en cámara lenta
+          // (bullet time): la distancia es corta porque el Agente te alcanzó,
+          // la duración fija hace el resto.
+          const xInicial = agente.pos.x + anchoAgente / 2;
+          const yInicial = agente.pos.y + altoAgente * 0.35;
+          const xImpacto = player.pos.x + ANCHO_NEO / 2;
+          const direccion = xImpacto < xInicial ? -1 : 1;
+          const velocidad = Math.max(20, Math.abs(xImpacto - xInicial) / DURACION_GOLPE);
 
-          const bala = k.add([
-            k.rect(14, 14),
-            k.pos(xInicial, player.pos.y),
+          const golpe = k.add([
+            k.rect(18, 18),
+            k.pos(xInicial, yInicial),
             k.color(...ROJO),
             k.z(9),
-            k.move(k.vec2(-1, 0), velocidad),
+            k.move(k.vec2(direccion, 0), velocidad),
           ]);
-          bala.add([k.text(opcion.simbolo, { size: 16 }), k.pos(-1, -20), k.color(...BLANCO)]);
-          overlay.push(bala);
+          golpe.add([k.text(opcion.simbolo, { size: 20 }), k.pos(0, -26), k.color(...BLANCO)]);
+          overlay.push(golpe);
 
           const tecla = k.onKeyPress(opcion.tecla, () => {
             if (resuelta) return;
             esquivadas++;
-            terminarBala();
+            terminarGolpe();
           });
           teclas.push(tecla);
 
           // Cierra esta ronda de la secuencia y cancela su propio listener antes de pasar a la siguiente.
-          function terminarBala() {
+          function terminarGolpe() {
             if (resuelta) return;
             resuelta = true;
             tecla.cancel();
-            k.destroy(bala);
-            siguienteBala();
+            k.destroy(golpe);
+            siguienteGolpe();
           }
 
-          k.wait(DURACION_BALA, terminarBala);
+          k.wait(DURACION_GOLPE, terminarGolpe);
         };
 
-        siguienteBala();
+        siguienteGolpe();
       });
     };
 
@@ -464,6 +521,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       // esto, ambos llamados crean su propio overlay de pregunta a la vez y el
       // texto queda superpuesto/ilegible.
       if (enEncuentro) return;
+      // Un Agente en su animación de derrota ya está fuera de combate: si Neo
+      // lo toca durante esos ~0.6s no debe abrirse un encuentro nuevo.
+      if (muriendo.has(agente)) return;
       enEncuentro = true;
       // Smith adaptativo (F9): la dificultad del próximo reto sigue tu desempeño;
       // contra el Jefe de nivel (F11) siempre se usan los retos más difíciles del banco.
@@ -482,7 +542,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         return;
       }
       const retoElegido = reto;
-      void ejecutarEsquive().then(({ esquivadas, total }) => {
+      void ejecutarEsquive(agente).then(({ esquivadas, total }) => {
         if (esquivadas > 0) {
           st.session.score += calcularBonusEsquive(esquivadas, total);
           actualizarHud();
@@ -498,11 +558,18 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     player.onCollide("oraculo", () => {
       if (bloqueado()) return;
       enEncuentro = true;
+      // El Oráculo "habla" mientras el chat está abierto y saluda al cerrarlo.
+      fijarPose(oraculo, "habla");
       const contexto = [banco.modulo.nombre, banco.modulo.descripcion, banco.modulo.resumen ?? ""].join("\n");
       abrirOraculo(st.ai, contexto, () => {
         enEncuentro = false;
-        // Alejar a Neo para no reabrir el chat al instante.
-        player.pos = k.vec2(70, CARRIL_SUPERIOR + 120);
+        fijarPose(oraculo, "bye");
+        k.wait(1.2, () => {
+          if (oraculo.exists()) fijarPose(oraculo, null);
+        });
+        // Alejar a Neo para no reabrir el chat al instante: siempre por debajo
+        // del área del Oráculo (con sprites 3x, un offset fijo quedaba adentro).
+        player.pos = k.vec2(70, CARRIL_SUPERIOR + 20 + ALTO_AGENTE + 24);
       });
     });
   });

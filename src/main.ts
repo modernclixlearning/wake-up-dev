@@ -6,6 +6,7 @@ import bancoFundamentosIA from "./content/retos/04-fundamentos-ia.json";
 import bancoHerramientas from "./content/retos/05-herramientas.json";
 import bancoFlujoIA from "./content/retos/09-flujo-desarrollo-ia.json";
 import { BancoModulo } from "./domain/reto";
+import { cargarSprites } from "./game/actores";
 import { crearEstadoInicial, GameState } from "./game/state";
 import { ANCHO, ALTO } from "./game/theme";
 import { registrarTitle } from "./game/scenes/title";
@@ -35,7 +36,11 @@ const k = kaplay({
   global: false,
   letterbox: true,
   pixelDensity: 1,
+  // Sprites pixel art (F11 v3): escalar sin suavizado, pixeles nítidos.
+  crisp: true,
 });
+
+cargarSprites(k);
 
 registrarTitle(k);
 registrarZion(k, getEstado);

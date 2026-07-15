@@ -43,6 +43,11 @@ function cerrarOverlay(): void {
   overlayActual?.remove();
   overlayActual = null;
   liberarTeclasDeJuego();
+  // Devolver el foco al canvas: Kaplay escucha el teclado en el canvas (lo
+  // enfoca al iniciar), y al interactuar con el overlay el foco pasa al DOM.
+  // Cuando el overlay se remueve, el foco cae en <body> y TODO el teclado del
+  // juego queda muerto hasta que el jugador clickea el canvas a mano.
+  document.querySelector<HTMLCanvasElement>("canvas")?.focus();
 }
 
 function crearOverlay(titulo: string, onCerrar?: () => void): HTMLDivElement {
