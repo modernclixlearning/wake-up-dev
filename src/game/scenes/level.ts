@@ -225,12 +225,13 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     // ---- Golpes del enemigo hacia Neo ----
 
     /** Neo recibe un golpe físico (piña del Smith o bala del Jefe): -1 vida. */
-    const golpearANeo = (agente: GameObj, combate: Combate) => {
+    const golpearANeo = (agente: GameObj, combate: Combate, tipo: "pina" | "bala") => {
       if (esInvulnerable() || bloqueado()) return;
       invulnerableHasta = k.time() + INVULNERABLE_TRAS_GOLPE;
       combate.fase = recibirGolpe(combate.fase);
       st.session.recibirGolpeFisico();
-      sfx.golpeRecibido();
+      if (tipo === "bala") sfx.balaRecibida();
+      else sfx.pinaRecibida();
       flashGolpe(k, player, ANCHO_NEO, ALTO_NEO, ROJO);
       // Rebote alejándose del atacante: sin esto el Smith te encadena golpes.
       const direccion = player.pos.x + ANCHO_NEO / 2 < agente.pos.x + combate.ancho / 2 ? -1 : 1;
@@ -259,7 +260,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         fijarPose(agente, null);
         combate.proximoAtaque = k.time() + COOLDOWN_ATAQUE_SMITH;
         if (bloqueado()) return;
-        if (enRangoPina(agente, combate)) golpearANeo(agente, combate);
+        if (enRangoPina(agente, combate)) golpearANeo(agente, combate, "pina");
       });
     };
 
@@ -486,7 +487,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       k.destroy(bala);
       const combate = combates.get(agente);
       if (!combate || muriendo.has(agente) || bloqueado()) return;
-      sfx.pina();
+      sfx.balaImpacto();
       conectarGolpeA(agente, combate);
     });
 
@@ -495,7 +496,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       k.destroy(bala);
       const jefe = k.get("jefe").find((j) => combates.has(j));
       if (!jefe) return;
-      golpearANeo(jefe, combates.get(jefe)!);
+      golpearANeo(jefe, combates.get(jefe)!, "bala");
     });
 
     const comprobarNivelLimpio = () => {

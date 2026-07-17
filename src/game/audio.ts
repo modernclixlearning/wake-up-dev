@@ -89,9 +89,24 @@ export const sfx = {
   disparo(): void {
     tono(900, 0.12, { hasta: 180, volumen: 0.1 });
   },
-  /** Golpe/tiro enemigo que te conecta: caída áspera. */
-  golpeRecibido(): void {
+  /** Piña enemiga que te conecta: caída áspera y grave. */
+  pinaRecibida(): void {
     tono(220, 0.25, { tipo: "sawtooth", hasta: 55, volumen: 0.16 });
+  },
+  /** Bala que te alcanza: chispazo de ruido + zap descendente (más eléctrico que la piña). */
+  balaRecibida(): void {
+    ruido(0.12, 0.14);
+    tono(620, 0.22, { tipo: "sawtooth", hasta: 70, volumen: 0.16 });
+  },
+  /** Tu bala conecta en el enemigo: clank metálico corto y brillante. */
+  balaImpacto(): void {
+    tono(760, 0.07, { tipo: "triangle", hasta: 320, volumen: 0.14 });
+    ruido(0.05, 0.08);
+  },
+  /** El Jefe te encontró: dos tonos graves amenazantes (cara a cara antes del tiroteo). */
+  aparicionJefe(): void {
+    tono(130, 0.35, { tipo: "sawtooth", volumen: 0.16 });
+    tono(98, 0.5, { tipo: "sawtooth", volumen: 0.18, demora: 0.3 });
   },
   /** Enemigo aturdido: tres notas iguales rápidas (campanita de stun). */
   aturdido(): void {
