@@ -69,6 +69,8 @@ const EMPUJE_SMITH_GOLPEADO = 40;
 const EMPUJE_NEO_GOLPEADO = 110;
 const CADENCIA_DISPARO_JEFE = 1.6;
 const DISTANCIA_DISPARO_JEFE = 300;
+/** Cara a cara con el Jefe: pausa dramática desde que entra en pantalla hasta el primer tiro. */
+const INTRO_JEFE = 1.8;
 const VELOCIDAD_BALA_JEFE = 260;
 const VELOCIDAD_BALA_NEO = 420;
 
@@ -109,6 +111,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const muriendo = new Set<GameObj>();
     let enEncuentro = false;
     let jefeApareceUnaVez = false;
+    /** El Jefe no dispara hasta el cara a cara EN PANTALLA (pedido del alumno:
+     * sus balas llegaban desde fuera del cuadro antes de siquiera verlo). */
+    let jefePresentado = false;
+    let finIntroJefe = 0;
     let avisoTutorialDado = false;
     /** Ventana de invulnerabilidad de Neo tras recibir un golpe (evita el chain-hit). */
     let invulnerableHasta = 0;
@@ -303,6 +309,30 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       ]);
     };
 
+    /** true si el Jefe está dentro del cuadro visible de la cámara (con margen
+     * para que se lo vea entero, no apenas un borde asomando). */
+    const jefeALaVista = (jefe: GameObj, combate: Combate) => {
+      const camX = k.getCamPos().x;
+      return (
+        jefe.pos.x < camX + ANCHO / 2 - 40 && jefe.pos.x + combate.ancho > camX - ANCHO / 2 + 40
+      );
+    };
+
+    /** Cara a cara con el Jefe (pedido del alumno): al entrar en pantalla se
+     * planta apuntándote, suena su tema de aparición y hay una pausa dramática
+     * antes del primer tiro — nada de balas desde fuera del cuadro. */
+    const presentarJefe = (jefe: GameObj) => {
+      jefePresentado = true;
+      finIntroJefe = k.time() + INTRO_JEFE;
+      sfx.aparicionJefe();
+      orientarHacia(jefe, player.pos.x + ANCHO_NEO / 2);
+      fijarPose(jefe, "ataque");
+      k.wait(INTRO_JEFE, () => {
+        if (jefe.exists() && !muriendo.has(jefe)) fijarPose(jefe, null);
+      });
+      mostrarAviso('El Jefe te reconoce: "Sr. Anderson..." — ahora sí, a los tiros.', 4);
+    };
+
     // Persecución (F12): el Smith activo va hacia Neo y, cuando lo alcanza,
     // telegrafía y pega — si no te defendés ni esquivás, te saca vidas. El
     // Jefe avanza lento y pelea a distancia (sus tiros salen de su propio loop).
@@ -312,6 +342,14 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         const combate = combates.get(agente);
         if (!combate || !combate.activo || bloqueado() || muriendo.has(agente)) return;
         if (combate.atacando) return;
+        if (esJefe) {
+          if (!jefePresentado && jefeALaVista(agente, combate)) {
+            presentarJefe(agente);
+            return;
+          }
+          // Durante el cara a cara el Jefe se queda plantado midiéndote.
+          if (jefePresentado && k.time() < finIntroJefe) return;
+        }
         const hacia = player.pos.sub(agente.pos);
         const distancia = hacia.len();
         const gap = gapHorizontal(agente, combate);
@@ -336,6 +374,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
           }
           const combate = combates.get(agente);
           if (!combate || !combate.activo || bloqueado()) return;
+          // Sin cara a cara previo no hay tiroteo, y tampoco dispara si quedó
+          // fuera del cuadro (p.ej. Neo volvió a buscar al Oráculo).
+          if (!jefePresentado || k.time() < finIntroJefe) return;
+          if (!jefeALaVista(agente, combate)) return;
           dispararBalaJefe(agente, combate);
         });
       }
