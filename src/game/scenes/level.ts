@@ -263,7 +263,14 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       });
     };
 
-    /** Bala del Jefe: sale de su cuerpo apuntada a donde está Neo en ese momento. */
+    /** Fogonazo en la boca del arma: vende el disparo mejor que la bala sola. */
+    const flashDisparo = (x: number, y: number) => {
+      const chispa = k.add([k.rect(14, 8), k.pos(x - 7, y - 4), k.color(...BLANCO), k.opacity(0.9), k.z(4)]);
+      k.wait(0.07, () => k.destroy(chispa));
+    };
+
+    /** Bala del Jefe: nace en la boca de su pistola (el puño extendido de la
+     * pose de ataque — factor 1.5 de ancho, altura del cañón), apuntada a Neo. */
     const dispararBalaJefe = (jefe: GameObj, combate: Combate) => {
       orientarHacia(jefe, player.pos.x + ANCHO_NEO / 2);
       fijarPose(jefe, "ataque");
@@ -271,9 +278,17 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         if (jefe.exists() && !muriendo.has(jefe)) fijarPose(jefe, null);
       });
       sfx.disparo();
-      const origen = k.vec2(jefe.pos.x + combate.ancho / 2, jefe.pos.y + combate.alto * 0.35);
       const destino = k.vec2(player.pos.x + ANCHO_NEO / 2, player.pos.y + ALTO_NEO / 2);
-      const direccion = destino.sub(origen).unit();
+      const centro = k.vec2(jefe.pos.x + combate.ancho / 2, jefe.pos.y + combate.alto * 0.43);
+      const haciaIzquierda = destino.x < centro.x;
+      const origen = k.vec2(
+        haciaIzquierda ? jefe.pos.x - combate.ancho * 0.5 : jefe.pos.x + combate.ancho * 1.5,
+        centro.y
+      );
+      // Dirección desde el centro del tirador: desde la boca podría invertirse
+      // a quemarropa (la boca queda más allá del objetivo).
+      const direccion = destino.sub(centro).unit();
+      flashDisparo(origen.x, origen.y);
       k.add([
         k.rect(14, 6),
         k.pos(origen),
@@ -412,12 +427,22 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       if (enemigoAturdido(combate.fase)) aturdir(agente, combate);
     };
 
+    /** Bala de Neo: nace en la boca de la escopeta (pose "disparo", factor 1.8
+     * de ancho, altura del cañón), apuntada al centro del Jefe. */
     const dispararBalaNeo = (jefe: GameObj, combate: Combate) => {
       sfx.disparo();
-      const origen = k.vec2(player.pos.x + ANCHO_NEO / 2, player.pos.y + ALTO_NEO * 0.35);
       const destino = k.vec2(jefe.pos.x + combate.ancho / 2, jefe.pos.y + combate.alto / 2);
-      const direccion = destino.sub(origen).unit();
+      const centro = k.vec2(player.pos.x + ANCHO_NEO / 2, player.pos.y + ALTO_NEO * 0.32);
+      const haciaIzquierda = destino.x < centro.x;
+      const origen = k.vec2(
+        haciaIzquierda ? player.pos.x - ANCHO_NEO * 0.8 : player.pos.x + ANCHO_NEO * 1.8,
+        centro.y
+      );
+      // Igual que el Jefe: dirección desde el centro para no invertir el tiro
+      // a quemarropa; la bala y el fogonazo salen de la boca de la escopeta.
+      const direccion = destino.sub(centro).unit();
       orientarHacia(player, destino.x);
+      flashDisparo(origen.x, origen.y);
       k.add([
         k.rect(14, 6),
         k.pos(origen),
