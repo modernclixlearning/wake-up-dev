@@ -91,8 +91,8 @@ interface FactorPose {
 
 const POSES_NEO: Record<string, FactorPose> = {
   ataque: { fw: 1.81, fh: 0.86 },
-  // Mismos factores que ataque: la escopeta se pinta dentro del bbox existente.
-  disparo: { fw: 1.81, fh: 0.86 },
+  // Referencia propia (neo-disparo.png, F12): aspecto 0.850 vs 0.462 del idle.
+  disparo: { fw: 1.75, fh: 0.95 },
   alerta: { fw: 1.37, fh: 0.89 },
 };
 const POSES_SMITH: Record<string, FactorPose> = {
@@ -100,7 +100,9 @@ const POSES_SMITH: Record<string, FactorPose> = {
   derrota: { fw: 2.19, fh: 1.22 },
 };
 const POSES_JEFE: Record<string, FactorPose> = {
-  ataque: { fw: 1.52, fh: 0.81 },
+  // Desde F12 el frame de ataque es jefe-disparo.png (pistola empuñada):
+  // aspecto 1.142 vs 0.658 del idle.
+  ataque: { fw: 1.56, fh: 0.9 },
   derrota: { fw: 1.55, fh: 0.89 },
 };
 

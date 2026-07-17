@@ -278,8 +278,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         if (jefe.exists() && !muriendo.has(jefe)) fijarPose(jefe, null);
       });
       sfx.disparo();
+      // 0.28: altura del cañón en el frame jefe-disparo (apunta levemente arriba).
       const destino = k.vec2(player.pos.x + ANCHO_NEO / 2, player.pos.y + ALTO_NEO / 2);
-      const centro = k.vec2(jefe.pos.x + combate.ancho / 2, jefe.pos.y + combate.alto * 0.43);
+      const centro = k.vec2(jefe.pos.x + combate.ancho / 2, jefe.pos.y + combate.alto * 0.28);
       const haciaIzquierda = destino.x < centro.x;
       const origen = k.vec2(
         haciaIzquierda ? jefe.pos.x - combate.ancho * 0.5 : jefe.pos.x + combate.ancho * 1.5,
