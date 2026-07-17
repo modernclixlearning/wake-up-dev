@@ -51,13 +51,16 @@ export function cargarSprites(k: KAPLAYCtx): void {
     derrota: 4,
   };
   k.loadSprite("neo", "sprites/neo.png", {
-    sliceX: 5,
+    sliceX: 6,
     sliceY: 1,
     anims: {
       idle: 0,
       walk: { from: 1, to: 2, speed: 6, loop: true },
       ataque: 3,
       alerta: 4,
+      // Frame de F12 (neo-disparo.pixelmap.txt): la misma pose de ataque pero
+      // con la escopeta — se usa al disparar contra el Jefe, la piña va sin arma.
+      disparo: 5,
     },
   });
   k.loadSprite("smith", "sprites/smith.png", { sliceX: 5, sliceY: 1, anims: animsCombate });
@@ -88,6 +91,8 @@ interface FactorPose {
 
 const POSES_NEO: Record<string, FactorPose> = {
   ataque: { fw: 1.81, fh: 0.86 },
+  // Mismos factores que ataque: la escopeta se pinta dentro del bbox existente.
+  disparo: { fw: 1.81, fh: 0.86 },
   alerta: { fw: 1.37, fh: 0.89 },
 };
 const POSES_SMITH: Record<string, FactorPose> = {

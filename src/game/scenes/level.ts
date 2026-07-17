@@ -434,10 +434,11 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       if (bloqueado()) return;
       if (k.time() < proximaPina) return;
       proximaPina = k.time() + COOLDOWN_PINA;
-      fijarPose(player, "ataque");
-      k.wait(0.25, () => fijarPose(player, null));
-      // Fase de Jefe: la misma tecla dispara en vez de dar piñas.
+      // Fase de Jefe: la misma tecla dispara en vez de dar piñas — y Neo saca
+      // la escopeta (frame "disparo"); la piña usa la pose de ataque sin arma.
       const jefe = k.get("jefe").find((j) => combates.has(j) && !muriendo.has(j));
+      fijarPose(player, jefe ? "disparo" : "ataque");
+      k.wait(0.25, () => fijarPose(player, null));
       if (jefe) {
         dispararBalaNeo(jefe, combates.get(jefe)!);
         return;
@@ -537,9 +538,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         }
         combate.estado = golpear(combate.estado);
         combate.barra.actualizar(combate.estado.hpActual, combate.estado.hpMaximo);
-        // Pose de ataque (F11 v3): acompaña al flash de golpe sobre el Agente.
+        // Pose de remate (F11 v3): acompaña al flash de golpe sobre el Agente
+        // — escopeta contra el Jefe, piña contra los Smiths (F12).
         orientarHacia(player, agente.pos.x + combate.ancho / 2);
-        fijarPose(player, "ataque");
+        fijarPose(player, agente.is("jefe") ? "disparo" : "ataque");
         k.wait(0.35, () => fijarPose(player, null));
         flashGolpe(k, agente, combate.ancho, combate.alto, BLANCO);
         if (derrotado(combate.estado)) {
