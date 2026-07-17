@@ -99,7 +99,8 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       k.go("zion");
       return;
     }
-    reproducirMusica("musica-nivel.mp3");
+    // Más baja que la del menú: en el nivel compite con los SFX del combate.
+    reproducirMusica("musica-nivel.mp3", 0.35);
     const quiz = new QuizEngine(banco);
     const respondidos = new Set<string>();
     const combates = new Map<GameObj, Combate>();
