@@ -34,6 +34,7 @@ import {
 } from "../actores";
 import { reproducirMusica, sfx } from "../audio";
 import { dibujarEscenario } from "../escenario";
+import { guardarPartida } from "../persistencia";
 import { GameState } from "../state";
 import { ANCHO, ALTO, CARRIL_INFERIOR, CARRIL_SUPERIOR, VERDE, VERDE_OSCURO, ROJO, BLANCO, NEGRO } from "../theme";
 import { abrirOraculo, abrirRetoAbierto, hayOverlayAbierto } from "../ui/overlay";
@@ -438,6 +439,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const aturdir = (agente: GameObj, combate: Combate) => {
       sfx.aturdido();
       st.session.score += calcularBonusFase(combate.fase);
+      guardarPartida(st.session);
       combate.fase = crearFase();
       actualizarMarcador(combate);
       actualizarHud();
@@ -550,6 +552,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         return;
       }
       st.session.completarModulo(moduloId);
+      guardarPartida(st.session);
       sfx.victoria();
       // Portal a escala de Neo (160 de alto): una salida más baja que el
       // jugador se veía absurda con los sprites 3x.
@@ -596,6 +599,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       if (correcta) {
         sfx.acierto();
         st.session.registrarAcierto(moduloId, esBonus);
+        guardarPartida(st.session);
         const combate = combates.get(agente);
         if (!combate) {
           // Sin estado de combate registrado: red de seguridad, comportamiento anterior (1 golpe = 1 baja).
@@ -637,6 +641,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       }
       sfx.fallo();
       st.session.registrarFallo(moduloId);
+      guardarPartida(st.session);
       // El Agente conecta su golpe (F11 v3): pose de ataque mirando a Neo.
       const combateAgente = combates.get(agente);
       if (combateAgente) {

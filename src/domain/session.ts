@@ -64,3 +64,44 @@ export class GameSession {
     return p;
   }
 }
+
+/**
+ * Snapshot serializable del avance (persistencia): score y progreso por módulo.
+ * Las vidas NO se guardan a propósito — cada sesión arranca con las vidas
+ * llenas; lo que persiste es lo aprendido (módulos liberados) y el score.
+ */
+export interface SesionGuardada {
+  version: 1;
+  score: number;
+  progreso: Array<{ moduloId: string } & ProgresoModulo>;
+}
+
+export function serializarSesion(session: GameSession): SesionGuardada {
+  return {
+    version: 1,
+    score: session.score,
+    progreso: [...session.progreso.entries()].map(([moduloId, p]) => ({ moduloId, ...p })),
+  };
+}
+
+/**
+ * Reconstruye una sesión desde datos externos (p.ej. localStorage): tolerante
+ * a basura — ante cualquier forma inesperada devuelve una sesión nueva en vez
+ * de romper el juego (misma invariante que la capa IA).
+ */
+export function restaurarSesion(datos: unknown): GameSession {
+  const session = new GameSession();
+  if (typeof datos !== "object" || datos === null) return session;
+  const d = datos as Partial<SesionGuardada>;
+  if (d.version !== 1 || typeof d.score !== "number" || !Array.isArray(d.progreso)) return session;
+  session.score = Math.max(0, d.score);
+  for (const p of d.progreso) {
+    if (typeof p !== "object" || p === null || typeof p.moduloId !== "string") continue;
+    session.progreso.set(p.moduloId, {
+      completado: p.completado === true,
+      aciertos: typeof p.aciertos === "number" && p.aciertos >= 0 ? p.aciertos : 0,
+      fallos: typeof p.fallos === "number" && p.fallos >= 0 ? p.fallos : 0,
+    });
+  }
+  return session;
+}

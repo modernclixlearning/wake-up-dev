@@ -1,8 +1,10 @@
 import { KAPLAYCtx } from "kaplay";
 import { crearProvider } from "../../ai/factory";
+import { GameSession } from "../../domain/session";
 import { reproducirMusica } from "../audio";
+import { borrarPartida } from "../persistencia";
 import { GameState } from "../state";
-import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO } from "../theme";
+import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
 import { abrirAjustes, hayOverlayAbierto } from "../ui/overlay";
 
 /** Hub entre niveles: muestra los módulos, el progreso y el acceso a ajustes. */
@@ -55,11 +57,38 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
     ]);
 
     k.add([
-      k.text("Número = entrar al módulo   ·   A = ajustes de IA", { size: 16 }),
+      k.text("Número = entrar al módulo   ·   A = ajustes de IA   ·   R = reiniciar partida", {
+        size: 16,
+      }),
       k.pos(ANCHO / 2, ALTO - 45),
       k.anchor("center"),
       k.color(...VERDE),
     ]);
+
+    // Reinicio de partida con confirmación doble: la primera R avisa, la
+    // segunda (dentro de los 4s) borra el avance guardado y arranca de cero.
+    const avisoReinicio = k.add([
+      k.text("", { size: 14 }),
+      k.pos(ANCHO / 2, ALTO - 20),
+      k.anchor("center"),
+      k.color(...ROJO),
+    ]);
+    let confirmandoReinicio = false;
+    k.onKeyPress("r", () => {
+      if (hayOverlayAbierto()) return;
+      if (!confirmandoReinicio) {
+        confirmandoReinicio = true;
+        avisoReinicio.text = "¿Borrar todo tu avance? Pulsa R de nuevo para confirmar";
+        k.wait(4, () => {
+          confirmandoReinicio = false;
+          avisoReinicio.text = "";
+        });
+        return;
+      }
+      borrarPartida();
+      st.session = new GameSession();
+      k.go("zion");
+    });
 
     st.bancos.forEach((banco, i) => {
       k.onKeyPress(String(i + 1) as never, () => {
