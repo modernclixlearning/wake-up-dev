@@ -1,6 +1,12 @@
 /** Configuración BYOK (bring your own key) persistida en localStorage del jugador. */
 
-export type ProviderId = "ninguno" | "anthropic" | "openai" | "gemini" | "claude-headless";
+export type ProviderId =
+  | "ninguno"
+  | "anthropic"
+  | "openai"
+  | "gemini"
+  | "claude-headless"
+  | "copilot-headless";
 
 export interface AIConfig {
   provider: ProviderId;
@@ -12,8 +18,10 @@ export const MODELOS_DEFAULT: Record<Exclude<ProviderId, "ninguno">, string> = {
   anthropic: "claude-opus-4-8",
   openai: "gpt-4o-mini",
   gemini: "gemini-2.0-flash",
-  // El headless usa el modelo configurado en el CLI local (BRIDGE_CLAUDE_ARGS del bridge).
+  // Los headless usan el modelo configurado en el CLI local (BRIDGE_CLAUDE_ARGS /
+  // BRIDGE_COPILOT_ARGS del bridge).
   "claude-headless": "",
+  "copilot-headless": "",
 };
 
 const STORAGE_KEY = "wake-up-dev:ai-config";
@@ -41,7 +49,7 @@ export function guardarConfig(config: AIConfig, storage: Storage = localStorage)
 
 export function configCompleta(config: AIConfig): boolean {
   if (config.provider === "ninguno") return false;
-  // El bridge headless usa la sesión local del CLI: no necesita API key.
-  if (config.provider === "claude-headless") return true;
+  // Los bridges headless usan la sesión local del CLI: no necesitan API key.
+  if (config.provider === "claude-headless" || config.provider === "copilot-headless") return true;
   return config.apiKey.trim() !== "";
 }

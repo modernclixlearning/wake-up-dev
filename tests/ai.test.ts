@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AnthropicAdapter } from "../src/ai/anthropic-adapter";
-import { ClaudeHeadlessAdapter } from "../src/ai/claude-headless-adapter";
+import { BridgeAdapter } from "../src/ai/bridge-adapter";
 import { AIConfig, cargarConfig, configCompleta, guardarConfig } from "../src/ai/config";
 import { crearProvider, hayIA } from "../src/ai/factory";
 import { GeminiAdapter } from "../src/ai/gemini-adapter";
@@ -65,8 +65,9 @@ describe("config BYOK", () => {
     expect(configCompleta({ provider: "openai", apiKey: "k", model: "" })).toBe(true);
   });
 
-  it("el headless no necesita key", () => {
+  it("los headless no necesitan key", () => {
     expect(configCompleta({ provider: "claude-headless", apiKey: "", model: "" })).toBe(true);
+    expect(configCompleta({ provider: "copilot-headless", apiKey: "", model: "" })).toBe(true);
   });
 });
 
@@ -82,6 +83,7 @@ describe("factory", () => {
     ["openai", "openai"],
     ["gemini", "gemini"],
     ["claude-headless", "claude-headless"],
+    ["copilot-headless", "copilot-headless"],
   ];
   it.each(casos)("con key resuelve %s", (provider, nombre) => {
     const p = crearProvider({ provider, apiKey: "k", model: "" });
@@ -146,7 +148,7 @@ describe("GeminiAdapter (fetch mockeado)", () => {
   });
 });
 
-describe("ClaudeHeadlessAdapter (fetch mockeado)", () => {
+describe("BridgeAdapter (fetch mockeado)", () => {
   const retoMC = {
     id: "x-0",
     modulo: "x",
@@ -161,27 +163,43 @@ describe("ClaudeHeadlessAdapter (fetch mockeado)", () => {
   };
 
   it("disponible() devuelve true si /salud responde ok, false si no hay bridge", async () => {
-    expect(await new ClaudeHeadlessAdapter("http://x", fetchFalso({ ok: true })).disponible()).toBe(true);
+    expect(await new BridgeAdapter("claude", "http://x", fetchFalso({ ok: true })).disponible()).toBe(true);
     const fetchCaido = (async () => {
       throw new Error("ECONNREFUSED");
     }) as unknown as typeof fetch;
-    expect(await new ClaudeHeadlessAdapter("http://x", fetchCaido).disponible()).toBe(false);
+    expect(await new BridgeAdapter("claude", "http://x", fetchCaido).disponible()).toBe(false);
+  });
+
+  it("disponible() respeta el reporte de motores del bridge", async () => {
+    const salud = fetchFalso({ ok: true, motores: { claude: true, copilot: false } });
+    expect(await new BridgeAdapter("claude", "http://x", salud).disponible()).toBe(true);
+    expect(await new BridgeAdapter("copilot", "http://x", salud).disponible()).toBe(false);
   });
 
   it("consulta al Oráculo vía /oraculo", async () => {
-    const adapter = new ClaudeHeadlessAdapter("http://x", fetchFalso({ respuesta: "seguí al conejo blanco" }));
+    const adapter = new BridgeAdapter("claude", "http://x", fetchFalso({ respuesta: "seguí al conejo blanco" }));
     expect(await adapter.preguntarOraculo("ctx", "?")).toBe("seguí al conejo blanco");
   });
 
   it("evalúa abiertas vía /evaluar", async () => {
-    const adapter = new ClaudeHeadlessAdapter("http://x", fetchFalso({ aprobado: true, feedback: "bien" }));
+    const adapter = new BridgeAdapter("claude", "http://x", fetchFalso({ aprobado: true, feedback: "bien" }));
     const r = await adapter.evaluarAbierta(retoAbierta, "respuesta");
     expect(r.aprobado).toBe(true);
   });
 
   it("genera pistas vía /pista", async () => {
-    const adapter = new ClaudeHeadlessAdapter("http://x", fetchFalso({ pista: "pensá en FIFO" }));
+    const adapter = new BridgeAdapter("claude", "http://x", fetchFalso({ pista: "pensá en FIFO" }));
     expect(await adapter.generarPista(retoMC)).toBe("pensá en FIFO");
+  });
+
+  it("incluye el motor elegido en cada POST al bridge", async () => {
+    let bodyEnviado: unknown = null;
+    const fetchEspia = (async (_url: unknown, init?: RequestInit) => {
+      bodyEnviado = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ pista: "..." }), { status: 200 });
+    }) as unknown as typeof fetch;
+    await new BridgeAdapter("copilot", "http://x", fetchEspia).generarPista(retoMC);
+    expect((bodyEnviado as { motor: string }).motor).toBe("copilot");
   });
 });
 

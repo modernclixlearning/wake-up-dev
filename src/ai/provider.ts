@@ -9,7 +9,7 @@ export interface EvaluacionAbierta {
 /**
  * Contrato de la capa IA del juego. Implementaciones:
  * - AnthropicAdapter / OpenAIAdapter / GeminiAdapter (BYOK, browser) — F4
- * - ClaudeHeadlessAdapter (bridge local, modo "píldora roja") — F8
+ * - BridgeAdapter claude/copilot (bridge local, modo "píldora roja") — F8
  * - StaticFallback (sin IA; el juego siempre funciona) — F3
  */
 export interface AIProvider {

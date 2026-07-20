@@ -2,30 +2,52 @@
  * Bridge headless — el modo "píldora roja" de Wake Up, Dev.
  *
  * Proceso local que expone una mini API HTTP y resuelve cada petición
- * lanzando una instancia headless de Claude Code (`claude -p`), el mismo
- * patrón de orquestación que se enseña en los módulos 9 y 13 del máster.
+ * lanzando una instancia headless de un CLI de agente — Claude Code
+ * (`claude -p`) o GitHub Copilot CLI — el mismo patrón de orquestación
+ * que se enseña en los módulos 9 y 13 del máster. El motor se elige por
+ * request (campo `motor`, default "claude"): un solo bridge sirve ambos.
  *
- * Uso:   node bridge/server.mjs          (requiere el CLI `claude` instalado y autenticado)
- * Env:   BRIDGE_PORT (default 8137) · BRIDGE_CLAUDE_ARGS (args extra, ej: "--model claude-haiku-4-5")
+ * Uso:   node bridge/server.mjs
+ *        (requiere el CLI del motor elegido instalado y autenticado)
+ * Env:   BRIDGE_PORT (default 8137)
+ *        BRIDGE_CLAUDE_ARGS  (args extra para claude, ej: "--model claude-haiku-4-5")
+ *        BRIDGE_COPILOT_ARGS (args extra para copilot, ej: "--model gpt-5.4")
+ *        BRIDGE_COPILOT_JS   (ruta al npm-loader.js de @github/copilot si no
+ *                             está en la instalación global npm por defecto)
  *
- * Seguridad: escucha SOLO en 127.0.0.1. CORS abierto a localhost (dev y build local).
+ * Seguridad: escucha SOLO en 127.0.0.1. CORS abierto a localhost (dev y build
+ * local). El prompt NUNCA pasa por un shell: a claude viaja por stdin; a
+ * copilot como elemento del array de args con shell:false (spawn directo de
+ * node sobre el entry JS del CLI — sin interpretación de shell posible).
  */
 
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 const PORT = Number(process.env.BRIDGE_PORT ?? 8137);
-const ARGS_EXTRA = (process.env.BRIDGE_CLAUDE_ARGS ?? "").split(" ").filter(Boolean);
 const TIMEOUT_MS = 120_000;
 
-function ejecutarClaude(prompt) {
+const argsDe = (env) => (process.env[env] ?? "").split(" ").filter(Boolean);
+
+/** El Copilot CLI no lee el prompt por stdin: hay que pasarlo como argumento.
+ *  Para hacerlo sin shell (inyección) spawneamos node directo sobre su entry
+ *  JS (el shim copilot.cmd hace exactamente eso). */
+function resolverCopilotJs() {
+  const candidatos = [
+    process.env.BRIDGE_COPILOT_JS,
+    process.env.APPDATA && join(process.env.APPDATA, "npm/node_modules/@github/copilot/npm-loader.js"),
+    "/usr/local/lib/node_modules/@github/copilot/npm-loader.js",
+    process.env.HOME && join(process.env.HOME, ".npm-global/lib/node_modules/@github/copilot/npm-loader.js"),
+  ].filter(Boolean);
+  return candidatos.find((p) => existsSync(p)) ?? null;
+}
+const COPILOT_JS = resolverCopilotJs();
+
+function ejecutar(cmd, args, opciones, prompt) {
   return new Promise((resolve, reject) => {
-    // shell:true para que Windows resuelva claude.cmd; los args son estáticos,
-    // el prompt viaja por stdin (nunca por shell) — sin riesgo de inyección.
-    const proc = spawn("claude", ["-p", "--output-format", "text", ...ARGS_EXTRA], {
-      shell: true,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    const proc = spawn(cmd, args, { ...opciones, stdio: ["pipe", "pipe", "pipe"] });
     let out = "";
     let err = "";
     const timer = setTimeout(() => {
@@ -42,12 +64,50 @@ function ejecutarClaude(prompt) {
     proc.on("close", (code) => {
       clearTimeout(timer);
       if (code === 0) resolve(out.trim());
-      else reject(new Error(`claude salió con código ${code}: ${err.slice(0, 300)}`));
+      else reject(new Error(`el motor salió con código ${code}: ${err.slice(0, 300)}`));
     });
 
-    proc.stdin.write(prompt);
+    if (prompt !== undefined) proc.stdin.write(prompt);
     proc.stdin.end();
   });
+}
+
+const MOTORES = {
+  claude: {
+    disponible: () => true,
+    // shell:true para que Windows resuelva claude.cmd; los args son estáticos,
+    // el prompt viaja por stdin (nunca por shell) — sin riesgo de inyección.
+    correr: (prompt) =>
+      ejecutar(
+        "claude",
+        ["-p", "--output-format", "text", ...argsDe("BRIDGE_CLAUDE_ARGS")],
+        { shell: true },
+        prompt
+      ),
+  },
+  copilot: {
+    disponible: () => COPILOT_JS !== null,
+    correr: (prompt) => {
+      if (!COPILOT_JS) {
+        throw new Error(
+          "Copilot CLI no encontrado: instalalo (npm i -g @github/copilot) o seteá BRIDGE_COPILOT_JS"
+        );
+      }
+      // El prompt va como elemento del array con shell:false — spawn no lo
+      // interpreta, llega literal al CLI.
+      return ejecutar(
+        process.execPath,
+        [COPILOT_JS, "-p", prompt, "-s", "--no-color", ...argsDe("BRIDGE_COPILOT_ARGS")],
+        { shell: false }
+      );
+    },
+  },
+};
+
+function motorDe(body) {
+  const motor = body.motor ?? "claude";
+  if (!Object.hasOwn(MOTORES, motor)) throw new Error(`motor desconocido: ${motor}`);
+  return MOTORES[motor];
 }
 
 function leerBody(req) {
@@ -74,7 +134,8 @@ function extraerJson(texto) {
 }
 
 const rutas = {
-  "/oraculo": async ({ contexto, pregunta }) => {
+  "/oraculo": async (body) => {
+    const { contexto, pregunta } = body;
     const prompt = [
       "Sos el Oráculo del juego educativo 'Wake Up, Dev' (ambientado en Matrix).",
       "Respondé la duda del estudiante sobre el módulo en español, didáctico,",
@@ -85,10 +146,11 @@ const rutas = {
       "",
       `PREGUNTA: ${pregunta}`,
     ].join("\n");
-    return { respuesta: await ejecutarClaude(prompt) };
+    return { respuesta: await motorDe(body).correr(prompt) };
   },
 
-  "/evaluar": async ({ pregunta, rubrica, respuesta }) => {
+  "/evaluar": async (body) => {
+    const { pregunta, rubrica, respuesta } = body;
     const prompt = [
       "Evaluá la respuesta de un estudiante contra la rúbrica. Sé justo: no exijas",
       "terminología exacta si el concepto está bien; no aprobés respuestas vacías o incoherentes.",
@@ -98,11 +160,12 @@ const rutas = {
       `RÚBRICA: ${rubrica}`,
       `RESPUESTA DEL ESTUDIANTE: ${respuesta}`,
     ].join("\n");
-    const json = extraerJson(await ejecutarClaude(prompt));
+    const json = extraerJson(await motorDe(body).correr(prompt));
     return { aprobado: Boolean(json.aprobado), feedback: String(json.feedback ?? "") };
   },
 
-  "/pista": async ({ pregunta, opciones }) => {
+  "/pista": async (body) => {
+    const { pregunta, opciones } = body;
     const prompt = [
       "Sos el Oráculo de un juego educativo. El estudiante está trabado en esta pregunta.",
       "Dale UNA pista breve (máx 30 palabras, en español) que lo oriente al concepto",
@@ -112,7 +175,7 @@ const rutas = {
       `PREGUNTA: ${pregunta}`,
       `OPCIONES: ${(opciones ?? []).join(" | ")}`,
     ].join("\n");
-    return { pista: await ejecutarClaude(prompt) };
+    return { pista: await motorDe(body).correr(prompt) };
   },
 };
 
@@ -131,7 +194,10 @@ const server = createServer(async (req, res) => {
 
   try {
     if (req.method === "GET" && req.url === "/salud") {
-      res.writeHead(200).end(JSON.stringify({ ok: true, servicio: "wake-up-dev-bridge" }));
+      const motores = Object.fromEntries(
+        Object.entries(MOTORES).map(([nombre, m]) => [nombre, m.disponible()])
+      );
+      res.writeHead(200).end(JSON.stringify({ ok: true, servicio: "wake-up-dev-bridge", motores }));
       return;
     }
     const ruta = rutas[req.url ?? ""];
@@ -149,5 +215,6 @@ const server = createServer(async (req, res) => {
 
 server.listen(PORT, "127.0.0.1", () => {
   console.log(`🕶️  Bridge píldora roja escuchando en http://127.0.0.1:${PORT}`);
-  console.log("   El juego lo detecta eligiendo 'Claude Code headless' en los ajustes (tecla A en Zion).");
+  console.log(`   Motores: claude ✔ · copilot ${COPILOT_JS ? "✔" : "✘ (npm i -g @github/copilot)"}`);
+  console.log("   El juego lo detecta eligiendo un provider headless en los ajustes (tecla A en Zion).");
 });

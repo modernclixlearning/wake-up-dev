@@ -1,5 +1,5 @@
 import { AnthropicAdapter } from "./anthropic-adapter";
-import { ClaudeHeadlessAdapter } from "./claude-headless-adapter";
+import { BridgeAdapter } from "./bridge-adapter";
 import { AIConfig, MODELOS_DEFAULT, configCompleta } from "./config";
 import { GeminiAdapter } from "./gemini-adapter";
 import { OpenAIAdapter } from "./openai-adapter";
@@ -18,7 +18,9 @@ export function crearProvider(config: AIConfig): AIProvider {
     case "gemini":
       return new GeminiAdapter(config.apiKey, model);
     case "claude-headless":
-      return new ClaudeHeadlessAdapter();
+      return new BridgeAdapter("claude");
+    case "copilot-headless":
+      return new BridgeAdapter("copilot");
     default:
       return new StaticFallback();
   }

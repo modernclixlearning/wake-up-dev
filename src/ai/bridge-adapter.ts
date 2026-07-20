@@ -3,20 +3,27 @@ import { AIProvider, EvaluacionAbierta } from "./provider";
 
 export const BRIDGE_URL_DEFAULT = "http://127.0.0.1:8137";
 
+/** Motores CLI que sabe spawnear el bridge local (bridge/server.mjs). */
+export type MotorBridge = "claude" | "copilot";
+
 /**
  * Modo "píldora roja" (F8): habla con el bridge local (bridge/server.mjs),
- * que resuelve cada petición lanzando una instancia headless de Claude Code.
- * No requiere API key — usa la sesión del CLI del jugador.
+ * que resuelve cada petición lanzando una instancia headless del CLI elegido
+ * (`claude -p` o GitHub Copilot CLI). No requiere API key — usa la sesión
+ * autenticada del CLI del jugador.
  */
-export class ClaudeHeadlessAdapter implements AIProvider {
-  readonly nombre = "claude-headless";
+export class BridgeAdapter implements AIProvider {
+  readonly nombre: string;
 
   constructor(
+    private motor: MotorBridge = "claude",
     private baseUrl: string = BRIDGE_URL_DEFAULT,
     // Envuelto en arrow: window.fetch guardado como propiedad pierde su binding
     // a window y lanza "Illegal invocation" al invocarse.
     private fetchImpl: typeof fetch = (...args) => fetch(...args)
-  ) {}
+  ) {
+    this.nombre = `${motor}-headless`;
+  }
 
   async disponible(): Promise<boolean> {
     try {
@@ -24,7 +31,11 @@ export class ClaudeHeadlessAdapter implements AIProvider {
       const timer = setTimeout(() => ctrl.abort(), 1500);
       const res = await this.fetchImpl(`${this.baseUrl}/salud`, { signal: ctrl.signal });
       clearTimeout(timer);
-      return res.ok;
+      if (!res.ok) return false;
+      // Bridges nuevos reportan qué motores tienen disponibles; si el campo no
+      // está (bridge viejo), asumimos que sí para no romper compatibilidad.
+      const data = (await res.json()) as { motores?: Record<string, boolean> };
+      return data.motores ? data.motores[this.motor] !== false : true;
     } catch {
       return false;
     }
@@ -54,11 +65,11 @@ export class ClaudeHeadlessAdapter implements AIProvider {
     return data.pista;
   }
 
-  private async post<T>(ruta: string, body: unknown): Promise<T> {
+  private async post<T>(ruta: string, body: Record<string, unknown>): Promise<T> {
     const res = await this.fetchImpl(`${this.baseUrl}${ruta}`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ ...body, motor: this.motor }),
     });
     if (!res.ok) {
       const texto = await res.text();
