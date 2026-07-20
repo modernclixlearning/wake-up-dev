@@ -1,4 +1,4 @@
-import { BancoModulo, Reto, RetoMultipleChoice } from "./reto";
+import { BancoModulo, esMultipleChoice, Reto, RetoMultipleChoice } from "./reto";
 
 export interface ResultadoRespuesta {
   correcta: boolean;
@@ -12,12 +12,27 @@ export interface ResultadoRespuesta {
 export class QuizEngine {
   private pendientes: Reto[];
   private readonly banco: BancoModulo;
+  private readonly random: () => number;
+  private readonly barajarOpciones: boolean;
 
-  constructor(banco: BancoModulo, opts: { incluirBonus?: boolean; barajar?: boolean } = {}) {
+  constructor(
+    banco: BancoModulo,
+    opts: { incluirBonus?: boolean; barajar?: boolean; barajarOpciones?: boolean; random?: () => number } = {}
+  ) {
     this.banco = banco;
-    const { incluirBonus = true, barajar = true } = opts;
+    const { incluirBonus = true, barajar = true, barajarOpciones = true, random = Math.random } = opts;
+    this.random = random;
+    this.barajarOpciones = barajarOpciones;
     this.pendientes = banco.retos.filter((r) => incluirBonus || !r.bonus2026);
-    if (barajar) this.pendientes = shuffle(this.pendientes);
+    if (barajar) this.pendientes = shuffle(this.pendientes, this.random);
+    // Los bancos se generan con la correcta casi siempre en la misma posición
+    // (detectado jugando: en varios módulos el 100% caía en la opción 1) — sin
+    // esto el jugador gana apretando siempre la misma tecla sin leer.
+    if (this.barajarOpciones) {
+      this.pendientes = this.pendientes.map((r) =>
+        esMultipleChoice(r) ? barajarOpcionesDe(r, this.random) : r
+      );
+    }
   }
 
   get modulo() {
@@ -59,15 +74,34 @@ export class QuizEngine {
   /** Resuelve la variante multiple-choice de un reto abierto cuando no hay IA. */
   fallbackDe(fallbackId: string): RetoMultipleChoice | null {
     const reto = this.banco.retos.find((r) => r.id === fallbackId);
-    return reto && reto.tipo === "multiple-choice" ? reto : null;
+    if (!reto || reto.tipo !== "multiple-choice") return null;
+    return this.barajarOpciones ? barajarOpcionesDe(reto, this.random) : reto;
   }
 }
 
-function shuffle<T>(items: T[]): T[] {
+function shuffle<T>(items: T[], random: () => number): T[] {
   const copia = [...items];
   for (let i = copia.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(random() * (i + 1));
     [copia[i], copia[j]] = [copia[j], copia[i]];
   }
   return copia;
+}
+
+/**
+ * Baraja el orden de las opciones de un reto y remapea el índice de la
+ * correcta. Devuelve una copia — el reto original (banco.retos, el JSON
+ * cargado en memoria) no se muta, así que barajar no contamina otras partidas
+ * ni otros QuizEngine sobre el mismo banco.
+ */
+function barajarOpcionesDe(reto: RetoMultipleChoice, random: () => number): RetoMultipleChoice {
+  const indices = shuffle(
+    reto.opciones.map((_, i) => i),
+    random
+  );
+  return {
+    ...reto,
+    opciones: indices.map((i) => reto.opciones[i]),
+    correcta: indices.indexOf(reto.correcta),
+  };
 }

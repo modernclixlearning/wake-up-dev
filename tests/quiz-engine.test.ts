@@ -82,6 +82,70 @@ describe("QuizEngine", () => {
   });
 });
 
+describe("QuizEngine — barajado de opciones", () => {
+  // Banco reproduciendo el bug real: TODAS las correctas en el índice 0.
+  const bancoSesgado: BancoModulo = {
+    modulo: { id: "sesgado", nombre: "Sesgado", descripcion: "" },
+    retos: Array.from({ length: 8 }, (_, i) => ({
+      id: `s-${i}`,
+      modulo: "sesgado",
+      tipo: "multiple-choice" as const,
+      pregunta: `p${i}`,
+      opciones: ["correcta", "b", "c", "d"],
+      correcta: 0,
+      explicacion: "e",
+      dificultad: 1 as const,
+      tags: [],
+      bonus2026: false,
+    })),
+  };
+
+  it("por defecto reubica la correcta (no siempre en el índice original)", () => {
+    // random determinístico que fuerza una permutación no-identidad.
+    let n = 0;
+    const random = () => [0.9, 0.1, 0.9, 0.1, 0.9, 0.1][n++ % 6];
+    const quiz = new QuizEngine(bancoSesgado, { barajar: false, random });
+    const indices = new Set<number>();
+    let reto;
+    while ((reto = quiz.siguiente()) !== null) {
+      const mc = reto as RetoMultipleChoice;
+      indices.add(mc.correcta);
+      // El texto de la opción correcta viaja con el índice remapeado.
+      expect(mc.opciones[mc.correcta]).toBe("correcta");
+    }
+    expect(indices.size).toBeGreaterThan(1);
+  });
+
+  it("con barajarOpciones:false preserva el orden e índice originales", () => {
+    const quiz = new QuizEngine(bancoSesgado, { barajar: false, barajarOpciones: false });
+    let reto;
+    while ((reto = quiz.siguiente()) !== null) {
+      const mc = reto as RetoMultipleChoice;
+      expect(mc.correcta).toBe(0);
+      expect(mc.opciones[0]).toBe("correcta");
+    }
+  });
+
+  it("fallbackDe también reubica la correcta", () => {
+    let n = 0;
+    const random = () => [0.9, 0.1, 0.9][n++ % 3];
+    const bancoFallback: BancoModulo = {
+      modulo: { id: "f", nombre: "F", descripcion: "" },
+      retos: [bancoSesgado.retos[0]],
+    };
+    const quiz = new QuizEngine(bancoFallback, { random });
+    const mc = quiz.fallbackDe("s-0");
+    expect(mc?.opciones[mc.correcta]).toBe("correcta");
+  });
+
+  it("no muta el banco original (banco.retos sigue con la correcta en 0)", () => {
+    new QuizEngine(bancoSesgado, { random: Math.random }).siguiente();
+    const original = bancoSesgado.retos[0] as RetoMultipleChoice;
+    expect(original.correcta).toBe(0);
+    expect(original.opciones[0]).toBe("correcta");
+  });
+});
+
 describe("QuizEngine adaptativo (Smith)", () => {
   const bancoDificultades: BancoModulo = {
     modulo: { id: "t2", nombre: "T2", descripcion: "" },
