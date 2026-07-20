@@ -105,6 +105,14 @@ const POSES_JEFE: Record<string, FactorPose> = {
   ataque: { fw: 1.56, fh: 0.9 },
   derrota: { fw: 1.55, fh: 0.89 },
 };
+// No es corrección de aspecto sino zoom de conversación (pedido del alumno):
+// el Oráculo se agranda mientras habla para seguir presente con el chat DOM
+// abierto. Solo afecta al sprite — el área de colisión no cambia, así que el
+// reposicionamiento de Neo al cerrar el chat sigue cayendo fuera del área.
+const POSES_ORACULO: Record<string, FactorPose> = {
+  habla: { fw: 1.45, fh: 1.45 },
+  bye: { fw: 1.45, fh: 1.45 },
+};
 
 interface EstadoSprite {
   skin: GameObj;
@@ -217,13 +225,15 @@ export function orientarHacia(actor: GameObj, xObjetivo: number): void {
   aplicarSprite(estado, estado.animActual);
 }
 
-/** Idle bob: leve oscilación vertical constante (el Oráculo "flota"). */
+/** Idle bob: leve oscilación vertical constante (el Oráculo "flota").
+ * Aditivo, no absoluto: aplicarSprite (update del padre, corre antes) ya dejó
+ * la y con los pies anclados según la pose; escribir una y absoluta acá
+ * pisaría ese anclaje cuando la pose agranda el sprite (zoom de conversación). */
 function animarIdle(k: KAPLAYCtx, parte: GameObj, amplitud = 1.5): void {
-  const base = parte.pos.y;
   let t = Math.random() * 10;
   parte.onUpdate(() => {
     t += k.dt() * 4;
-    parte.pos.y = base + Math.sin(t) * amplitud;
+    parte.pos.y += Math.sin(t) * amplitud;
   });
 }
 
@@ -263,7 +273,10 @@ export function crearOraculo(k: KAPLAYCtx, x: number, y: number): GameObj {
   const ancho = ANCHO_AGENTE;
   const alto = ALTO_AGENTE;
   const oraculo = k.add([k.pos(x, y), areaRectangular(k, ancho, alto), k.z(1), "oraculo"]);
-  const estado = montarSprite(k, oraculo, "oraculo", ancho, alto, { caminata: false });
+  const estado = montarSprite(k, oraculo, "oraculo", ancho, alto, {
+    caminata: false,
+    poses: POSES_ORACULO,
+  });
   animarIdle(k, estado.skin, 1.2);
   return oraculo;
 }

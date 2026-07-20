@@ -831,13 +831,19 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       if (bloqueado()) return;
       enEncuentro = true;
       // El Oráculo "habla" mientras el chat está abierto y saluda al cerrarlo.
+      // Con el zoom de conversación (POSES_ORACULO) el sprite crece hacia Neo:
+      // se sube su z por encima del jugador para que el agrandado se lea entero.
       fijarPose(oraculo, "habla");
+      oraculo.z = 3;
       const contexto = [banco.modulo.nombre, banco.modulo.descripcion, banco.modulo.resumen ?? ""].join("\n");
       abrirOraculo(st.ai, contexto, () => {
         enEncuentro = false;
         fijarPose(oraculo, "bye");
         k.wait(1.2, () => {
-          if (oraculo.exists()) fijarPose(oraculo, null);
+          if (oraculo.exists()) {
+            fijarPose(oraculo, null);
+            oraculo.z = 1;
+          }
         });
         // Alejar a Neo para no reabrir el chat al instante: siempre por debajo
         // del área del Oráculo (con sprites 3x, un offset fijo quedaba adentro).

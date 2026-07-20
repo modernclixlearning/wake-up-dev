@@ -50,19 +50,31 @@ function cerrarOverlay(): void {
   document.querySelector<HTMLCanvasElement>("canvas")?.focus();
 }
 
-function crearOverlay(titulo: string, onCerrar?: () => void): HTMLDivElement {
+function crearOverlay(
+  titulo: string,
+  onCerrar?: () => void,
+  opciones?: { lateral?: boolean }
+): HTMLDivElement {
   cerrarOverlay();
   const root = document.createElement("div");
+  // Modo lateral (chat del Oráculo): panel a la derecha y backdrop apenas
+  // oscurecido, para que el personaje del canvas siga visible mientras habla.
+  const lateral = opciones?.lateral ?? false;
   root.style.cssText = [
     "position:fixed", "inset:0", "z-index:1000",
-    "display:flex", "align-items:center", "justify-content:center",
-    "background:rgba(0,0,0,0.75)", "font-family:'Courier New',monospace",
+    "display:flex", "align-items:center",
+    lateral ? "justify-content:flex-end" : "justify-content:center",
+    lateral ? "padding-right:4vw" : "",
+    lateral ? "box-sizing:border-box" : "",
+    lateral ? "background:rgba(0,0,0,0.35)" : "background:rgba(0,0,0,0.75)",
+    "font-family:'Courier New',monospace",
   ].join(";");
 
   const panel = document.createElement("div");
   panel.style.cssText = [
     "background:#000", "border:2px solid #00ff46", "color:#dcffdc",
-    "padding:24px", "width:min(640px,92vw)", "max-height:86vh", "overflow-y:auto",
+    "padding:24px", lateral ? "width:min(560px,52vw)" : "width:min(640px,92vw)",
+    "max-height:86vh", "overflow-y:auto",
     "box-shadow:0 0 24px rgba(0,255,70,0.4)",
   ].join(";");
 
@@ -184,7 +196,7 @@ export function abrirAjustes(onGuardado: (config: AIConfig) => void): void {
 
 /** Chat con el Oráculo. Bloquea el juego hasta cerrarse (ESC o botón). */
 export function abrirOraculo(ai: AIProvider, contextoModulo: string, onCerrar: () => void): void {
-  const panel = crearOverlay("EL ORÁCULO", onCerrar);
+  const panel = crearOverlay("EL ORÁCULO", onCerrar, { lateral: true });
 
   const log = document.createElement("div");
   log.style.cssText =
