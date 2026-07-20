@@ -22,6 +22,10 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
       k.color(...VERDE),
     ]);
 
+    // Interlineado adaptativo: con paso fijo de 55, a partir de 6 módulos el
+    // último caía sobre la línea "IA conectada" y el score de abajo.
+    const pasoLista =
+      st.bancos.length > 1 ? Math.min(55, (ALTO - 155 - 150) / (st.bancos.length - 1)) : 0;
     st.bancos.forEach((banco, i) => {
       const prog = st.session.progreso.get(banco.modulo.id);
       // Sin corchetes: Kaplay los parsea como tags de texto estilado y lanza
@@ -29,7 +33,7 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
       const estadoTxt = prog?.completado ? "— LIBERADO —" : "— EN LA MATRIX —";
       k.add([
         k.text(`${i + 1}. ${banco.modulo.nombre} ${estadoTxt}`, { size: 20, width: 800 }),
-        k.pos(ANCHO / 2, 160 + i * 55),
+        k.pos(ANCHO / 2, 150 + i * pasoLista),
         k.anchor("center"),
         k.color(...(prog?.completado ? VERDE_OSCURO : BLANCO)),
       ]);
