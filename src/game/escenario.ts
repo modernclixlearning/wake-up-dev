@@ -1,6 +1,8 @@
 import { KAPLAYCtx } from "kaplay";
 import {
+  ALTO,
   AMBAR,
+  ANCHO,
   CARRIL_INFERIOR,
   CARRIL_SUPERIOR,
   CIAN,
@@ -11,6 +13,44 @@ import {
   VIOLETA,
   CHARS_MATRIX,
 } from "./theme";
+
+/**
+ * Fondos pixel-art por módulo (F13): imágenes de escena (960x640, ver el
+ * pipeline en docs/niveles.md) que reemplazan al decorado procedural. Se montan
+ * como backdrop FIJO a la pantalla (k.fixed), no scrollean con la cámara —
+ * un solo "cuarto" atmosférico detrás del combate, sin costuras ni el problema
+ * de perspectiva que tendría tilear un pasillo a lo ancho. El catálogo completo
+ * de conceptos (los 10, incluidos los 4 sin módulo aún) vive en docs/niveles.md.
+ */
+const FONDOS = [
+  "01-ciudad-digital",
+  "02-pasillo-oficina",
+  "03-sala-entrenamiento",
+  "04-tejado-lluvia",
+  "05-cabina-telefonica",
+  "06-apartamento-rojo",
+  "07-desierto-maquinas",
+  "08-nave-subterranea",
+  "09-sala-pantallas",
+  "10-corredor-hotel",
+] as const;
+
+/** Mapa módulo → fondo. Si un módulo no está acá, cae al decorado procedural. */
+const FONDO_POR_MODULO: Record<string, string> = {
+  "01-fundamentos": "01-ciudad-digital",
+  "02-ingenieria": "02-pasillo-oficina",
+  "03-arquitectura": "04-tejado-lluvia",
+  "04-fundamentos-ia": "09-sala-pantallas",
+  "05-herramientas": "03-sala-entrenamiento",
+  "09-flujo-desarrollo-ia": "07-desierto-maquinas",
+};
+
+/** Carga los fondos una vez al iniciar, junto a los sprites (main.ts). */
+export function cargarFondos(k: KAPLAYCtx): void {
+  for (const nombre of FONDOS) {
+    k.loadSprite(`fondo-${nombre}`, `fondos/${nombre}.png`);
+  }
+}
 
 /**
  * Decorado por módulo (F11 v2): 100% visual, sin `k.area()` — no toca el
@@ -56,18 +96,28 @@ function agregarColumnas(k: KAPLAYCtx, anchoNivel: number, color: [number, numbe
   }
 }
 
-/** Carril de avance: piso + techo bien marcados y flechas ">>" que refuerzan "seguí a la derecha". */
-function agregarCarril(k: KAPLAYCtx, anchoNivel: number, color: [number, number, number]): void {
-  k.add([k.rect(anchoNivel, 3), k.pos(0, CARRIL_SUPERIOR - 4), k.color(...color), k.opacity(0.5), k.z(-1)]);
-  k.add([k.rect(anchoNivel, 3), k.pos(0, CARRIL_INFERIOR + 4), k.color(...color), k.opacity(0.5), k.z(-1)]);
+/** Carril de avance: piso + techo bien marcados y flechas ">>" que refuerzan
+ * "seguí a la derecha". Con `soloFlechas` (cuando hay fondo de imagen) omite las
+ * líneas de piso/techo — que chocarían con el suelo pintado del fondo — y deja
+ * solo las flechas como pista de dirección. */
+function agregarCarril(
+  k: KAPLAYCtx,
+  anchoNivel: number,
+  color: [number, number, number],
+  soloFlechas = false
+): void {
+  if (!soloFlechas) {
+    k.add([k.rect(anchoNivel, 3), k.pos(0, CARRIL_SUPERIOR - 4), k.color(...color), k.opacity(0.5), k.z(-1)]);
+    k.add([k.rect(anchoNivel, 3), k.pos(0, CARRIL_INFERIOR + 4), k.color(...color), k.opacity(0.5), k.z(-1)]);
+  }
   const pasoFlecha = 220;
   for (let x = 140; x < anchoNivel - 60; x += pasoFlecha) {
     k.add([
       k.text(">>", { size: 18 }),
-      k.pos(x, (CARRIL_SUPERIOR + CARRIL_INFERIOR) / 2),
+      k.pos(x, CARRIL_INFERIOR - 6),
       k.anchor("center"),
       k.color(...color),
-      k.opacity(0.28),
+      k.opacity(soloFlechas ? 0.45 : 0.28),
       k.z(-1),
     ]);
   }
@@ -117,9 +167,33 @@ function agregarLluviaTenue(k: KAPLAYCtx, anchoNivel: number, color: [number, nu
   });
 }
 
+/** Backdrop fijo a pantalla: la imagen del fondo, sin scroll, detrás de todo.
+ * El fondo procesado es 960x640 y el canvas 960x540; se ancla en y=-50 para
+ * centrar verticalmente (recorta 50px arriba y 50px abajo, sin bandas negras). */
+function agregarFondoImagen(k: KAPLAYCtx, nombre: string): void {
+  k.add([k.sprite(`fondo-${nombre}`), k.pos(0, -(640 - ALTO) / 2), k.z(-100), k.fixed()]);
+  // Bandas oscuras arriba (detrás del HUD) y abajo (detrás del tutorial): sin
+  // ellas, el texto verde de la UI se vuelve ilegible sobre los fondos claros
+  // (la sala de entrenamiento blanca lo dejó invisible). Además asientan a los
+  // personajes y separan el piso del combate del suelo pintado (que queda
+  // estático mientras ellos scrollean). Suaves para no tapar la escena.
+  k.add([k.rect(ANCHO, 56), k.pos(0, 0), k.color(0, 0, 0), k.opacity(0.42), k.z(-99), k.fixed()]);
+  k.add([k.rect(ANCHO, 110), k.pos(0, ALTO - 110), k.color(0, 0, 0), k.opacity(0.5), k.z(-99), k.fixed()]);
+}
+
 /** Dibuja el decorado del nivel según el módulo. Se llama una vez al entrar a la escena. */
 export function dibujarEscenario(k: KAPLAYCtx, moduloId: string, anchoNivel: number): void {
   const acento = acentoDe(moduloId);
+
+  // F13: si el módulo tiene fondo de imagen, es el decorado; el procedural se
+  // omite (choca con la escena pintada) y solo quedan las flechas de dirección.
+  const fondo = FONDO_POR_MODULO[moduloId];
+  if (fondo) {
+    agregarFondoImagen(k, fondo);
+    agregarCarril(k, anchoNivel, acento === VERDE_OSCURO ? VERDE : acento, true);
+    return;
+  }
+
   agregarGrilla(k, anchoNivel, acento, moduloId === "03-arquitectura" ? 60 : 96);
   agregarColumnas(k, anchoNivel, acento);
   agregarCarril(k, anchoNivel, acento === VERDE_OSCURO ? VERDE : acento);
