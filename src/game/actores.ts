@@ -109,9 +109,11 @@ const POSES_JEFE: Record<string, FactorPose> = {
 // el Oráculo se agranda mientras habla para seguir presente con el chat DOM
 // abierto. Solo afecta al sprite — el área de colisión no cambia, así que el
 // reposicionamiento de Neo al cerrar el chat sigue cayendo fuera del área.
+// El zoom es CENTRADO (ver anclaje en crearOraculo): crece simétrico, no hacia
+// arriba, así no pisa la status bar. Moderado (1.3) para no tapar a Neo al lado.
 const POSES_ORACULO: Record<string, FactorPose> = {
-  habla: { fw: 1.45, fh: 1.45 },
-  bye: { fw: 1.45, fh: 1.45 },
+  habla: { fw: 1.3, fh: 1.3 },
+  bye: { fw: 1.3, fh: 1.3 },
 };
 
 interface EstadoSprite {
@@ -123,6 +125,9 @@ interface EstadoSprite {
   animActual: string;
   mirandoIzquierda: boolean;
   poses: Record<string, FactorPose>;
+  /** "pies" (default): el zoom crece hacia arriba, pies anclados al piso.
+   *  "centro": crece simétrico desde el centro (Oráculo, para no pisar el HUD). */
+  anclaje: "pies" | "centro";
 }
 
 const estadosSprite = new WeakMap<GameObj, EstadoSprite>();
@@ -138,11 +143,18 @@ function aplicarSprite(estado: EstadoSprite, anim: string): void {
   estado.skin.scale.x = ancho / FRAME_ANCHO;
   estado.skin.scale.y = alto / FRAME_ALTO;
   estado.skin.flipX = estado.mirandoIzquierda;
-  // Pies en el piso (las poses más bajas no deben flotar) y, si el frame está
-  // espejado, el ancho extra de la pose crece hacia la izquierda — el cuerpo
-  // queda sobre el actor y el brazo/caída se extiende hacia el rival.
-  estado.skin.pos.y = estado.alto - alto;
-  estado.skin.pos.x = estado.mirandoIzquierda ? estado.ancho - ancho : 0;
+  if (estado.anclaje === "centro") {
+    // Zoom simétrico desde el centro: no crece hacia el HUD (mantiene el gap
+    // con la status bar) ni hacia el piso de golpe. El Oráculo flota igual.
+    estado.skin.pos.y = (estado.alto - alto) / 2;
+    estado.skin.pos.x = (estado.ancho - ancho) / 2;
+  } else {
+    // Pies en el piso (las poses más bajas no deben flotar) y, si el frame está
+    // espejado, el ancho extra de la pose crece hacia la izquierda — el cuerpo
+    // queda sobre el actor y el brazo/caída se extiende hacia el rival.
+    estado.skin.pos.y = estado.alto - alto;
+    estado.skin.pos.x = estado.mirandoIzquierda ? estado.ancho - ancho : 0;
+  }
 }
 
 /**
@@ -156,7 +168,7 @@ function montarSprite(
   nombre: string,
   ancho: number,
   alto: number,
-  opciones: { caminata: boolean; poses?: Record<string, FactorPose> }
+  opciones: { caminata: boolean; poses?: Record<string, FactorPose>; anclaje?: "pies" | "centro" }
 ): EstadoSprite {
   const skin = actor.add([
     k.sprite(nombre, { anim: "idle" }),
@@ -172,6 +184,7 @@ function montarSprite(
     animActual: "idle",
     mirandoIzquierda: false,
     poses: opciones.poses ?? {},
+    anclaje: opciones.anclaje ?? "pies",
   };
   estadosSprite.set(actor, estado);
 
@@ -276,6 +289,7 @@ export function crearOraculo(k: KAPLAYCtx, x: number, y: number): GameObj {
   const estado = montarSprite(k, oraculo, "oraculo", ancho, alto, {
     caminata: false,
     poses: POSES_ORACULO,
+    anclaje: "centro",
   });
   animarIdle(k, estado.skin, 1.2);
   return oraculo;

@@ -16,8 +16,10 @@ export const ANCHO = 960;
 export const ALTO = 540;
 
 /** Carril de movimiento vertical dentro del nivel (F11 v2): da un "pasillo" claro
- * sin necesitar tilemap ni colisión de paredes — solo un clamp de posición. */
-export const CARRIL_SUPERIOR = 60;
+ * sin necesitar tilemap ni colisión de paredes — solo un clamp de posición.
+ * El techo (74) deja un gap controlado bajo la status bar (HUD ~0-50 + banda
+ * oscura de 56): ningún personaje puede subir a pisar el HUD. */
+export const CARRIL_SUPERIOR = 74;
 export const CARRIL_INFERIOR = ALTO - 70;
 
 export const CHARS_MATRIX = "アイウエオ01<>{}/#$%&=+*;:凡例文字ラドクリフ".split("");

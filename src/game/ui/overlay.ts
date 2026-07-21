@@ -1,6 +1,7 @@
 import { AIConfig, MODELOS_DEFAULT, ProviderId, cargarConfig, guardarConfig } from "../../ai/config";
 import { AIProvider, EvaluacionAbierta } from "../../ai/provider";
 import { RetoAbierta } from "../../domain/reto";
+import { ANCHO, ALTO } from "../theme";
 
 /**
  * Overlays DOM sobre el canvas (ajustes, Oráculo, retos abiertos).
@@ -10,9 +11,30 @@ import { RetoAbierta } from "../../domain/reto";
  */
 
 let overlayActual: HTMLDivElement | null = null;
+/** Listener de resize del overlay abierto, para removerlo al cerrar. */
+let overlayResize: (() => void) | null = null;
 
 export function hayOverlayAbierto(): boolean {
   return overlayActual !== null;
+}
+
+/**
+ * Rectángulo REAL del juego dentro de la ventana. Kaplay usa letterbox: el
+ * canvas llena la ventana y dibuja el juego 960x540 escalado y centrado, con
+ * franjas negras a los costados. Los overlays deben ceñirse a ESE rectángulo
+ * (no a la ventana): si no, el panel del Oráculo se va a la franja negra fuera
+ * del fondo y corta la inmersión. Misma matemática de letterbox que Kaplay.
+ */
+function rectDelJuego(): { left: number; top: number; width: number; height: number } {
+  const escala = Math.min(window.innerWidth / ANCHO, window.innerHeight / ALTO);
+  const width = ANCHO * escala;
+  const height = ALTO * escala;
+  return {
+    left: (window.innerWidth - width) / 2,
+    top: (window.innerHeight - height) / 2,
+    width,
+    height,
+  };
 }
 
 const TECLAS_JUEGO = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
@@ -42,6 +64,10 @@ function liberarTeclasDeJuego(): void {
 function cerrarOverlay(): void {
   overlayActual?.remove();
   overlayActual = null;
+  if (overlayResize) {
+    window.removeEventListener("resize", overlayResize);
+    overlayResize = null;
+  }
   liberarTeclasDeJuego();
   // Devolver el foco al canvas: Kaplay escucha el teclado en el canvas (lo
   // enfoca al iniciar), y al interactuar con el overlay el foco pasa al DOM.
@@ -65,22 +91,36 @@ function crearOverlay(
   // al personaje aunque le subamos el z dentro del juego.
   const lateral = opciones?.lateral ?? false;
   root.style.cssText = [
-    "position:fixed", "inset:0", "z-index:1000",
+    "position:fixed", "z-index:1000", "box-sizing:border-box",
     "display:flex", "align-items:center",
     lateral ? "justify-content:flex-end" : "justify-content:center",
-    lateral ? "padding-right:4vw" : "",
-    lateral ? "box-sizing:border-box" : "",
+    // padding en % del propio rect (= área del juego), no de la ventana.
+    lateral ? "padding-right:3%" : "",
     lateral
       ? "background:linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%)"
       : "background:rgba(0,0,0,0.75)",
     "font-family:'Courier New',monospace",
   ].join(";");
+  // Ceñir el overlay al rectángulo real del juego (dentro del letterbox) y
+  // mantenerlo al redimensionar la ventana.
+  const ajustarAlJuego = () => {
+    const r = rectDelJuego();
+    root.style.left = `${r.left}px`;
+    root.style.top = `${r.top}px`;
+    root.style.width = `${r.width}px`;
+    root.style.height = `${r.height}px`;
+  };
+  ajustarAlJuego();
+  overlayResize = ajustarAlJuego;
+  window.addEventListener("resize", ajustarAlJuego);
 
   const panel = document.createElement("div");
+  // Ancho/alto en % del rect del juego (el root ya está ceñido a él): así el
+  // panel queda SIEMPRE dentro del fondo, sin desbordar a la franja negra.
   panel.style.cssText = [
     "background:#000", "border:2px solid #00ff46", "color:#dcffdc",
-    "padding:24px", lateral ? "width:min(560px,52vw)" : "width:min(640px,92vw)",
-    "max-height:86vh", "overflow-y:auto",
+    "padding:24px", lateral ? "width:min(520px,46%)" : "width:min(640px,88%)",
+    "max-height:82%", "overflow-y:auto",
     "box-shadow:0 0 24px rgba(0,255,70,0.4)",
   ].join(";");
 
