@@ -57,8 +57,12 @@ function crearOverlay(
 ): HTMLDivElement {
   cerrarOverlay();
   const root = document.createElement("div");
-  // Modo lateral (chat del Oráculo): panel a la derecha y backdrop apenas
-  // oscurecido, para que el personaje del canvas siga visible mientras habla.
+  // Modo lateral (chat del Oráculo): panel a la derecha. El backdrop es un
+  // degradado — transparente en toda la mitad izquierda para que el Oráculo
+  // quede a pleno brillo (AL FRENTE) mientras habla, y oscurece solo hacia la
+  // derecha detrás del panel. Un backdrop plano cubría todo el canvas (es un
+  // div por encima del canvas: el z de Kaplay no compite contra él) y opacaba
+  // al personaje aunque le subamos el z dentro del juego.
   const lateral = opciones?.lateral ?? false;
   root.style.cssText = [
     "position:fixed", "inset:0", "z-index:1000",
@@ -66,7 +70,9 @@ function crearOverlay(
     lateral ? "justify-content:flex-end" : "justify-content:center",
     lateral ? "padding-right:4vw" : "",
     lateral ? "box-sizing:border-box" : "",
-    lateral ? "background:rgba(0,0,0,0.35)" : "background:rgba(0,0,0,0.75)",
+    lateral
+      ? "background:linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%)"
+      : "background:rgba(0,0,0,0.75)",
     "font-family:'Courier New',monospace",
   ].join(";");
 
