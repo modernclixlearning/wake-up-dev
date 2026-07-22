@@ -22,6 +22,12 @@ Antes de commitear, revisar cada reto: ¿es correcto? ¿está reformulado con pa
 
 `npm test` valida invariantes de todos los bancos (ids únicos, correcta en rango, 2-4 opciones, fallbacks válidos, al menos un bonus 2026). CI lo exige en cada push.
 
+> **Nota sobre la posición de la correcta**: los bancos generados hasta 2026-07 tienen la
+> correcta casi siempre en la opción 1 (sesgo del generador). Como backstop, `QuizEngine`
+> **baraja las opciones de cada reto en cada partida** y remapea el índice correcto, así el
+> juego nunca es explotable por posición aunque el JSON venga sesgado. La regla de generación
+> de arriba ("variá la posición") es para que los bancos NUEVOS ya salgan bien de origen.
+
 ## Prompt de generación
 
 ```
@@ -46,6 +52,10 @@ Reglas:
 - 20 a 30 retos por módulo, cubriendo todos los submódulos de las notas.
 - REFORMULÁ con palabras propias — nunca copies frases literales de las notas.
 - Opciones incorrectas plausibles (errores conceptuales típicos), nunca absurdas ni chistes.
+- VARIÁ la posición de la opción correcta entre preguntas: repartí el índice "correcta"
+  entre 0, 1, 2 y 3 de forma pareja. NO la pongas siempre primera (índice 0) — un banco
+  con la correcta siempre en la misma posición deja el juego ganable apretando una sola
+  tecla sin leer.
 - La explicación enseña: dice por qué la correcta es correcta y aporta el matiz de las notas.
 - Dificultad: 1 = definición directa, 2 = requiere relacionar conceptos, 3 = matiz fino o aplicación.
 - 2 a 4 retos con "bonus2026": true — actualizaciones del tema al estado del arte 2026
