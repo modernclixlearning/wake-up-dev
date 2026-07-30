@@ -43,6 +43,8 @@ const FONDO_POR_MODULO: Record<string, string> = {
   "04-fundamentos-ia": "09-sala-pantallas",
   "05-herramientas": "03-sala-entrenamiento",
   "09-flujo-desarrollo-ia": "07-desierto-maquinas",
+  // Calidad = sala de control de la nave: monitores, alertas, observabilidad.
+  "10-calidad": "08-nave-subterranea",
 };
 
 /** Carga los fondos una vez al iniciar, junto a los sprites (main.ts). */

@@ -5,6 +5,7 @@ import bancoArquitectura from "./content/retos/03-arquitectura.json";
 import bancoFundamentosIA from "./content/retos/04-fundamentos-ia.json";
 import bancoHerramientas from "./content/retos/05-herramientas.json";
 import bancoFlujoIA from "./content/retos/09-flujo-desarrollo-ia.json";
+import bancoCalidad from "./content/retos/10-calidad.json";
 import { BancoModulo } from "./domain/reto";
 import { cargarSprites } from "./game/actores";
 import { cargarFondos } from "./game/escenario";
@@ -23,6 +24,7 @@ const bancos: BancoModulo[] = [
   bancoFundamentosIA as BancoModulo,
   bancoHerramientas as BancoModulo,
   bancoFlujoIA as BancoModulo,
+  bancoCalidad as BancoModulo,
 ];
 
 let estado: GameState = crearEstadoInicial(bancos);

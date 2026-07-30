@@ -1,0 +1,1054 @@
+{
+  "modulo": {
+    "id": "10-calidad",
+    "nombre": "Calidad",
+    "descripcion": "Testing asistido por IA, code smells y refactor, deuda técnica, métricas y coverage, observabilidad con Sentry, seguridad aplicada (env/OWASP), documentación con IA y usabilidad.",
+    "resumen": "Testing: pirámide (muchos unit rápidos/aislados/determinísticos, integración moderada centrada en flujos del usuario, muy poco E2E crítico). Coverage: cuatro métricas (funciones, líneas, branches, statements); estrategia honesta 100/80/0 según riesgo de negocio (CORE que maneja dinero 100%, IMPORTANT/UI 80%, INFRAESTRUCTURA validada por TS 0%) — coverage alto no es lo mismo que calidad. TDD: ciclo Red-Green-Refactor (test que falla → código mínimo → mejorar sin romper), tres leyes, patrones Fake It 'Til You Make It y Triangulation, funciones puras emergentes. Testing Library user-centric: prioridad getByRole → label → texto → testId; getBy/queryBy/findBy. Playwright E2E: Page Object Model, visual regression contra baseline, auto-wait, forbidOnly en CI, visibilidad con Trace Viewer/HTML reports. Code smells (Fowler): números mágicos, código duplicado, código muerto, feature envy, god object; detección con ESLint+SonarJS; Boy Scout Rule. Refactor seguro con tests como red de seguridad: Extract Constants, Mikado Method, Parallel Change (feature flag), Strangler Fig; complejidad ciclomática (>10 refactorizar), índice de mantenibilidad. Patrones: Strategy (elimina switch, respeta Open/Closed), Factory, Observer (desacopla eventos), Command (undo), composición sobre herencia; evitar sobre-ingeniería. Deuda técnica (Cunningham): deliberada vs accidental, crítica vs manejable; medir con grep|wc; debt sprints, regla 80/20; comunicarla al negocio como impacto concreto, no jerga. Métricas accionables vs vanity; umbrales (error rate >2% emergencia). Quality gates con Husky: git hooks pre-commit (lint/tests rápidos) y pre-push (coverage/E2E); --no-verify solo emergencias. Observabilidad: testear menos y observar más según ROI y fase (MVP/Growth/Scale). Sentry: captura errores en producción con contexto, DSN, sample rates, session replay, breadcrumbs, source maps, release health. Seguridad: variables de entorno (.env nunca se commitea, sí .env.example), validación con Zod (fail fast), rotación de secretos; XSS (React auto-escapa), CSRF (SameSite), inyección SQL (queries parametrizadas/ORM), HTTPS/TLS, CSP y Helmet, rate limiting, npm audit/Snyk/Dependabot; AuthN (quién sos) vs AuthZ (qué podés), JWT (header/payload/signature), token en cookie HttpOnly (nunca localStorage), 401 vs 403, access + refresh token; OWASP Top 10 (validar acceso en el backend, hashear contraseñas, sanitizar, logging seguro). Documentación: docs as code, ADR (registrar el porqué de una decisión), comentar el 'por qué' no el 'qué'. Usabilidad: 10 heurísticas de Nielsen, accesibilidad WCAG (POUR, objetivo nivel AA), HTML semántico y ARIA, formularios (validar en onBlur, tipo de input correcto, label≠placeholder), microcopy claro y accionable, performance percibida (skeleton screens, UI optimista, Core Web Vitals)."
+  },
+  "retos": [
+    {
+      "id": "cal-001",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "En la pirámide de testing, ¿qué tipo de prueba forma la base (la mayoría)?",
+      "opciones": [
+        "Los tests unitarios",
+        "Los tests de integración",
+        "Los tests end-to-end (E2E)",
+        "Los tests de carga"
+      ],
+      "correcta": 0,
+      "explicacion": "La base son los tests unitarios: rápidos, aislados y baratos, así que se escriben muchos. Arriba hay integración (moderada) y en la punta pocos E2E, cruciales pero lentos y costosos.",
+      "dificultad": 1,
+      "tags": [
+        "testing",
+        "piramide"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-002",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es una característica esencial de un buen test unitario?",
+      "opciones": [
+        "Depende del resultado de otros tests para ejecutarse",
+        "Es determinístico: el mismo input siempre da el mismo resultado",
+        "Levanta un navegador real y una base de datos real",
+        "Prueba muchos componentes integrados a la vez"
+      ],
+      "correcta": 1,
+      "explicacion": "Un test unitario debe ser rápido, aislado (no depende de otros), determinístico (mismo input → mismo resultado) y fácil de mantener. Levantar browser/DB o integrar muchas piezas ya es E2E o integración.",
+      "dificultad": 1,
+      "tags": [
+        "testing",
+        "unit"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-003",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuáles son las cuatro métricas de cobertura (coverage)?",
+      "opciones": [
+        "Unit, integración, E2E y smoke",
+        "Velocidad, memoria, CPU y red",
+        "Funciones, líneas, branches y statements",
+        "Rojo, verde, refactor y deploy"
+      ],
+      "correcta": 2,
+      "explicacion": "Coverage se mide por funciones, líneas, branches (caminos condicionales) y statements (declaraciones) ejecutados. Una estrategia razonable es 100% de funciones y ~80% del resto.",
+      "dificultad": 1,
+      "tags": [
+        "testing",
+        "coverage"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-004",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "En el sistema de coverage honesto 100/80/0, ¿qué nivel se le exige al código CORE (el que maneja dinero o seguridad)?",
+      "opciones": [
+        "0%",
+        "80%",
+        "50%",
+        "100%"
+      ],
+      "correcta": 3,
+      "explicacion": "CORE (pagos, cálculos de dinero, validaciones críticas) va al 100%; IMPORTANT (UI visible) al 80%; INFRASTRUCTURE (tipos, config, constantes) al 0% porque ya lo valida el compilador. Se enfoca el esfuerzo donde un bug cuesta plata.",
+      "dificultad": 2,
+      "tags": [
+        "coverage",
+        "riesgo-negocio"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-005",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un proyecto con 94% de coverage global igual falló en producción con el procesamiento de pagos roto. ¿Cuál es la lección?",
+      "opciones": [
+        "El coverage global alto no garantiza calidad si el porcentaje crítico del negocio quedó sin cubrir",
+        "Hay que exigir siempre 100% en todo el código",
+        "El coverage no sirve para nada",
+        "Los tests de integración son inútiles"
+      ],
+      "correcta": 0,
+      "explicacion": "Coverage ≠ calidad. Un 94% mezclando todo por igual puede convivir con 0% en tres funciones críticas. Importa cubrir lo que, si falla, cuesta dinero — no inflar un número global.",
+      "dificultad": 2,
+      "tags": [
+        "coverage",
+        "calidad"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-006",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "En el ciclo de TDD, ¿qué representa la fase 'roja' (Red)?",
+      "opciones": [
+        "Escribir el código mínimo para que el test pase",
+        "Escribir un test que falla porque todavía no existe el código",
+        "Refactorizar el código sin romper los tests",
+        "Borrar el código muerto del proyecto"
+      ],
+      "correcta": 1,
+      "explicacion": "Red-Green-Refactor: primero un test que falla (rojo), luego el código mínimo para que pase (verde), y por último mejorar el diseño sin romper los tests (refactor).",
+      "dificultad": 1,
+      "tags": [
+        "tdd",
+        "red-green-refactor"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-007",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué patrón de TDD consiste en escribir la implementación más simple (incluso 'falsa') para que el test pase, y generalizar recién al agregar más casos?",
+      "opciones": [
+        "Triangulation",
+        "Strangler Fig",
+        "Fake It 'Til You Make It",
+        "Mikado Method"
+      ],
+      "correcta": 2,
+      "explicacion": "'Fake It 'Til You Make It' hace lo mínimo (ej. devolver un valor fijo) para pasar el primer test; al sumar casos (Triangulation) el 'fake' ya no alcanza y emerge la lógica real.",
+      "dificultad": 2,
+      "tags": [
+        "tdd",
+        "patrones"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-008",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "TDD hace 'emerger' funciones puras. ¿Qué caracteriza a una función pura?",
+      "opciones": [
+        "Además de calcular, actualiza el localStorage",
+        "Modifica variables globales para optimizar",
+        "Siempre devuelve un valor distinto",
+        "Devuelve el mismo output ante el mismo input y no tiene efectos secundarios"
+      ],
+      "correcta": 3,
+      "explicacion": "Una función pura no muta nada de afuera ni produce efectos secundarios: mismo input → mismo output. Mezclar el cálculo con un efecto (ej. escribir en localStorage) rompe esa pureza; ese efecto va aparte.",
+      "dificultad": 2,
+      "tags": [
+        "tdd",
+        "funciones-puras"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-009",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "En Testing Library, ¿cuál es la query prioritaria por ser la más accesible (la que más se parece a cómo usa la app un usuario)?",
+      "opciones": [
+        "getByRole",
+        "Un selector CSS con querySelector",
+        "getByTestId",
+        "wrapper.find"
+      ],
+      "correcta": 0,
+      "explicacion": "La prioridad es getByRole → por label → por texto → getByTestId (último recurso). Buscar por rol fuerza accesibilidad y evita atarse a detalles de implementación como selectores CSS.",
+      "dificultad": 1,
+      "tags": [
+        "testing-library",
+        "queries"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-010",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué query de Testing Library usás para comprobar que un elemento NO está en pantalla, sin que el test falle por no encontrarlo?",
+      "opciones": [
+        "getBy",
+        "queryBy",
+        "findBy",
+        "getAllBy"
+      ],
+      "correcta": 1,
+      "explicacion": "queryBy devuelve null si no encuentra el elemento (ideal para verificar ausencia). getBy falla si no lo encuentra, y findBy espera a que aparezca (para asincronía).",
+      "dificultad": 2,
+      "tags": [
+        "testing-library",
+        "queries"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-011",
+      "modulo": "10-calidad",
+      "tipo": "abierta",
+      "pregunta": "Explicá la pirámide de testing: qué tipo de test va en cada nivel, en qué proporción y por qué conviene esa forma.",
+      "rubrica": "Debe mencionar: (1) base = tests unitarios, la mayoría, por ser rápidos/aislados/baratos; (2) medio = integración, cantidad moderada, prueban flujos del usuario en contexto; (3) cima = E2E, pocos, solo lo crítico, porque son lentos y costosos de mantener. Correcta si identifica los tres niveles y justifica que haya más unit que E2E.",
+      "fallbackId": "cal-001",
+      "dificultad": 2,
+      "tags": [
+        "testing",
+        "piramide"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-012",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es el Page Object Model (POM) en tests E2E con Playwright?",
+      "opciones": [
+        "Una base de datos en memoria para los tests",
+        "El reporte HTML que genera Playwright",
+        "Un patrón que encapsula en una clase (una por página) los elementos y acciones de esa página",
+        "Un tipo de variable de entorno"
+      ],
+      "correcta": 2,
+      "explicacion": "El POM crea una clase por página (ej. ProductPage con getAddToCartButton() y addToCart()); los tests llaman métodos ya encapsulados en vez de repetir cada paso. Mejora legibilidad, reutilización y mantenibilidad.",
+      "dificultad": 2,
+      "tags": [
+        "e2e",
+        "playwright",
+        "pom"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-013",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué hace el visual regression testing de Playwright?",
+      "opciones": [
+        "Mide la complejidad ciclomática del código",
+        "Genera los tokens de autenticación",
+        "Ejecuta los tests unitarios más rápido",
+        "Compara cada captura contra una imagen baseline, píxel a píxel"
+      ],
+      "correcta": 3,
+      "explicacion": "La primera corrida guarda una imagen baseline; las siguientes comparan píxel a píxel contra ella y detectan cambios de color, tamaño, posición, CSS, responsive, fuentes o alineaciones.",
+      "dificultad": 2,
+      "tags": [
+        "e2e",
+        "playwright",
+        "visual-regression"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-014",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Al fallar un test E2E, pasar de 'caja negra' a visibilidad rica (Trace Viewer, HTML report, videos) sirve sobre todo para...",
+      "opciones": [
+        "Reducir el tiempo de diagnóstico: ver el momento y la causa exacta del fallo en vez de debuggear a ciegas",
+        "Aumentar la cobertura automáticamente",
+        "Evitar tener que escribir tests",
+        "Reemplazar la integración continua"
+      ],
+      "correcta": 0,
+      "explicacion": "Sin visibilidad solo sabés que 'falló' y debuggeás a ciegas (horas). Con Trace Viewer/HTML reports ves el timeline, la red y el DOM del momento exacto, bajando el diagnóstico a minutos. La filosofía: usar lo integrado, no construir dashboards custom.",
+      "dificultad": 2,
+      "tags": [
+        "e2e",
+        "observabilidad",
+        "playwright"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-015",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — Con las herramientas de IA actuales, ¿cómo se integra mejor la IA en un flujo de TDD?",
+      "opciones": [
+        "Reemplazando por completo al desarrollador en el diseño",
+        "Convirtiendo los requisitos en tests ejecutables (que fallan) y ayudando a cubrir edge cases, con revisión humana",
+        "Escribiendo solo el código de producción y saltándose los tests",
+        "Generando el código y borrando los tests para ir más rápido"
+      ],
+      "correcta": 1,
+      "explicacion": "El argumento de que 'TDD tarda mucho' se cae al pedirle a la IA que traduzca cada requisito en tests que fallan y sugiera casos límite; el humano guía y valida. Acelera el rojo del ciclo sin perder la disciplina.",
+      "dificultad": 2,
+      "tags": [
+        "tdd",
+        "ia",
+        "bonus"
+      ],
+      "bonus2026": true
+    },
+    {
+      "id": "cal-016",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un `if` con valores sueltos como 5, 100 y 0.1 sin ningún nombre es un code smell de...",
+      "opciones": [
+        "Código muerto",
+        "Feature envy",
+        "Números mágicos",
+        "God object"
+      ],
+      "correcta": 2,
+      "explicacion": "Son 'números mágicos': valores sin nombre que no explican su significado. Se resuelven nombrándolos como reglas de negocio (ej. cantidadUmbralDescuento = 5, porcentajeDescuento = 0.1).",
+      "dificultad": 1,
+      "tags": [
+        "code-smells",
+        "numeros-magicos"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-017",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué se recomienda ELIMINAR el código muerto (funciones sin usar, imports sin usar, código comentado) en vez de dejarlo?",
+      "opciones": [
+        "Porque eliminarlo mejora el coverage automáticamente",
+        "Porque comentar código es imposible en TypeScript",
+        "Porque el linter no puede detectarlo",
+        "Porque Git conserva el historial, y el código muerto infla el bundle y confunde al equipo"
+      ],
+      "correcta": 3,
+      "explicacion": "El código muerto aumenta el tamaño del bundle y genera dudas ('¿esto se puede borrar?'). Como Git guarda todo el historial, se elimina sin miedo: si hiciera falta, se recupera.",
+      "dificultad": 2,
+      "tags": [
+        "code-smells",
+        "codigo-muerto"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-018",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué herramientas detectan automáticamente code smells (números mágicos, duplicación, complejidad cognitiva) mientras escribís?",
+      "opciones": [
+        "ESLint y SonarJS",
+        "Sentry y Datadog",
+        "Husky y Zod",
+        "Playwright y Cypress"
+      ],
+      "correcta": 0,
+      "explicacion": "ESLint + SonarJS analizan el código con reglas configurables (complejidad, duplicación, magic numbers) en local y en CI (npm run lint). Sentry es observabilidad, Zod validación, Playwright/Cypress E2E.",
+      "dificultad": 1,
+      "tags": [
+        "code-smells",
+        "eslint",
+        "sonarjs"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-019",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Según Martin Fowler, refactorizar es...",
+      "opciones": [
+        "Agregar funcionalidades nuevas al sistema",
+        "Reestructurar el código sin cambiar su comportamiento externo",
+        "Reescribir el proyecto desde cero",
+        "Optimizar únicamente la performance"
+      ],
+      "correcta": 1,
+      "explicacion": "Refactor = mejorar la estructura interna sin alterar el comportamiento observable: todo sigue funcionando idéntico. Los tests en verde antes y después son la red de seguridad que lo garantiza.",
+      "dificultad": 1,
+      "tags": [
+        "refactor"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-020",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "La complejidad ciclomática mide los caminos independientes de una lógica (cada condición suma uno). ¿A partir de qué valor conviene refactorizar?",
+      "opciones": [
+        "Más de 100",
+        "Más de 2",
+        "Más de 10",
+        "Nunca importa"
+      ],
+      "correcta": 2,
+      "explicacion": "Por debajo de 5 es aceptable, entre 5 y 10 hay que prestar atención, y por encima de 10 conviene refactorizar: demasiados caminos hacen la función difícil de testear y propensa a errores.",
+      "dificultad": 2,
+      "tags": [
+        "refactor",
+        "metricas",
+        "complejidad-ciclomatica"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-021",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Reemplazar gradualmente un sistema legacy por uno nuevo (decidiendo con una condición o feature flag cuál usar) hasta poder eliminar el viejo, es el patrón...",
+      "opciones": [
+        "Coverage inflation",
+        "Primitive obsession",
+        "God object",
+        "Strangler Fig"
+      ],
+      "correcta": 3,
+      "explicacion": "El Strangler Fig 'estrangula' de a poco al sistema viejo: conviven ambas implementaciones, y cuando la observabilidad confirma que ya nadie usa la legacy, se elimina. Relacionado con Parallel Change.",
+      "dificultad": 3,
+      "tags": [
+        "refactor",
+        "strangler-fig",
+        "legacy"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-022",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un `switch` de costo de envío difícil de extender viola el Open/Closed Principle. ¿Qué patrón lo resuelve encapsulando algoritmos intercambiables detrás de una interfaz común?",
+      "opciones": [
+        "Strategy",
+        "Singleton",
+        "Observer",
+        "Command"
+      ],
+      "correcta": 0,
+      "explicacion": "El Strategy Pattern define un contrato (interfaz) y una implementación por variante (StandardShipping, ExpressShipping). Agregar una estrategia nueva no obliga a tocar las existentes: abierto para extensión, cerrado para modificación.",
+      "dificultad": 2,
+      "tags": [
+        "patrones",
+        "strategy",
+        "solid"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-023",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué patrón desacopla un evento de sus reacciones — el carrito emite 'ítem agregado' e inventario, notificaciones y analíticas reaccionan por su cuenta?",
+      "opciones": [
+        "Factory",
+        "Observer",
+        "Command",
+        "Strategy"
+      ],
+      "correcta": 1,
+      "explicacion": "El Observer evita que el carrito haga todo dentro del mismo método: emite un evento y cada interesado (suscriptor) reacciona por su lado. Baja el acoplamiento entre el emisor y sus consumidores.",
+      "dificultad": 2,
+      "tags": [
+        "patrones",
+        "observer"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-024",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuándo NO conviene aplicar un patrón de diseño (para evitar sobre-ingeniería)?",
+      "opciones": [
+        "Cuando hay muchas implementaciones similares",
+        "Cuando se necesita flexibilidad y extensibilidad",
+        "Cuando el caso es simple, poco probable que cambie, o el equipo no entenderá la abstracción",
+        "Cuando el código cambia con mucha frecuencia"
+      ],
+      "correcta": 2,
+      "explicacion": "Un patrón se justifica ante múltiples variantes, cambio frecuente o necesidad de extensibilidad. Para un solo `if` simple, aplicarlo agrega complejidad sin beneficio: mejor quedarse con lo sencillo.",
+      "dificultad": 3,
+      "tags": [
+        "patrones",
+        "sobre-ingenieria"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-025",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué la deuda técnica se compara con una deuda financiera (Ward Cunningham)?",
+      "opciones": [
+        "Porque nunca hay que pagarla",
+        "Porque solo existe en proyectos grandes",
+        "Porque siempre es intencional",
+        "Porque se ahorra tiempo ahora pero después se paga un 'interés': el costo de mantener esa decisión"
+      ],
+      "correcta": 3,
+      "explicacion": "Una decisión expeditiva ahorra tiempo a corto plazo pero cuesta a largo plazo (el 'interés' del mantenimiento). Como con la deuda financiera, conviene medirla, priorizarla y pagarla estratégicamente.",
+      "dificultad": 1,
+      "tags": [
+        "deuda-tecnica"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-026",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Sacar algo rápido al mercado sabiendo que es un problema pero aceptándolo como trade-off (para adelantarse a un competidor) es deuda técnica...",
+      "opciones": [
+        "Deliberada",
+        "Crítica",
+        "Accidental",
+        "Inevitable"
+      ],
+      "correcta": 0,
+      "explicacion": "La deuda deliberada es consciente y aceptada como trade-off. La accidental surge sin intención, por falta de experiencia. Aparte está el eje crítica (bloquea al usuario) vs manejable (solo lentitud).",
+      "dificultad": 2,
+      "tags": [
+        "deuda-tecnica",
+        "tipos"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-027",
+      "modulo": "10-calidad",
+      "tipo": "abierta",
+      "pregunta": "Sos el tech lead y tenés que convencer al negocio de invertir un sprint en pagar deuda técnica. ¿Cómo se la comunicarías y qué estrategia de prevención propondrías?",
+      "rubrica": "Debe: (1) traducir la deuda a IMPACTO DE NEGOCIO concreto, no jerga (ej. 'tardamos el doble en cada feature', 'el build tarda mucho'), hablando el lenguaje del stakeholder; (2) proponer alguna estrategia de gestión/prevención — regla 80/20 (80% features, 20% deuda), debt sprints, Boy Scout Rule, Definition of Done o quality gates. Correcta si evita el tecnicismo puro y da una vía de acción.",
+      "fallbackId": "cal-025",
+      "dificultad": 3,
+      "tags": [
+        "deuda-tecnica",
+        "comunicacion",
+        "negocio"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-028",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué distingue a una 'actionable metric' de una 'vanity metric'?",
+      "opciones": [
+        "Que es más difícil de calcular",
+        "Que ayuda a tomar una decisión concreta (si no ayuda a decidir, no sirve)",
+        "Que suena mejor en un reporte al inversor",
+        "Que mide líneas de código y commits por día"
+      ],
+      "correcta": 1,
+      "explicacion": "Las vanity metrics (LOC, commits/día, % 'cubierto' sin contexto) suenan bien pero no dicen dónde está el problema. Las accionables (tasa de éxito de tests, error rate, MTTR) guían decisiones reales.",
+      "dificultad": 2,
+      "tags": [
+        "metricas",
+        "vanity-vs-actionable"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-029",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un error rate en producción por encima del 2% se considera...",
+      "opciones": [
+        "Aceptable",
+        "Ideal",
+        "Una emergencia ('botón rojo'): meter todos los recursos a resolverlo",
+        "Irrelevante hasta fin de mes"
+      ],
+      "correcta": 2,
+      "explicacion": "0-1% está bien, más de 1% hay que investigar, y más de 2% es emergencia. Los umbrales binarios claros permiten reaccionar antes de que el problema escale (junto a MTTR bajo).",
+      "dificultad": 2,
+      "tags": [
+        "metricas",
+        "error-rate",
+        "umbrales"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-030",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Con Husky, ¿qué conviene correr en el hook de pre-commit frente al de pre-push?",
+      "opciones": [
+        "Pre-commit: E2E con coverage; pre-push: solo lint",
+        "Ninguno corre nada, son decorativos",
+        "Ambos corren solo el build",
+        "Pre-commit: lint y tests rápidos (30-120s); pre-push: coverage y E2E (más lentos)"
+      ],
+      "correcta": 3,
+      "explicacion": "El pre-commit es rápido (lint + unit) y previene ~80% de los problemas antes de comitear; el pre-push, la última instancia antes de compartir, corre lo pesado (coverage + E2E). Husky versiona los hooks para todo el equipo.",
+      "dificultad": 2,
+      "tags": [
+        "quality-gates",
+        "husky",
+        "git-hooks"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-031",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué hace el flag `git commit --no-verify`?",
+      "opciones": [
+        "Salta los quality gates (git hooks) — pensado solo para emergencias reales",
+        "Firma criptográficamente el commit",
+        "Corre los tests dos veces por seguridad",
+        "Sube el archivo .env al repositorio"
+      ],
+      "correcta": 0,
+      "explicacion": "--no-verify se salta los hooks de pre-commit/pre-push. Es una válvula de emergencia: usarlo de forma habitual anula el propósito de los quality gates.",
+      "dificultad": 2,
+      "tags": [
+        "quality-gates",
+        "husky"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-032",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "La estrategia 'testear menos, observar más' sugiere que, ante una feature nueva de valor incierto, conviene...",
+      "opciones": [
+        "Buscar 100% de cobertura antes de lanzarla",
+        "Empezar observando en producción para validar si vale el esfuerzo de testear a fondo",
+        "No testear ni observar nada",
+        "Testear solo en la máquina del desarrollador"
+      ],
+      "correcta": 1,
+      "explicacion": "Testing predice problemas conocidos; observability descubre desconocidos. Si el valor de la feature es incierto, observar primero (bajo costo) evita invertir horas de testing en algo que casi nadie usa — es una decisión de ROI.",
+      "dificultad": 2,
+      "tags": [
+        "observabilidad",
+        "roi"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-033",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Según la matriz por etapa, en un MVP (producto mínimo viable) el balance recomendado es...",
+      "opciones": [
+        "Todo testing exhaustivo desde el día uno",
+        "Nada de observabilidad, solo E2E",
+        "Mucha observabilidad + smoke tests del camino feliz y lo crítico (ej. pagos)",
+        "Solo métricas de líneas de código"
+      ],
+      "correcta": 2,
+      "explicacion": "En MVP hay mucha incertidumbre de valor: pesa la observabilidad (errores, recorrido, adopción) y el testing se limita a smoke tests del happy path más lo crítico. En Growth el balance es 50/50 y en Scale pesa más el testing.",
+      "dificultad": 3,
+      "tags": [
+        "observabilidad",
+        "mvp-growth-scale"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-034",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué problema resuelve principalmente Sentry?",
+      "opciones": [
+        "Compila el TypeScript más rápido",
+        "Genera los tests unitarios del proyecto",
+        "Reemplaza a Git como control de versiones",
+        "Captura automáticamente los errores de producción con contexto (navegador, usuario, sesión), sin depender de que el usuario los reporte"
+      ],
+      "correcta": 3,
+      "explicacion": "Sentry es 'como tener un console.log de todos tus usuarios': captura errores silenciosos en producción con stack trace, contexto y session replay, y notifica al instante (Slack, email). Detecta el problema antes de que el usuario se queje.",
+      "dificultad": 1,
+      "tags": [
+        "observabilidad",
+        "sentry"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-035",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "En producción el código está minificado y es ilegible. ¿Qué permite que Sentry muestre el error en el código fuente original?",
+      "opciones": [
+        "Los source maps",
+        "Los breadcrumbs",
+        "El DSN",
+        "El rate limiting"
+      ],
+      "correcta": 0,
+      "explicacion": "Los source maps conectan el código minificado con el original, así el stack trace se lee en el código real. Los breadcrumbs son el historial de acciones previas al error; el DSN identifica el proyecto.",
+      "dificultad": 2,
+      "tags": [
+        "observabilidad",
+        "sentry",
+        "source-maps"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-036",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál de estos archivos SÍ se commitea al repositorio?",
+      "opciones": [
+        ".env",
+        ".env.example",
+        ".env.local",
+        "Ninguno que empiece con .env"
+      ],
+      "correcta": 1,
+      "explicacion": "El .env (con los valores reales) nunca se sube: va en .gitignore. Sí se sube .env.example, una plantilla que muestra QUÉ variables completar, sin exponer los valores. Los secretos van en el host de deploy.",
+      "dificultad": 2,
+      "tags": [
+        "seguridad",
+        "variables-entorno"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-037",
+      "modulo": "10-calidad",
+      "tipo": "abierta",
+      "pregunta": "¿Por qué es peligroso hardcodear secretos (API keys, DB URL) en el código, y cómo se manejan correctamente?",
+      "rubrica": "Debe mencionar: (1) el riesgo — al subirlos al repo quedan expuestos públicamente y son difíciles de rotar; (2) la solución — usar variables de entorno, con el .env fuera del repo (.gitignore) y un .env.example como plantilla, secretos configurados en el host de deploy. Suma si menciona validarlas (ej. Zod / fail fast), rotación de secretos, o secretos distintos por entorno. Correcta si identifica la exposición y las variables de entorno.",
+      "fallbackId": "cal-036",
+      "dificultad": 2,
+      "tags": [
+        "seguridad",
+        "secretos",
+        "variables-entorno"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-038",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cómo se previene la inyección SQL?",
+      "opciones": [
+        "Concatenando el input del usuario directamente en la query",
+        "Mostrando el error de SQL completo al usuario",
+        "Usando queries parametrizadas o un ORM, en vez de armar el SQL concatenando strings",
+        "Guardando la query en localStorage"
+      ],
+      "correcta": 2,
+      "explicacion": "El bug aparece al concatenar input en la query. Con parámetros (email = $1) o un ORM, el valor se pasa aparte y se escapa de forma segura durante la ejecución, sin quedar embebido en el string.",
+      "dificultad": 2,
+      "tags": [
+        "seguridad",
+        "sql-injection"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-039",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Autenticación (AuthN) vs autorización (AuthZ):",
+      "opciones": [
+        "Autenticación = qué podés hacer; autorización = quién sos",
+        "Ambas verifican únicamente el email",
+        "Son sinónimos",
+        "Autenticación = quién sos; autorización = qué podés hacer"
+      ],
+      "correcta": 3,
+      "explicacion": "AuthN prueba la identidad (quién sos) y entrega un token; AuthZ verifica permisos (qué podés hacer): rol, recursos accesibles y operaciones permitidas. Se confunden pero son fases distintas.",
+      "dificultad": 1,
+      "tags": [
+        "seguridad",
+        "authn-authz"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-040",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Dónde NO conviene guardar el token de sesión?",
+      "opciones": [
+        "En localStorage o sessionStorage",
+        "En una cookie HttpOnly",
+        "En una cookie con SameSite=Strict",
+        "En una cookie Secure (solo HTTPS)"
+      ],
+      "correcta": 0,
+      "explicacion": "localStorage y sessionStorage son accesibles desde JavaScript, así que un ataque XSS puede robar el token. La cookie HttpOnly no es accesible por JS; combinada con Secure y SameSite es la opción segura.",
+      "dificultad": 2,
+      "tags": [
+        "seguridad",
+        "jwt",
+        "xss"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-041",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "El usuario está autenticado pero intenta borrar un recurso sin tener el rol necesario. ¿Qué código HTTP corresponde?",
+      "opciones": [
+        "401 Unauthorized",
+        "403 Forbidden",
+        "404 Not Found",
+        "200 OK"
+      ],
+      "correcta": 1,
+      "explicacion": "401 = no autenticado (no probó quién es). 403 = autenticado pero sin permiso para esa acción. La diferencia importa para no filtrar información y para responder correctamente.",
+      "dificultad": 2,
+      "tags": [
+        "seguridad",
+        "authz",
+        "http"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-042",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "OWASP A01 (Broken Access Control): ¿por qué deshabilitar un botón de admin SOLO en el frontend es inseguro?",
+      "opciones": [
+        "Porque el botón se ve feo",
+        "Porque consume demasiada memoria",
+        "Porque se puede saltar quitando el atributo 'disabled' con el inspector; el rol hay que validarlo en el backend",
+        "Porque rompe el coverage de tests"
+      ],
+      "correcta": 2,
+      "explicacion": "El frontend es manipulable (inspeccionar y quitar 'disabled'). El control de acceso se valida siempre en el backend: token válido, rol correcto y pertenencia del recurso; si no, 403. El 94% de las apps tiene alguna vuln del OWASP Top 10.",
+      "dificultad": 2,
+      "tags": [
+        "seguridad",
+        "owasp",
+        "access-control"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-043",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — La edición 2025 del OWASP Top 10 sumó como categoría propia, por su crecimiento, las fallas en...",
+      "opciones": [
+        "La cantidad de comentarios en el código",
+        "El diseño de logos",
+        "La velocidad de compilación",
+        "La cadena de suministro de software (software supply chain)"
+      ],
+      "correcta": 3,
+      "explicacion": "La lista se actualiza cada 3-4 años sobre datos reales. La edición 2025 destaca las fallas de la cadena de suministro (dependencias/artefactos comprometidos) como categoría propia — de ahí la importancia de auditar dependencias (npm audit, Snyk, Dependabot).",
+      "dificultad": 3,
+      "tags": [
+        "seguridad",
+        "owasp",
+        "supply-chain",
+        "bonus"
+      ],
+      "bonus2026": true
+    },
+    {
+      "id": "cal-044",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué propone la filosofía 'docs as code'?",
+      "opciones": [
+        "Tratar la documentación como código: mismo repo, control de versiones, code review y CI",
+        "Tener la documentación en Confluence, separada del código",
+        "No documentar nada y confiar en el código",
+        "Documentar solo con videos"
+      ],
+      "correcta": 0,
+      "explicacion": "Docs as code pone la doc en el repo (carpeta docs/), la versiona con Git, la revisa en el PR y la valida en CI. Así se combate la 'deriva de documentación' (que se desactualice mientras el código cambia).",
+      "dificultad": 2,
+      "tags": [
+        "documentacion",
+        "docs-as-code"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-045",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué registra un ADR (Architecture Decision Record)?",
+      "opciones": [
+        "El coverage de cada archivo",
+        "Por qué se tomó una decisión de arquitectura, qué alternativas se evaluaron y sus consecuencias",
+        "La lista de bugs abiertos",
+        "Los tokens de sesión activos"
+      ],
+      "correcta": 1,
+      "explicacion": "Un ADR documenta el contexto, las opciones, la decisión y sus consecuencias. Es inmutable: si la decisión cambia, se crea un ADR nuevo que reemplaza al anterior. Se crea cuando la decisión afecta a varios o es difícil de revertir. La IA ayuda a redactarlo, pero no decide.",
+      "dificultad": 2,
+      "tags": [
+        "documentacion",
+        "adr"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-046",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un buen comentario en el código debería explicar sobre todo...",
+      "opciones": [
+        "El 'qué' hace la línea, que ya se lee en el código",
+        "Nada, los comentarios están prohibidos",
+        "El 'por qué': el contexto o la razón que el código no puede expresar por sí solo",
+        "El nombre y el mail del autor"
+      ],
+      "correcta": 2,
+      "explicacion": "El código ya dice el 'qué'. El comentario valioso aporta el 'por qué' (ej. por qué se redondea a centavos). Lo ideal es código autodocumentado (buenos nombres) y comentarios reservados para el contexto.",
+      "dificultad": 2,
+      "tags": [
+        "documentacion",
+        "comentarios"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-047",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el nivel de cumplimiento WCAG que se suele tomar como objetivo en accesibilidad web?",
+      "opciones": [
+        "Nivel A",
+        "No existen niveles",
+        "Nivel AAA",
+        "Nivel AA"
+      ],
+      "correcta": 3,
+      "explicacion": "WCAG (principios POUR: Perceptible, Operable, Comprensible, Robusto) tiene niveles A (básico), AA (objetivo habitual) y AAA (el más alto, no exigible a todo). Ignorarlo trae demandas, pérdida de usuarios y peor SEO.",
+      "dificultad": 2,
+      "tags": [
+        "usabilidad",
+        "accesibilidad",
+        "wcag"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-048",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué conviene usar `<button>` en vez de un `<div onClick>` para una acción?",
+      "opciones": [
+        "El lector de pantalla y el teclado reconocen el button; un div genérico no es accesible ni navegable",
+        "El div se renderiza más rápido",
+        "No hay ninguna diferencia",
+        "El button ocupa menos memoria"
+      ],
+      "correcta": 0,
+      "explicacion": "El HTML semántico (button, form, section) aporta accesibilidad gratis: foco por teclado y anuncio por lectores de pantalla. Para íconos sin texto se agrega aria-label. Un div con onClick no es navegable ni anunciable.",
+      "dificultad": 2,
+      "tags": [
+        "usabilidad",
+        "accesibilidad",
+        "html-semantico"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-049",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuándo conviene validar un campo de formulario para no frustrar al usuario?",
+      "opciones": [
+        "En cada tecla (onChange): es lo más amigable",
+        "En onBlur (al salir del campo): ni tan agresivo como onChange ni tan tarde como el submit",
+        "Solo al enviar (submit)",
+        "Nunca validar en el frontend"
+      ],
+      "correcta": 1,
+      "explicacion": "Validar en cada tecla es agresivo (marca error mientras el usuario escribe); validar solo al enviar es tarde. El punto justo es onBlur: se valida el campo recién tocado, sin marcar los que aún no completó.",
+      "dificultad": 2,
+      "tags": [
+        "usabilidad",
+        "formularios",
+        "validacion"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-050",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un buen mensaje de error de UI (microcopy) debería...",
+      "opciones": [
+        "Mostrar el error técnico (ej. 'Error 422 unprocessable entity')",
+        "Ser lo más genérico posible (ej. 'inválido')",
+        "Decir qué está mal y cómo solucionarlo (ej. 'el email debe incluir una arroba')",
+        "Culpar al usuario ('ingresaste un valor incorrecto')"
+      ],
+      "correcta": 2,
+      "explicacion": "El microcopy debe ser claro, específico y con tono útil (no acusatorio ni técnico): explicar el problema y la salida. Cambiar 'Invalid' por un mensaje claro puede reducir el abandono de formularios de forma notable.",
+      "dificultad": 1,
+      "tags": [
+        "usabilidad",
+        "microcopy"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-051",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿En qué caso NO conviene usar UI optimista (actualizar la interfaz antes de la respuesta del servidor)?",
+      "opciones": [
+        "Dar 'me gusta' o agregar un ítem al carrito",
+        "Actualizar la cantidad de un producto",
+        "Marcar un favorito",
+        "Procesar un pago o cambiar la contraseña"
+      ],
+      "correcta": 3,
+      "explicacion": "La UI optimista sirve para acciones fáciles de revertir y de bajo riesgo (like, carrito, favoritos). En operaciones críticas o irreversibles (pagos, cambio de contraseña, borrado) hay que esperar la confirmación real del servidor.",
+      "dificultad": 3,
+      "tags": [
+        "usabilidad",
+        "performance-percibida",
+        "optimistic-ui"
+      ],
+      "bonus2026": false
+    },
+    {
+      "id": "cal-052",
+      "modulo": "10-calidad",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — En 2024 Google reemplazó a FID por otra métrica de responsividad dentro de los Core Web Vitals. ¿Cuál?",
+      "opciones": [
+        "INP (Interaction to Next Paint)",
+        "LCP (Largest Contentful Paint)",
+        "TTFB (Time to First Byte)",
+        "CLS (Cumulative Layout Shift)"
+      ],
+      "correcta": 0,
+      "explicacion": "Desde marzo de 2024, INP (Interaction to Next Paint) reemplazó a FID como Core Web Vital: mide el tiempo entre una interacción del usuario y el siguiente repintado, capturando la responsividad real a lo largo de toda la sesión.",
+      "dificultad": 3,
+      "tags": [
+        "usabilidad",
+        "performance",
+        "core-web-vitals",
+        "bonus"
+      ],
+      "bonus2026": true
+    }
+  ]
+}
