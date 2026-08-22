@@ -279,8 +279,8 @@ export function abrirOraculo(ai: AIProvider, contextoModulo: string, onCerrar: (
       const respuesta = await ai.preguntarOraculo(contextoModulo, pregunta);
       pensando.textContent = `Oráculo: ${respuesta}`;
       pensando.style.color = "#00ff46";
-    } catch (err) {
-      pensando.textContent = `Oráculo: (la conexión con la Matrix falló: ${err instanceof Error ? err.message : err})`;
+    } catch {
+      pensando.textContent = "Oráculo: (la Matrix interfirió la señal — revisá tu API key en Ajustes o intentá de nuevo)";
       pensando.style.color = "#ff5555";
     } finally {
       esperando = false;

@@ -1,6 +1,7 @@
 import { KAPLAYCtx } from "kaplay";
 import { crearProvider } from "../../ai/factory";
 import { GameSession } from "../../domain/session";
+import { teclaDeModulo } from "../../domain/teclado";
 import { reproducirMusica } from "../audio";
 import { borrarPartida } from "../persistencia";
 import { GameState } from "../state";
@@ -8,17 +9,6 @@ import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
 import { abrirAjustes, hayOverlayAbierto } from "../ui/overlay";
 
 /** Hub entre niveles: muestra los módulos, el progreso y el acceso a ajustes. */
-/**
- * Tecla que entra a cada módulo de la lista. Los nueve primeros van en 1-9 y el
- * décimo en 0: `String(i + 1)` daba "10" para el décimo, que no es una tecla
- * válida — con diez módulos el último quedaba inaccesible desde el teclado.
- * Un undécimo módulo va a necesitar otra forma de selección (flechas + Enter).
- */
-function teclaDeModulo(i: number): string {
-  if (i < 9) return String(i + 1);
-  if (i === 9) return "0";
-  return "";
-}
 
 export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
   k.scene("zion", () => {
@@ -73,7 +63,7 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
     ]);
 
     k.add([
-      k.text("Número = entrar al módulo   ·   A = ajustes de IA   ·   R = reiniciar partida", {
+      k.text("1-9 y 0 = entrar al módulo   ·   A = ajustes de IA   ·   R = reiniciar partida", {
         size: 16,
       }),
       k.pos(ANCHO / 2, ALTO - 45),
