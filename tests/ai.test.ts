@@ -133,7 +133,7 @@ describe("OpenAIAdapter (fetch mockeado)", () => {
 
   it("lanza con status de error", async () => {
     const adapter = new OpenAIAdapter("k", "gpt-test", fetchFalso({ error: "nope" }, 401));
-    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("OpenAI 401");
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("clave invalida");
   });
 });
 
@@ -200,6 +200,74 @@ describe("BridgeAdapter (fetch mockeado)", () => {
     }) as unknown as typeof fetch;
     await new BridgeAdapter("copilot", "http://x", fetchEspia).generarPista(retoMC);
     expect((bodyEnviado as { motor: string }).motor).toBe("copilot");
+  });
+});
+
+// Fetch que nunca resuelve y se aborta al recibir la signal
+function fetchColgado(): typeof fetch {
+  return ((_url: unknown, init?: { signal?: AbortSignal }) =>
+    new Promise<Response>((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => {
+        const err = new Error("The operation was aborted.");
+        err.name = "AbortError";
+        reject(err);
+      });
+    })) as unknown as typeof fetch;
+}
+
+// Fetch que rechaza inmediatamente (fallo de red puro)
+function fetchRedCaida(mensaje = "Failed to fetch"): typeof fetch {
+  return (async () => { throw new Error(mensaje); }) as unknown as typeof fetch;
+}
+
+describe("OpenAIAdapter — timeout, 401 y error de red", () => {
+  it("lanza con mensaje de timeout cuando el fetch se aborta", async () => {
+    const adapter = new OpenAIAdapter("k", "m", fetchColgado());
+    // Reducimos el timeout solo para este test sobreescribiendo la constante
+    (OpenAIAdapter as unknown as Record<string, number>).TIMEOUT_MS = 50;
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("timeout");
+    (OpenAIAdapter as unknown as Record<string, number>).TIMEOUT_MS = 30_000;
+  });
+
+  it("lanza con mensaje de clave inválida en 401", async () => {
+    const adapter = new OpenAIAdapter("k", "m", fetchFalso({ error: "invalid_api_key" }, 401));
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("clave invalida");
+  });
+
+  it("lanza con mensaje de clave inválida en 403", async () => {
+    const adapter = new OpenAIAdapter("k", "m", fetchFalso({ error: "forbidden" }, 403));
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("clave invalida");
+  });
+
+  it("lanza con mensaje de error de red cuando fetch rechaza", async () => {
+    const adapter = new OpenAIAdapter("k", "m", fetchRedCaida("Failed to fetch"));
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("error de red");
+  });
+});
+
+describe("GeminiAdapter — timeout, 401 y error de red", () => {
+  it("lanza con mensaje de timeout cuando el fetch se aborta", async () => {
+    const adapter = new GeminiAdapter("k", "m", fetchColgado());
+    (GeminiAdapter as unknown as Record<string, number>).TIMEOUT_MS = 50;
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("timeout");
+    (GeminiAdapter as unknown as Record<string, number>).TIMEOUT_MS = 30_000;
+  });
+
+  it("lanza con mensaje de clave inválida en 401", async () => {
+    const adapter = new GeminiAdapter("k", "m", fetchFalso({ error: "invalid" }, 401));
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("clave invalida");
+  });
+
+  it("lanza con mensaje de error de red cuando fetch rechaza", async () => {
+    const adapter = new GeminiAdapter("k", "m", fetchRedCaida("Failed to fetch"));
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("error de red");
+  });
+});
+
+describe("StaticFallback.evaluarAbierta", () => {
+  it("lanza (no evalúa) para preservar la invariante: los retos abiertos usan su fallback", async () => {
+    const fallback = new StaticFallback();
+    await expect(fallback.evaluarAbierta(retoAbierta, "cualquier respuesta")).rejects.toThrow();
   });
 });
 
