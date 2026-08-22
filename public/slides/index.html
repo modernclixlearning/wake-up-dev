@@ -113,6 +113,7 @@
   figcaption{font-size:12.5px; color:var(--fosforo-bajo); margin-top:.55em; letter-spacing:.03em}
   .par{display:grid; grid-template-columns:1fr 1fr; gap:16px}
   .recorte img{max-height:min(58vh,520px); object-fit:cover; object-position:top left}
+  video.pieza{width:100%; height:auto; display:block; border:1px solid var(--fosforo-bajo)}
 
   /* Caja = el modal del juego: borde de fósforo, fondo apenas teñido. */
   .caja{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.12);
@@ -160,12 +161,12 @@
   .opciones li.correcta{color:var(--fosforo)}
 
   /* ───────── Tira del circuito multiagente ───────── */
-  .circuito{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(14px,1.8vw,26px); align-items:start}
+  .circuito{display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(14px,1.8vw,26px); align-items:start}
   .paso{display:flex; flex-direction:column; gap:.55em}
   .paso .ojo{font-size:clamp(13px,1.15vw,16px); letter-spacing:.18em}
   /* Las tres capturas vienen con proporciones distintas: se recortan a una
      altura común desde arriba para que la tira se lea como una secuencia. */
-  .paso figure{height:clamp(190px,30vh,300px); overflow:hidden; border:1px solid var(--fosforo-bajo);
+  .paso figure{height:clamp(160px,26vh,250px); overflow:hidden; border:1px solid var(--fosforo-bajo);
                background:#0a0d12; display:grid; place-items:center}
   /* contain, no cover: recortar estas capturas corta justo lo que prueban el punto. */
   .paso img{height:100%; width:100%; object-fit:contain; border:0}
@@ -442,14 +443,18 @@ banco del nivel</pre>
         <p data-anim>El juego se construyó con el flujo que enseña el propio máster, sobre un
         sistema personal de orquestación: <strong>un coordinador reparte el trabajo en instancias
         headless que corren en paralelo</strong>, cada una en su worktree de git.</p>
-        <p data-anim>El reparto se hace por <em>blast radius</em>. Los tres últimos bancos de
-        contenido se generaron a la vez porque cada instancia tocaba <strong>un solo archivo
-        distinto</strong>; los archivos compartidos los toca un único agente al integrar.</p>
+        <p data-anim>El reparto se hace por <em>blast radius</em>: dos instancias corren a la vez
+        solo si los archivos que van a tocar no se cruzan. Las seis auditorías del vídeo son de
+        solo lectura, así que corren todas juntas; los tres bancos de contenido nuevos también,
+        porque cada uno tocaba <strong>un archivo distinto</strong>. Los archivos compartidos los
+        toca un único agente al integrar.</p>
         <p data-anim>El humano no copia prompts ni espera: revisa, decide y mergea.</p>
       </div>
-      <figure data-anim class="recorte">
-        <img src="img/09-orquestador.png" alt="Informe del coordinador tras integrar el trabajo de las instancias">
-        <figcaption>El coordinador rinde cuentas de lo hecho y lo verificado</figcaption>
+      <figure data-anim>
+        <video class="pieza" poster="media/auditorias-poster.jpg" autoplay muted loop playsinline aria-label="Seis instancias de auditoría corriendo en paralelo desde un mismo coordinador">
+          <source src="media/auditorias.mp4" type="video/mp4">
+        </video>
+        <figcaption>Seis auditorías en paralelo, una por punto de vista, desde un solo coordinador</figcaption>
       </figure>
     </div>
   </section>
@@ -484,7 +489,7 @@ banco del nivel</pre>
   <!-- 13 · El circuito -->
   <section class="slide" data-modulo="EL CIRCUITO">
     <p class="ojo" data-anim>De punta a punta</p>
-    <h2 data-decode data-anim>Reparte, trabaja, avisa</h2>
+    <h2 data-decode data-anim>Reparte, trabaja, avisa, rinde cuentas</h2>
     <div class="circuito">
       <div class="paso" data-anim>
         <p class="ojo">1 · Reparte</p>
@@ -506,6 +511,13 @@ banco del nivel</pre>
           <img src="img/12-notificacion-telegram.png" alt="Notificación en el móvil avisando de que una instancia terminó">
         </figure>
         <p style="font-size:.92em">Al terminar, el aviso llega al móvil. El humano vuelve solo cuando hace falta.</p>
+      </div>
+      <div class="paso" data-anim>
+        <p class="ojo">4 · Rinde cuentas</p>
+        <figure>
+          <img src="img/09-orquestador.png" alt="Informe del coordinador con lo hecho y lo verificado">
+        </figure>
+        <p style="font-size:.92em">El coordinador reporta qué se hizo y qué se verificó. El humano revisa eso, no el diff.</p>
       </div>
     </div>
   </section>
