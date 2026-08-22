@@ -194,7 +194,7 @@
   <span>WAKE UP, DEV</span>
   <span class="sep larga">|</span>
   <span class="larga">TFM · Máster en Desarrollo con IA</span>
-  <span class="meta">Slide: <span id="hud-pos">1</span>/<span id="hud-total">15</span></span>
+  <span class="meta">Slide: <span id="hud-pos">1</span>/<span id="hud-total">16</span></span>
 </header>
 
 <main id="deck">
@@ -482,6 +482,31 @@ banco del nivel</pre>
       <figure data-anim>
         <img src="img/08-base-conocimiento.png" alt="El vault en Obsidian: árbol de carpetas y archivos markdown que forman el esqueleto del sistema">
         <figcaption>Markdown y git como sistema operativo de conocimiento</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 14 · La auditoría -->
+  <section class="slide" data-modulo="LA AUDITORÍA">
+    <p class="ojo" data-anim>El máster auditando al TFM</p>
+    <h2 data-decode data-anim>Seis lentes, una cosecha</h2>
+    <div class="cols mas-figura">
+      <div class="pila">
+        <p data-anim>Las cápsulas no son un archivo bonito: se usaron para auditar este mismo
+        juego. <strong>Seis agentes en paralelo</strong>, cada uno midiendo contra la suya —calidad,
+        infraestructura, cloud, seguridad, flujo con IA— y uno más de diseño y UX que jugó el juego
+        en el navegador.</p>
+        <p data-anim>Cosecha: <em>18 mejoras rápidas y 9 de fondo</em>, cada una con evidencia,
+        criterio de verificación y los archivos que tocaría. Salieron a GitHub como issues públicos:
+        el backlog también es parte de lo que se entrega.</p>
+        <p data-anim><strong>Dos hallazgos no sobrevivieron a la verificación.</strong> Uno afirmaba
+        que cierta dependencia no se usaba en ningún archivo, con un <code>grep</code> de cero
+        resultados; el <em>import</em> estaba en la primera línea. Aplicarlo rompía el build.
+        Por eso el humano contrasta antes de mergear: el gate no es opcional.</p>
+      </div>
+      <figure data-anim class="recorte">
+        <img src="img/13-issue-auditoria.png" alt="Issue público generado por la auditoría de diseño y UX, con sus tareas y criterios de aceptación">
+        <figcaption>Un hallazgo de la auditoría, ya como issue accionable</figcaption>
       </figure>
     </div>
   </section>
