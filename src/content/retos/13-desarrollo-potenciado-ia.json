@@ -1,0 +1,501 @@
+{
+  "modulo": {
+    "id": "13-desarrollo-potenciado-ia",
+    "nombre": "Desarrollo potenciado por IA",
+    "descripcion": "Proyectos prácticos con flujo profesional asistido por IA: front con React/Vite, mobile con Jetpack Compose, backend con OpenAPI y Express, CLI tipo Perplexity con Genkit y Tavily. Más el ecosistema teórico: LLMs, ventana de contexto, chat vs agente, Engram, skills, SDD y orquestación."
+  },
+  "retos": [
+    {
+      "id": "dpi-001",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En el bloque práctico del máster, ¿qué característica fundamental diferencia la forma en que cada docente aborda su proyecto?",
+      "opciones": [
+        "Todos siguen el mismo guión y las mismas tecnologías para garantizar coherencia en los contenidos",
+        "Cada docente elige sus propias herramientas y enfrenta el proyecto como lo haría en un caso real",
+        "Los proyectos están predefinidos y el docente solo los explica, sin tomar decisiones técnicas en clase",
+        "El alumno elige la tecnología y el docente adapta el contenido a esa elección"
+      ],
+      "correcta": 1,
+      "explicacion": "El bloque práctico no tiene un guión único: cada docente construye su proyecto con el stack, los modelos y los agentes de IA que considera oportunos, simulando cómo un profesional lo haría en un entorno real. Esto expone al alumno a distintas formas de atacar problemas reales, no solo a una receta fija.",
+      "dificultad": 1,
+      "tags": ["bloque-practico", "flujo-profesional"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-002",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la función principal del archivo CLAUDE.md (o AGENTS.md) en un proyecto donde se trabaja con un agente de IA como OpenCode o Claude Code?",
+      "opciones": [
+        "Guardar el historial de prompts enviados al agente para poder auditarlos posteriormente",
+        "Configurar las credenciales y claves de API necesarias para conectar el agente al modelo",
+        "Definir las reglas de trabajo del agente: stack, convenciones de carpetas y procesos obligatorios como TDD",
+        "Documentar para humanos cómo usar el proyecto, similar a un README técnico"
+      ],
+      "correcta": 2,
+      "explicacion": "El CLAUDE.md (o AGENTS.md) es el sistema de instrucciones del agente para ese proyecto concreto. Contiene el stack de tecnologías, las reglas de organización del código, procesos mandatorios como TDD y cualquier convención que el agente debe respetar siempre. Se escribe de forma compacta porque su lector es un LLM, no una persona.",
+      "dificultad": 1,
+      "tags": ["front", "claude-md", "opencode", "agente"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-003",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Según la práctica de TDD aplicada en el proyecto front, ¿cuál es el orden correcto de los pasos al añadir una nueva funcionalidad?",
+      "opciones": [
+        "Escribir el test que falla → implementar el mínimo código para que pase → refactorizar",
+        "Implementar el código → escribir el test para validarlo → refactorizar si queda tiempo",
+        "Diseñar la interfaz visual → escribir el código → añadir el test como documentación",
+        "Escribir el test → refactorizar el código existente → verificar que el test pasa"
+      ],
+      "correcta": 0,
+      "explicacion": "TDD sigue siempre el ciclo rojo-verde-refactor: primero el test que falla (rojo), luego el mínimo código que lo hace pasar (verde), y finalmente la refactorización. Un principio que se reitera en el módulo: el test nunca se adapta al código para que pase; es el código el que se adapta al test, nunca al revés.",
+      "dificultad": 1,
+      "tags": ["front", "tdd", "calidad"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-004",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Según la Scope Rule (Screaming Architecture) aplicada en el proyecto front, ¿dónde debe vivir un componente o utilidad que se usa en dos features distintas?",
+      "opciones": [
+        "Dentro de la primera feature que lo usó, para respetar el principio de propietario único",
+        "En una carpeta raíz de components/ separada de cualquier feature",
+        "Duplicado en cada feature que lo necesita, para evitar dependencias entre ellas",
+        "En una carpeta compartida (src/share), accesible a todas las features del proyecto"
+      ],
+      "correcta": 3,
+      "explicacion": "La Scope Rule establece que el código utilizado en más de un lugar sube a un scope global compartido (src/share: types, utils, constants, components y hooks compartidos). El código propio de una sola feature se queda dentro de ella. Esto facilita la modularidad y el lazy loading por feature con un bundler como Vite.",
+      "dificultad": 2,
+      "tags": ["front", "scope-rule", "screaming-architecture", "estructura"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-005",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En el proyecto front, la lógica de descuentos se implementó con el patrón Strategy. ¿Cuál es la ventaja principal de este enfoque frente a un único bloque de condicionales?",
+      "opciones": [
+        "Permite calcular los descuentos sin tests unitarios, ya que cada estrategia es autónoma y verificable visualmente",
+        "Cada regla de negocio queda encapsulada en su propia clase, facilitando añadir, quitar o modificar reglas sin tocar el resto",
+        "Reduce el número de archivos del proyecto al centralizar toda la lógica en un único módulo de descuentos",
+        "Obliga a usar programación funcional pura, eliminando efectos secundarios en el estado del carrito"
+      ],
+      "correcta": 1,
+      "explicacion": "El patrón Strategy define una interfaz común (en este caso DiscountStrategy con isApplicable y calculate) y cada regla de negocio la implementa de forma independiente. Añadir una nueva regla no rompe las existentes; quitarla no afecta al resto. Los bloques de condicionales crecen y se vuelven difíciles de mantener cuando las reglas de negocio se multiplican.",
+      "dificultad": 2,
+      "tags": ["front", "patron-strategy", "descuentos", "patrones"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-006",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En el proyecto front, el botón 'Añadir al carrito' sigue un ciclo de estados visuales (Optimistic UI / microcopy). ¿Cuál es la secuencia correcta?",
+      "opciones": [
+        "idle → loading → success/error → idle",
+        "idle → success → loading → error → idle",
+        "pending → active → resolved → idle",
+        "loading → idle → success/error"
+      ],
+      "correcta": 0,
+      "explicacion": "El patrón Optimistic UI usa el ciclo idle → loading → success/error → idle. Mientras la acción se procesa, el botón muestra 'Adding...'; si tiene éxito, 'Added'; si falla, ofrece la opción de reintentar. Tras 1,5–3 segundos, vuelve a idle. Este microcopy claro reduce la incertidumbre del usuario y mejora la percepción de respuesta del sistema.",
+      "dificultad": 2,
+      "tags": ["front", "optimistic-ui", "ux", "microcopy"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-007",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué problema resuelve el patrón Page Object en los tests E2E de Playwright del proyecto front?",
+      "opciones": [
+        "Permite ejecutar los tests en paralelo en múltiples navegadores sin cambiar el código de test",
+        "Elimina la necesidad de usar selectores de DOM, reemplazándolos por descripciones en lenguaje natural",
+        "Centraliza los selectores y acciones de cada pantalla en métodos reutilizables, de modo que un cambio de UI solo requiere actualizarlo en un lugar",
+        "Genera automáticamente capturas de pantalla en cada paso del test para facilitar el debugging"
+      ],
+      "correcta": 2,
+      "explicacion": "El Page Object encapsula en una clase los selectores y las acciones (navegar, hacer clic, rellenar formularios) de una pantalla concreta. Si un selector cambia en la UI, solo hay que actualizarlo en ese Page Object, no en todos los tests que usan esa pantalla. En el proyecto se usan selectores accesibles (getByRole, getByText) y data-testid solo cuando no hay alternativa más semántica.",
+      "dificultad": 2,
+      "tags": ["front", "testing", "playwright", "page-object", "e2e"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-008",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Al usar la anotación @Preview en Jetpack Compose, ¿qué requisito debe cumplir el composable para que Android Studio lo renderice sin lanzar el emulador?",
+      "opciones": [
+        "El composable debe ser de acceso público y pertenecer al paquete raíz de la aplicación",
+        "La función debe ser privada para que Android Studio pueda aislarla del árbol de vistas principal",
+        "El composable no puede recibir ningún parámetro; si los necesita, hay que crear una copia sin parámetros",
+        "Todos los parámetros del composable deben tener valores por defecto"
+      ],
+      "correcta": 3,
+      "explicacion": "@Preview solo funciona si Android Studio puede instanciar el composable sin argumentos externos. Por eso todos sus parámetros deben tener valores por defecto declarados. Sin ellos, el IDE no puede renderizarlo en la vista previa y hay que recurrir al emulador para ver el resultado visual.",
+      "dificultad": 2,
+      "tags": ["mobile", "jetpack-compose", "preview", "android"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-009",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En Jetpack Compose, si el texto de un buscador se guarda en una variable local ordinaria (val), ¿qué ocurre al teclear?",
+      "opciones": [
+        "Con cada tecla se dispara una recomposición que reinicia la variable a su valor inicial, impidiendo que el usuario escriba",
+        "La variable no es accesible dentro de la lambda onValueChange, lo que causa un error de compilación",
+        "El valor se actualiza correctamente en memoria pero no se refleja en pantalla hasta que el usuario pulsa Enter",
+        "Android serializa la variable como estado de configuración y puede causar un crash al rotar la pantalla"
+      ],
+      "correcta": 0,
+      "explicacion": "En Compose, cada cambio de estado provoca que el bloque composable se reejecutie (recomposición). Si el texto está en una variable local, la recomposición la reinicializa y el valor teclado se pierde en un bucle continuo. La solución es remember { mutableStateOf(\"\") }: remember conserva el valor entre recomposiciones y mutableStateOf lo convierte en un estado observable que Compose sabe cuándo repintar.",
+      "dificultad": 2,
+      "tags": ["mobile", "jetpack-compose", "estado", "recomposicion"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-010",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el flujo de trabajo recomendado al usar Stitch para generar diseños de UI y llevarlos después a Jetpack Compose?",
+      "opciones": [
+        "Exportar el diseño completo de todas las pantallas de una vez y pasárselo al agente de IA con todo el contexto del proyecto",
+        "Capturar un componente a la vez del diseño y pasarlo al agente con un prompt específico para ese composable concreto",
+        "Usar directamente el código HTML/CSS que exporta Stitch, ya que es convertible a Jetpack Compose sin modificaciones",
+        "Generar todos los composables desde Stitch directamente, sin intervención de ninguna herramienta de IA externa"
+      ],
+      "correcta": 1,
+      "explicacion": "Stitch genera diseños a partir de prompts, pero el código que exporta es HTML/CSS aproximado, no Jetpack Compose. El flujo recomendado es capturar un componente del diseño y pasárselo a Gemini o Claude con un prompt específico para ese composable, de a uno a la vez. Pasar el diseño entero de golpe tiende a hacer que la IA mezcle varios componentes en uno solo.",
+      "dificultad": 2,
+      "tags": ["mobile", "stitch", "diseno-ui", "gemini", "android"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-011",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Al implementar scroll infinito en la app Android, el primer intento manual de paginación tenía un bug: cada página nueva sobreescribía la lista anterior. ¿Cuál fue la solución adoptada y cuál es el aprendizaje general del módulo sobre este tipo de problema?",
+      "opciones": [
+        "Se aumentó el tamaño de página para reducir la frecuencia de las llamadas y así minimizar el conflicto de estados",
+        "Se implementó un mutex para serializar las llamadas al repositorio y evitar condiciones de carrera",
+        "Se migró a Paging 3, la librería oficial de Android para paginación; el aprendizaje es que cuando la IA no resuelve algo complejo, conviene guiarla con el nombre técnico correcto",
+        "Se cachearon los resultados en Room y se cargaron desde la base de datos local en vez de acumularlos en el ViewModel"
+      ],
+      "correcta": 2,
+      "explicacion": "La paginación manual reemplazaba la lista en vez de acumularla. Cuando insistir en que la IA 'lo arregle' no funcionó, la solución fue indicarle directamente la librería correcta: Paging 3. El aprendizaje generalizable: cuando la IA no acierta con algo complejo, guiarla con el nombre de la librería o el patrón adecuado es más eficaz que pedirle que corrija el código sin más contexto.",
+      "dificultad": 3,
+      "tags": ["mobile", "paginacion", "paging3", "android", "buenas-practicas-ia"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-012",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En el proyecto backend, ¿qué ventaja principal se obtiene al diseñar el contrato OpenAPI antes de escribir cualquier línea de código de la API?",
+      "opciones": [
+        "Garantiza que el agente de IA genere exactamente el código correcto sin necesidad de revisión posterior",
+        "Permite ejecutar tests de integración antes de que exista la implementación, gracias al servidor mock incluido en OpenAPI",
+        "Obliga a usar Express como único framework, lo que simplifica las decisiones de arquitectura del proyecto",
+        "El contrato actúa como fuente de verdad para la generación de código, tests y documentación, reduciendo la ambigüedad de lo que debe implementarse"
+      ],
+      "correcta": 3,
+      "explicacion": "Definir primero el contrato OpenAPI hace que los endpoints, sus parámetros y sus respuestas estén especificados antes de tocar código. Esa especificación se convierte en la fuente de verdad de la que se derivan el esqueleto de la implementación, los tests de integración y la documentación automática. Reduce la ambigüedad cuando un agente de IA genera el código a partir de ella.",
+      "dificultad": 2,
+      "tags": ["backend", "openapi", "api-design", "arquitectura"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-013",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En la CLI interactiva tipo Perplexity construida con Genkit y Tavily, ¿cómo decide el agente cuándo invocar la herramienta de búsqueda web?",
+      "opciones": [
+        "A partir de la descripción de la tool: si el LLM juzga que necesita información actualizada o no disponible en su entrenamiento, decide invocarla",
+        "La tool se invoca siempre de forma automática para toda pregunta, sin importar si el modelo podría responder sin ella",
+        "El usuario debe incluir una palabra clave especial en su pregunta (como 'busca' o 'web') para activar la búsqueda",
+        "La tool solo se activa cuando el nivel de confianza interno del modelo cae por debajo de un umbral configurable"
+      ],
+      "correcta": 0,
+      "explicacion": "En Genkit, las tools se definen con un nombre y una descripción en lenguaje natural. El LLM lee esa descripción y decide autónomamente cuándo invocar la herramienta en función de si la necesita para responder correctamente. No hay umbral de confianza numérico ni palabras clave especiales — es el razonamiento del propio modelo el que determina si hace falta la búsqueda web.",
+      "dificultad": 2,
+      "tags": ["genkit", "tavily", "cli", "tools", "agente"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-014",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué ventaja tiene usar definePrompt() en Genkit frente a llamar directamente a generate() con un texto de prompt?",
+      "opciones": [
+        "definePrompt() está optimizado para reducir el consumo de tokens de entrada, abaratando las llamadas al LLM",
+        "Crea un prompt reutilizable con nombre, schema de entrada/salida validado con Zod, y lo expone en la Developer UI para probarlo de forma interactiva",
+        "Permite usar Markdown enriquecido en el texto del prompt, mientras que generate() solo acepta texto plano",
+        "Garantiza que la respuesta del LLM sea determinística, porque el schema de salida actúa como restricción del muestreo"
+      ],
+      "correcta": 1,
+      "explicacion": "definePrompt() transforma un texto en un artefacto nombrado y tipado: el schema Zod valida la entrada en tiempo de compilación, el nombre lo hace invocable desde cualquier parte del código, y aparece en la Developer UI de Genkit (localhost:4000) para ejecutarlo, inspeccionarlo y testearlo visualmente. generate() es una llamada puntual que no se puede referenciar ni probar desde la interfaz de desarrollo.",
+      "dificultad": 2,
+      "tags": ["genkit", "prompts", "developer-ui", "typescript"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-015",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué diferencia práctica aportan los ficheros .prompt (dot prompt) respecto a definir los prompts en el código fuente con definePrompt()?",
+      "opciones": [
+        "Los ficheros .prompt permiten usar modelos de distintos proveedores en el mismo proyecto, algo que definePrompt() no admite",
+        "Eliminan la necesidad de usar Zod para definir schemas, porque el sistema infiere los tipos automáticamente del contenido del fichero",
+        "Permiten que los prompts vivan en un repositorio separado del código con ciclos de despliegue independientes, de modo que cambiar un prompt no implica desplegar la aplicación",
+        "Convierten los prompts en endpoints HTTP, exponiendo cada fichero .prompt como una ruta de la API de la aplicación"
+      ],
+      "correcta": 2,
+      "explicacion": "Los ficheros .prompt (proyecto open source de Google) usan Handlebars como lenguaje de plantillas y separan el texto del prompt del código fuente. Esto permite que el equipo de contenido o de producto gestione los prompts en otro repositorio con su propio ciclo de vida: actualizar un prompt es una operación de configuración, no un despliegue de código. definePrompt() también es reutilizable, pero el prompt vive acoplado al código.",
+      "dificultad": 3,
+      "tags": ["genkit", "prompts", "dot-prompt", "arquitectura"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-016",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué un LLM 'alucina', es decir, genera información incorrecta o inventada con aparente confianza?",
+      "opciones": [
+        "Porque el modelo no fue entrenado con suficientes datos de ese tema y devuelve el resultado del dominio más cercano en su espacio vectorial",
+        "Por un bug de inferencia que genera tokens incoherentes cuando la temperatura de muestreo es demasiado alta",
+        "Porque el modelo prioriza la velocidad de respuesta sobre la precisión cuando la consulta supera cierta longitud",
+        "Porque cuando no tiene contexto suficiente para responder, en vez de reconocer que no sabe, genera la continuación estadísticamente más probable, que puede ser incorrecta"
+      ],
+      "correcta": 3,
+      "explicacion": "Un LLM no 'sabe' nada en el sentido tradicional: genera la continuación más probable para una entrada dada. Cuando la información necesaria no está en su entrenamiento ni en el contexto proporcionado, ese mecanismo probabilístico produce texto plausible pero incorrecto. La solución no es bajar la temperatura, sino enriquecer el contexto con la información real que necesita el modelo para responder correctamente.",
+      "dificultad": 1,
+      "tags": ["ia-generativa", "alucinacion", "llm", "contexto"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-017",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Al forzar la compactación de una sesión con el comando /compact, ¿cuál es el riesgo principal que se asume?",
+      "opciones": [
+        "Que decisiones tomadas durante la conversación o convenciones acordadas se pierdan en el resumen generado",
+        "Que el modelo se reinicie con una versión diferente al restaurar la sesión compactada",
+        "Que los archivos del proyecto editados durante la sesión queden en estado inconsistente al recargar el contexto",
+        "Que la compactación consuma el doble de tokens que el contexto original, aumentando el coste de la sesión"
+      ],
+      "correcta": 0,
+      "explicacion": "/compact genera un resumen de la sesión (objetivo, instrucciones, descubrimientos, archivos revisados, siguientes pasos) y arranca una nueva sesión con ese resumen. Al comprimir, pueden perderse decisiones puntuales, patrones acordados o la razón de fondo de ciertas elecciones: el resumen captura qué se hizo pero no siempre por qué. Es la compensación inevitable entre liberar espacio en la ventana de contexto y mantener la fidelidad del historial.",
+      "dificultad": 1,
+      "tags": ["context-window", "compactacion", "compact", "memoria"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-018",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Un compañero dice: 'Le pregunté a la IA qué archivos modificó el último commit y me dio la respuesta exacta'. ¿Qué es lo más probable que haya ocurrido?",
+      "opciones": [
+        "El chat usó su conexión a internet para clonar el repositorio y analizar el historial de Git en tiempo real",
+        "Estaba usando un agente (no un chat), que ejecutó un comando de Git real y devolvió el resultado de su salida",
+        "El chat accedió al repositorio a través de un plugin de GitHub conectado a su cuenta de usuario",
+        "El chat tenía el repositorio completo precargado en su ventana de contexto desde el inicio de la sesión"
+      ],
+      "correcta": 1,
+      "explicacion": "Un chat solo procesa texto de entrada y genera texto de salida; no puede ejecutar comandos en la máquina del usuario. Para leer el historial real de Git hay que usar un agente, que vive dentro de la terminal y tiene acceso a herramientas como git log. Si la respuesta fue precisa sobre el estado real del repositorio, la herramienta usada era un agente, no un chat conversacional.",
+      "dificultad": 1,
+      "tags": ["chat-vs-agente", "agente", "git", "tools"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-019",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "La intuición común es que darle más contexto al agente siempre mejora su rendimiento. ¿Qué matiz importante plantea el módulo sobre esto?",
+      "opciones": [
+        "Más contexto siempre es mejor porque el modelo dispone de mayor información para tomar decisiones correctas",
+        "El límite no es la calidad del contexto sino el coste económico de los tokens: solo hay que optimizarlo si el presupuesto lo exige",
+        "El contexto innecesario genera ruido: el modelo debe procesarlo todo para calcular la respuesta más probable, lo que puede degradar la calidad",
+        "El contexto extra solo perjudica si supera el 50% de la ventana disponible; por debajo de ese umbral, más siempre es mejor"
+      ],
+      "correcta": 2,
+      "explicacion": "Un LLM calcula la respuesta a partir de todo lo que está en su contexto. Si se incluye información irrelevante para la tarea concreta, el modelo tiene que 'procesar el ruido' para encontrar la señal correcta. La solución del módulo (skills con carga perezosa) es precisamente no cargar un AGENTS.md gigante, sino solo la skill pertinente para la tarea en curso.",
+      "dificultad": 2,
+      "tags": ["contexto", "skills", "lazy-loading", "rendimiento-ia"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-020",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "Al delegar una tarea en un subagente, ¿cuál es la ventaja principal para el orquestador?",
+      "opciones": [
+        "El subagente puede acceder directamente a toda la memoria del orquestador, evitando repetir información en el prompt de delegación",
+        "El orquestador se libera del coste de tokens de la tarea delegada porque la facturación pasa a nombre del subagente",
+        "El subagente puede ejecutar acciones que el orquestador tiene prohibidas por sus permisos de seguridad",
+        "Toda la información que el subagente recopila durante su tarea carga en su propio contexto, no en el del orquestador; el orquestador solo recibe el informe final"
+      ],
+      "correcta": 3,
+      "explicacion": "Un subagente arranca con un contexto completamente limpio y recibe del orquestador únicamente el prompt con la tarea específica. Al explorar archivos, ejecutar comandos o leer documentación, toda esa información carga en su propio contexto. Cuando termina, entrega al orquestador un informe resumido. Así el orquestador mantiene su contexto libre de ruido y solo acumula las conclusiones de cada delegación.",
+      "dificultad": 2,
+      "tags": ["subagentes", "orquestador", "contexto", "arquitectura-ia"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-021",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia fundamental entre lo que guarda Engram y lo que guardan otras herramientas de memoria para agentes de IA?",
+      "opciones": [
+        "Engram guarda señales (decisiones, patrones adoptados, bugs corregidos) en vez del historial completo de prompts y respuestas",
+        "Engram guarda únicamente el código generado por el agente, sin incluir ningún contexto conversacional",
+        "Engram almacena la conversación en embeddings vectoriales para permitir búsqueda semántica, igual que otras herramientas pero más rápido",
+        "Engram guarda el historial completo pero lo comprime con un algoritmo sin pérdidas para que ocupe menos espacio"
+      ],
+      "correcta": 0,
+      "explicacion": "Engram no es un sistema de memoria conversacional: no guarda el prompt ni la respuesta del LLM. Guarda señales — el resultado de una decisión: una arquitectura adoptada, un patrón, un bug ya corregido. Usa SQLite con FTS5 (búsqueda de texto, no vectores). Esta simplicidad es intencional: guardar todo el historial acumula ruido; lo que interesa es preservar las decisiones para que no se repitan los mismos errores al abrir una nueva sesión.",
+      "dificultad": 2,
+      "tags": ["engram", "memoria", "sqlite", "mcp"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-022",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es el rol del 'trigger' en la metadata de una skill de agente de IA?",
+      "opciones": [
+        "Define los permisos que la skill necesita para acceder a archivos sensibles del proyecto sin pedir confirmación al usuario",
+        "Especifica las condiciones (palabras, frases, contexto) que deben cumplirse para que el agente cargue esa skill en el contexto activo",
+        "Controla el límite de tokens que puede consumir la skill para evitar saturar la ventana de contexto del agente",
+        "Indica el orden de prioridad de la skill respecto a otras skills que podrían activarse al mismo tiempo"
+      ],
+      "correcta": 1,
+      "explicacion": "El trigger es la condición de activación de una skill. Cuando el usuario dice algo que coincide con ese trigger (por ejemplo, 'quiero hacer un PR' o 'hay un bug en producción'), el agente carga esa skill en el contexto. Fuera de ese escenario, la skill no está cargada, lo que mantiene el contexto limpio. Es el mecanismo central del lazy loading de skills.",
+      "dificultad": 2,
+      "tags": ["skills", "trigger", "lazy-loading", "contexto"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-023",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "El módulo compara Spec Driven Development (SDD) con TDD. ¿En qué sentido son análogos según esa comparación?",
+      "opciones": [
+        "En que ambos requieren que el agente de IA escriba el código antes de que el desarrollador defina los requerimientos",
+        "En que SDD reemplaza a TDD: una vez que se especifica correctamente, los tests son redundantes",
+        "En que tanto TDD como SDD imponen una fase de especificación (tests / specs) antes de la implementación, usando esa especificación como red de verificación posterior",
+        "En que ambos se enfocan exclusivamente en el código de producción, ignorando la documentación y la arquitectura"
+      ],
+      "correcta": 2,
+      "explicacion": "TDD escribe el test antes que el código para verificar que la implementación hace lo que debe. SDD escribe la especificación (requerimientos, diseño, tareas) antes que el código por la misma razón. El módulo los equipara porque ambos invierten el orden habitual (primero especificar, luego implementar) y ambos funcionan como red de seguridad cuando la IA puede avanzar muy rápido. SDD no elimina TDD — el módulo los combina en OpenSpec.",
+      "dificultad": 2,
+      "tags": ["sdd", "tdd", "especificacion", "flujo"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-024",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "En la fase Verify de SDD con OpenSpec, ¿cómo se clasifican los hallazgos y qué categoría indica que lo implementado no cumple la especificación?",
+      "opciones": [
+        "Dos categorías (pass/fail); un fail indica incumplimiento total",
+        "Cuatro categorías (blocker, error, warning, info); blocker indica incumplimiento grave",
+        "Tres categorías (error, warning, info); error indica incumplimiento parcial o total",
+        "Tres categorías (crítico, warning, sugerencia); crítico indica que la implementación no cumple la especificación"
+      ],
+      "correcta": 3,
+      "explicacion": "La fase Verify compara lo implementado contra las especificaciones y clasifica cada hallazgo en: crítico (no cumple la especificación, debe corregirse), warning (cumple pero hay algo a vigilar) y sugerencia (cumple y además podría mejorarse). Esta clasificación permite al orquestador priorizar qué debe corregir el fix agent y qué puede dejarse para una iteración posterior.",
+      "dificultad": 2,
+      "tags": ["sdd", "verify", "openspec", "calidad"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-025",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — ¿Qué framework de IA generativa utilizan internamente por defecto herramientas de Google como Firebase Studio y Antigravity para las llamadas a LLMs cuando generan código?",
+      "opciones": [
+        "Genkit, el framework open source creado por el equipo de Firebase/Google",
+        "LangChain, que Google adoptó como estándar para sus productos de IA generativa en 2025",
+        "Vertex AI SDK directo, sin framework intermedio de alto nivel",
+        "Vercel AI SDK, integrado vía acuerdo entre Google y Vercel para sus herramientas de desarrollo"
+      ],
+      "correcta": 0,
+      "explicacion": "Según lo mencionado en el módulo, Firebase Studio y Antigravity usan Genkit internamente por defecto para las llamadas a LLMs cuando generan código. Genkit es el framework open source creado por el equipo de Firebase, pensado para aplicaciones backend con IA generativa. Su uso en productos propios de Google confirma la apuesta del ecosistema Google por este framework en 2026.",
+      "dificultad": 3,
+      "tags": ["genkit", "firebase", "ecosistema", "bonus2026"],
+      "bonus2026": true
+    },
+    {
+      "id": "dpi-026",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "La skill de 'juicio' lanza dos subagentes independientes en vez de uno solo. ¿Cuál es la razón principal para usar esa estrategia de doble revisor?",
+      "opciones": [
+        "Para que uno revise el código de producción y el otro revise los tests, dividiendo el trabajo por tipo de archivo",
+        "Porque un LLM no es determinístico: una misma pasada puede pasar por alto un problema que otra detecta, y dos jueces independientes aumentan la probabilidad de cubrir todos los hallazgos reales",
+        "Para reducir el tiempo total de la revisión, ya que dos agentes en paralelo terminan el doble de rápido que uno solo",
+        "Porque cada agente tiene acceso a herramientas distintas: uno lee archivos y el otro ejecuta los tests del proyecto"
+      ],
+      "correcta": 1,
+      "explicacion": "Un LLM es probabilístico: no siempre detecta los mismos problemas en cada ejecución. Dos jueces con contextos completamente independientes tienen mayor probabilidad combinada de cubrir todos los hallazgos reales. El orquestador contrasta ambos reportes y confirma solo los que considera genuinos. Para proyectos críticos, esta estrategia compensa el coste extra de tokens.",
+      "dificultad": 2,
+      "tags": ["skill-juicio", "subagentes", "revision-codigo", "no-determinismo"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-027",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — Herramientas como Cursor (con su interfaz simplificada) y Codex (ahora gestor de agentes) ilustran una tendencia del mercado. ¿Cómo describe el módulo el nuevo rol del desarrollador en este contexto?",
+      "opciones": [
+        "El desarrollador pasa a ser principalmente prompt engineer: su trabajo central es redactar instrucciones precisas para la IA",
+        "El desarrollador deja de necesitar conocer el stack tecnológico porque la IA toma todas las decisiones de arquitectura",
+        "El desarrollador pasa de usar la IA como herramienta a dirigirla como orquestador; los conceptos sólidos son más necesarios que nunca para hacerlo correctamente",
+        "El desarrollador se especializa exclusivamente en revisar el código generado por la IA, sin escribir ninguna línea propia"
+      ],
+      "correcta": 2,
+      "explicacion": "El módulo describe una evolución clara: Cursor simplificó su interfaz alejándose del código explícito; Codex es ya un gestor de agentes. La dirección apunta a que el desarrollador deje de picar código línea a línea y pase a dirigir a los agentes con criterio. Para hacerlo bien se necesitan conceptos sólidos de arquitectura, patrones y calidad — la idea de que 'con la IA ya no hace falta aprender' es incorrecta.",
+      "dificultad": 2,
+      "tags": ["rol-desarrollador", "gentleman-cli", "ecosistema", "bonus2026"],
+      "bonus2026": true
+    },
+    {
+      "id": "dpi-028",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "abierta",
+      "pregunta": "Describí qué ocurre cuando se ejecuta el comando /compact en un agente de IA y qué riesgo implica para el trabajo en curso. ¿Qué estrategias presentadas en el módulo ayudan a mitigar ese riesgo?",
+      "rubrica": "Debe mencionar: (1) /compact genera un resumen de la sesión que incluye objetivo, instrucciones, descubrimientos, archivos revisados y siguientes pasos, y restablece el contador de tokens a 0%; (2) el riesgo principal es la pérdida de decisiones, convenciones acordadas o el razonamiento detrás de ciertas elecciones que no queden bien capturados en el resumen; (3) al menos una estrategia de mitigación entre las siguientes: guardar señales en Engram antes de compactar, mantener skills bien definidas con sus triggers en AGENTS.md para que el contexto se reconstruya bajo demanda, o hacer commits frecuentes para preservar el estado del código independientemente del estado de la sesión.",
+      "fallbackId": "dpi-017",
+      "dificultad": 2,
+      "tags": ["context-window", "compactacion", "engram", "skills"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-029",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "abierta",
+      "pregunta": "Explicá el flujo de fases del Spec Driven Development (SDD) con OpenSpec: ¿cuáles son las fases, en qué consiste cada una y qué rol tienen los subagentes a lo largo del proceso?",
+      "rubrica": "Debe mencionar las siguientes fases en orden aproximado: (1) explorar el estado actual del proyecto; (2) propuesta (entender qué se quiere construir y por qué, problema de negocio); (3) definir specs y diseño (requerimientos, arquitectura, planos); (4) crear tareas concretas derivadas de las specs; (5) aplicar con TDD (ciclo rojo-verde-refactor generando tests a partir de los requerimientos antes que el código); (6) verificar contra las specs con clasificación crítico/warning/sugerencia; (7) archivar lo aprendido en Engram u OpenSpec. Debe mencionar también que cada fase se delega en un subagente con contexto limpio y acotado, y que el orquestador coordina y se comunica con el humano manteniendo la trazabilidad.",
+      "fallbackId": "dpi-023",
+      "dificultad": 3,
+      "tags": ["sdd", "openspec", "tdd", "subagentes", "fases"],
+      "bonus2026": false
+    },
+    {
+      "id": "dpi-030",
+      "modulo": "13-desarrollo-potenciado-ia",
+      "tipo": "abierta",
+      "pregunta": "Explicá qué es Engram, qué tipo de información guarda y cómo se integra con un agente de IA para persistir información entre sesiones y entre subagentes.",
+      "rubrica": "Debe mencionar: (1) Engram es una herramienta de memoria basada en SQLite con búsqueda de texto FTS5 (no vectores), deliberadamente simple frente a soluciones más complejas; (2) guarda señales (decisiones de arquitectura, patrones adoptados, bugs corregidos), no el historial completo de prompts ni respuestas; (3) se expone como servidor MCP (Model Context Protocol) con herramientas invocables por el agente, como mem_context o mem_get_observation; (4) permite que la información persista entre sesiones (incluso en distintas máquinas) y sea compartida entre subagentes y el orquestador, evitando repetir los mismos errores en sesiones futuras.",
+      "fallbackId": "dpi-021",
+      "dificultad": 3,
+      "tags": ["engram", "memoria", "mcp", "sqlite", "persistencia"],
+      "bonus2026": false
+    }
+  ]
+}
