@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revisión de Bancos — Wake Up, Dev</title>
+  <style>
+    /* ─── Reset y base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f8f7f4;
+      --bg-card:  #ffffff;
+      --bg-idx:   #eef0f5;
+      --border:   #d0d4de;
+      --text:     #1a1c23;
+      --text-sub: #5a6072;
+      --accent:   #2a52c9;
+      --green:    #166534;
+      --green-bg: #dcfce7;
+      --tag-bg:   #e2e8f0;
+      --tag-txt:  #334155;
+      --arte-bg:  #fef9c3;
+      --arte-txt: #713f12;
+      --open-bg:  #eff6ff;
+      --open-brd: #93c5fd;
+      --max-w:    780px;
+      --font:     system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ─── Header ───────────────────────────────────────────────── */
+    header {
+      background: #1e293b;
+      color: #f1f5f9;
+      padding: 1.25rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: .01em; }
+    header .badge { font-size: .8rem; background: #334155; padding: .2rem .6rem; border-radius: 999px; white-space: nowrap; }
+    header .note { font-size: .75rem; color: #94a3b8; margin-left: auto; }
+
+    /* ─── Layout ───────────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 54px);
+    }
+
+    /* ─── Índice lateral ────────────────────────────────────────── */
+    nav#indice {
+      background: var(--bg-idx);
+      border-right: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      position: sticky;
+      top: 54px;
+      height: calc(100vh - 54px);
+      overflow-y: auto;
+      font-size: .85rem;
+    }
+    nav#indice h2 { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-sub); margin-bottom: .75rem; }
+    nav#indice a {
+      display: block;
+      padding: .45rem .6rem;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      margin-bottom: .25rem;
+      transition: background .12s;
+    }
+    nav#indice a:hover { background: #d1d9ec; }
+    nav#indice .cnt { font-size: .75rem; color: var(--text-sub); margin-top: .1rem; }
+
+    /* ─── Contenido principal ───────────────────────────────────── */
+    main { padding: 2rem 2.5rem; }
+
+    /* ─── Módulo ────────────────────────────────────────────────── */
+    .modulo { margin-bottom: 3rem; }
+    .modulo-header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .modulo-titulo { font-size: 1.2rem; font-weight: 700; }
+    .modulo-id { font-size: .8rem; color: var(--text-sub); font-family: monospace; }
+    .modulo-stats {
+      display: flex;
+      gap: .75rem;
+      margin-top: .5rem;
+      flex-wrap: wrap;
+    }
+    .stat {
+      font-size: .8rem;
+      background: var(--tag-bg);
+      color: var(--tag-txt);
+      padding: .2rem .6rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .stat.arte { background: var(--arte-bg); color: var(--arte-txt); }
+    .stat.abierto { background: var(--open-bg); color: #1e40af; }
+
+    /* ─── Reto ──────────────────────────────────────────────────── */
+    .reto {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: .85rem;
+    }
+    .reto.es-arte { border-left: 4px solid #eab308; }
+    .reto.es-abierta { border-left: 4px solid #60a5fa; }
+
+    .reto-meta {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: .65rem;
+      font-size: .78rem;
+    }
+    .reto-id { font-family: monospace; font-weight: 700; color: var(--accent); }
+    .chip {
+      padding: .18rem .5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: .75rem;
+    }
+    .chip.mc   { background: #e0f2fe; color: #0369a1; }
+    .chip.open { background: var(--open-bg); color: #1e40af; }
+    .chip.dif1 { background: #dcfce7; color: #166534; }
+    .chip.dif2 { background: #fef9c3; color: #713f12; }
+    .chip.dif3 { background: #fee2e2; color: #991b1b; }
+    .chip.arte { background: var(--arte-bg); color: var(--arte-txt); }
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-txt);
+      padding: .15rem .45rem;
+      border-radius: 4px;
+      font-size: .72rem;
+    }
+
+    .pregunta {
+      font-size: .95rem;
+      font-weight: 600;
+      margin-bottom: .75rem;
+      max-width: var(--max-w);
+    }
+
+    /* ─── Opciones multiple-choice ──────────────────────────────── */
+    .opciones { list-style: none; margin-bottom: .75rem; }
+    .opciones li {
+      padding: .35rem .7rem;
+      border-radius: 5px;
+      font-size: .9rem;
+      margin-bottom: .3rem;
+      border: 1px solid transparent;
+    }
+    .opciones li.correcta {
+      background: var(--green-bg);
+      border-color: #86efac;
+      font-weight: 700;
+      color: var(--green);
+    }
+    .opciones li.correcta::before { content: "✓ "; }
+    .opciones li:not(.correcta) { color: var(--text-sub); }
+
+    /* ─── Abierta extras ────────────────────────────────────────── */
+    .rubrica-box {
+      background: var(--open-bg);
+      border: 1px solid var(--open-brd);
+      border-radius: 6px;
+      padding: .7rem .9rem;
+      margin-bottom: .6rem;
+      font-size: .88rem;
+    }
+    .rubrica-box strong { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #1e40af; margin-bottom: .3rem; }
+    .fallback-row { font-size: .8rem; color: var(--text-sub); margin-bottom: .6rem; }
+    .fallback-row code { background: var(--tag-bg); padding: .1rem .35rem; border-radius: 3px; font-size: .8rem; }
+
+    /* ─── Explicación ───────────────────────────────────────────── */
+    .explicacion {
+      font-size: .87rem;
+      color: var(--text-sub);
+      border-top: 1px solid var(--border);
+      padding-top: .55rem;
+      max-width: var(--max-w);
+    }
+    .explicacion strong { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; margin-right: .3rem; }
+
+    /* ─── Loading / error ───────────────────────────────────────── */
+    #estado { padding: 3rem 2.5rem; font-size: .95rem; color: var(--text-sub); }
+    .err { color: #b91c1c; }
+
+    /* ─── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .layout { grid-template-columns: 1fr; }
+      nav#indice { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+      main { padding: 1.25rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Revisión de Bancos — Wake Up, Dev</h1>
+  <span class="badge" id="badge-total">Cargando…</span>
+  <span class="note">Solo lectura · No llega al build de producción</span>
+</header>
+
+<div class="layout">
+  <nav id="indice">
+    <h2>Módulos</h2>
+    <div id="indice-items">Cargando…</div>
+  </nav>
+
+  <main>
+    <div id="estado">Cargando los bancos de contenido…</div>
+    <div id="contenido" hidden></div>
+  </main>
+</div>
+
+<script>
+/** Archivos JSON de retos — rutas relativas al root del repo, servidas por Vite dev */
+const ARCHIVOS = [
+  "src/content/retos/01-fundamentos.json",
+  "src/content/retos/02-ingenieria.json",
+  "src/content/retos/03-arquitectura.json",
+  "src/content/retos/04-fundamentos-ia.json",
+  "src/content/retos/05-herramientas.json",
+  "src/content/retos/09-flujo-desarrollo-ia.json",
+  "src/content/retos/10-calidad.json",
+  "src/content/retos/11-infraestructura-cloud.json",
+  "src/content/retos/12-seguridad.json",
+  "src/content/retos/13-desarrollo-potenciado-ia.json",
+];
+
+function escHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function chipDif(n) {
+  const cls = n <= 1 ? "dif1" : n === 2 ? "dif2" : "dif3";
+  const label = n <= 1 ? "Fácil" : n === 2 ? "Medio" : "Difícil";
+  return `<span class="chip ${cls}">Dif. ${n} — ${label}</span>`;
+}
+
+function renderReto(reto) {
+  const esArte   = !!reto.estadoDelArte2026;
+  const esAbiert = reto.tipo === "abierta";
+  const clases   = ["reto", esArte ? "es-arte" : "", esAbiert ? "es-abierta" : ""].filter(Boolean).join(" ");
+
+  // Chips meta
+  const chipTipo = esAbiert
+    ? `<span class="chip open">Abierta</span>`
+    : `<span class="chip mc">Multiple choice</span>`;
+  const chipArte = esArte ? `<span class="chip arte">★ Estado del arte 2026</span>` : "";
+  const tags = (reto.tags ?? []).map(t => `<span class="tag">${escHtml(t)}</span>`).join(" ");
+
+  // Opciones (solo multiple-choice)
+  let opcionesHtml = "";
+  if (!esAbiert && Array.isArray(reto.opciones)) {
+    const items = reto.opciones.map((op, i) => {
+      const isCorr = i === reto.correcta;
+      return `<li class="${isCorr ? "correcta" : ""}">${escHtml(op)}</li>`;
+    }).join("");
+    opcionesHtml = `<ul class="opciones">${items}</ul>`;
+  }
+
+  // Extras para abierta
+  let abirtaHtml = "";
+  if (esAbiert) {
+    const rubrica  = reto.rubrica   ? `<div class="rubrica-box"><strong>Rúbrica</strong>${escHtml(reto.rubrica)}</div>` : "";
+    const fallback = reto.fallbackId ? `<div class="fallback-row">Fallback: <code>${escHtml(reto.fallbackId)}</code></div>` : "";
+    abirtaHtml = rubrica + fallback;
+  }
+
+  const explicacion = reto.explicacion
+    ? `<p class="explicacion"><strong>Explicación</strong>${escHtml(reto.explicacion)}</p>`
+    : "";
+
+  return `
+  <div class="${clases}" id="reto-${escHtml(reto.id)}">
+    <div class="reto-meta">
+      <span class="reto-id">${escHtml(reto.id)}</span>
+      ${chipTipo}
+      ${chipDif(reto.dificultad ?? 1)}
+      ${chipArte}
+      ${tags}
+    </div>
+    <p class="pregunta">${escHtml(reto.pregunta)}</p>
+    ${opcionesHtml}
+    ${abirtaHtml}
+    ${explicacion}
+  </div>`;
+}
+
+function renderModulo(banco) {
+  const { modulo, retos } = banco;
+  const totalArte  = retos.filter(r => r.estadoDelArte2026).length;
+  const totalAbert = retos.filter(r => r.tipo === "abierta").length;
+
+  const stats = `
+    <div class="modulo-stats">
+      <span class="stat">Total: ${retos.length}</span>
+      ${totalAbert > 0 ? `<span class="stat abierto">Abiertas: ${totalAbert}</span>` : ""}
+      ${totalArte  > 0 ? `<span class="stat arte">Estado del arte: ${totalArte}</span>` : ""}
+    </div>`;
+
+  const retosHtml = retos.map(renderReto).join("");
+
+  return `
+  <section class="modulo" id="modulo-${escHtml(modulo.id)}">
+    <div class="modulo-header">
+      <div class="modulo-id">${escHtml(modulo.id)}</div>
+      <h2 class="modulo-titulo">${escHtml(modulo.nombre)}</h2>
+      ${stats}
+    </div>
+    ${retosHtml}
+  </section>`;
+}
+
+function renderIndice(bancos) {
+  return bancos.map(b => {
+    const { modulo, retos } = b;
+    const totalArte  = retos.filter(r => r.estadoDelArte2026).length;
+    const totalAbert = retos.filter(r => r.tipo === "abierta").length;
+    return `
+      <a href="#modulo-${escHtml(modulo.id)}">
+        <div>${escHtml(modulo.nombre)}</div>
+        <div class="cnt">${retos.length} retos · ${totalAbert} abiertas · ${totalArte} arte</div>
+      </a>`;
+  }).join("");
+}
+
+async function cargar() {
+  const estado   = document.getElementById("estado");
+  const contenido = document.getElementById("contenido");
+  const badge    = document.getElementById("badge-total");
+  const indiceEl = document.getElementById("indice-items");
+
+  try {
+    const bancos = await Promise.all(
+      ARCHIVOS.map(ruta =>
+        fetch(ruta).then(r => {
+          if (!r.ok) throw new Error(`HTTP ${r.status} al cargar ${ruta}`);
+          return r.json();
+        })
+      )
+    );
+
+    const totalRetos = bancos.reduce((s, b) => s + b.retos.length, 0);
+    badge.textContent = `${totalRetos} retos · ${bancos.length} módulos`;
+
+    indiceEl.innerHTML = renderIndice(bancos);
+    contenido.innerHTML = bancos.map(renderModulo).join("");
+
+    estado.hidden   = true;
+    contenido.hidden = false;
+
+  } catch (err) {
+    estado.innerHTML = `<p class="err">Error cargando bancos: ${escHtml(err.message)}</p>
+      <p style="margin-top:.5rem;font-size:.85rem">Asegurate de estar en <code>npm run dev</code>.</p>`;
+  }
+}
+
+cargar();
+</script>
+</body>
+</html>
