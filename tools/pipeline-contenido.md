@@ -20,7 +20,7 @@ Antes de commitear, revisar cada reto: ¿es correcto? ¿está reformulado con pa
 
 ### 3. Gate automático
 
-`npm test` valida invariantes de todos los bancos (ids únicos, correcta en rango, 2-4 opciones, fallbacks válidos, al menos un bonus 2026). CI lo exige en cada push.
+`npm test` valida invariantes de todos los bancos (ids únicos, correcta en rango, 2-4 opciones, fallbacks válidos, al menos un reto de estado del arte 2026). CI lo exige en cada push.
 
 > **Nota sobre la posición de la correcta**: los bancos generados hasta 2026-07 tienen la
 > correcta casi siempre en la opción 1 (sesgo del generador). Como backstop, `QuizEngine`
@@ -42,7 +42,7 @@ adjuntas del módulo <NN-nombre> del máster, generá un banco de retos JSON con
 Cada reto multiple-choice:
 { "id": "<prefijo>-NNN", "modulo": "<NN-slug>", "tipo": "multiple-choice",
   "pregunta": "...", "opciones": ["...", 2 a 4 opciones], "correcta": <índice>,
-  "explicacion": "...", "dificultad": 1|2|3, "tags": ["..."], "bonus2026": false }
+  "explicacion": "...", "dificultad": 1|2|3, "tags": ["..."], "estadoDelArte2026": false }
 
 Cada reto abierto (2-3 por banco máximo):
 { ..., "tipo": "abierta", "rubrica": "criterios explícitos y gradeables",
@@ -58,9 +58,9 @@ Reglas:
   tecla sin leer.
 - La explicación enseña: dice por qué la correcta es correcta y aporta el matiz de las notas.
 - Dificultad: 1 = definición directa, 2 = requiere relacionar conceptos, 3 = matiz fino o aplicación.
-- 2 a 4 retos con "bonus2026": true — actualizaciones del tema al estado del arte 2026
+- 2 a 4 retos con "estadoDelArte2026": true — el tema llevado al estado del arte 2026
   (nuevos estándares, herramientas o prácticas que las notas no cubren), con el prefijo
-  "BONUS 2026 — " en la pregunta.
+  "ESTADO DEL ARTE 2026 — " en la pregunta.
 - Las rúbricas de las abiertas deben ser criterios verificables ("debe mencionar X, Y"),
   no vibes ("que esté bien explicado").
 - ids con prefijo corto del módulo (fun-, ing-, arq-, ia-, ...) y numeración NNN.
@@ -79,21 +79,37 @@ Reglas:
 | 10-calidad | `cal-` |
 | 11-infraestructura-cloud | `inf-` |
 | 12-seguridad | `seg-` |
-| 13-desarrollo-potenciado-ia | `dev-` |
+| 13-desarrollo-potenciado-ia | `dpi-` |
 
 ## Registro
 
 | Banco | Generado | Revisado por humano | Retos |
 |---|---|---|---|
-| 01-fundamentos.json | 2026-07-09 (Claude, desde notas reales del módulo 01) | ⚠️ pendiente de revisión final del alumno | 33 (3 bonus 2026, 3 abiertas) |
-| 02-ingenieria.json | 2026-07-11 (Claude, desde notas reales del módulo 02) | ⚠️ pendiente de revisión final del alumno | 35 (3 bonus 2026, 2 abiertas) |
-| 03-arquitectura.json | 2026-07-10 (Claude, desde notas reales del módulo 03) | ⚠️ pendiente de revisión final del alumno | 21 (2 bonus 2026, 2 abiertas) |
-| 04-fundamentos-ia.json | 2026-07-10 (Claude, desde notas reales del módulo 04) | ⚠️ pendiente de revisión final del alumno | 20 (2 bonus 2026, 2 abiertas) |
-| 05-herramientas.json | 2026-07-11 (Claude, desde notas reales del módulo 05) | ⚠️ pendiente de revisión final del alumno | 35 (3 bonus 2026, 2 abiertas) |
-| 09-flujo-desarrollo-ia.json | 2026-07-11 (Claude, desde notas reales del módulo 09; el submódulo 04 de APIs aún no tiene notas) | ⚠️ pendiente de revisión final del alumno | 30 (3 bonus 2026, 2 abiertas) |
+| 01-fundamentos.json | 2026-07-09 (Claude, desde notas reales del módulo 01) | ⚠️ pendiente de revisión final del alumno | 33 (3 estado del arte, 3 abiertas) |
+| 02-ingenieria.json | 2026-07-11 (Claude, desde notas reales del módulo 02) | ⚠️ pendiente de revisión final del alumno | 35 (3 estado del arte, 2 abiertas) |
+| 03-arquitectura.json | 2026-07-10 (Claude, desde notas reales del módulo 03) | ⚠️ pendiente de revisión final del alumno | 21 (2 estado del arte, 2 abiertas) |
+| 04-fundamentos-ia.json | 2026-07-10 (Claude, desde notas reales del módulo 04) | ⚠️ pendiente de revisión final del alumno | 20 (2 estado del arte, 2 abiertas) |
+| 05-herramientas.json | 2026-07-11 (Claude, desde notas reales del módulo 05) | ⚠️ pendiente de revisión final del alumno | 35 (3 estado del arte, 2 abiertas) |
+| 09-flujo-desarrollo-ia.json | 2026-07-11 (Claude, desde notas reales del módulo 09; el submódulo 04 de APIs aún no tiene notas) | ⚠️ pendiente de revisión final del alumno | 30 (3 estado del arte, 2 abiertas) |
+| 10-calidad.json | 2026-07-30 (Claude, desde notas reales del módulo 10) | ⚠️ pendiente de revisión final del alumno | 52 (3 estado del arte, 3 abiertas) |
+| 11-infraestructura-cloud.json | 2026-08-22 (Copilot headless, desde notas reales del módulo 11) | ⚠️ pendiente de revisión final del alumno | 28 (3 estado del arte, 3 abiertas) |
+| 12-seguridad.json | 2026-08-22 (Copilot headless, desde notas reales del módulo 12) | ⚠️ pendiente de revisión final del alumno | 28 (2 estado del arte, 3 abiertas) |
+| 13-desarrollo-potenciado-ia.json | 2026-08-22 (Copilot headless, desde notas reales del módulo 13) | ⚠️ pendiente de revisión final del alumno | 30 (2 estado del arte, 3 abiertas) |
+
+**Total: 312 retos en 10 módulos** (287 de opción múltiple, 25 abiertas, 26 de estado del arte 2026).
 
 Nota de schema: `modulo.resumen` (opcional) es el contexto que se inyecta al Oráculo en ese nivel.
 
-### Bloqueados (sin notas reales del alumno todavía)
+### Pendientes
 
-Los módulos `10-calidad`, `11-infraestructura-cloud`, `12-seguridad` y `13-desarrollo-potenciado-ia` no tienen banco: todas sus clases en la bóveda son plantillas ("Escribe aquí tus notas", 200 caracteres). Ídem el submódulo `04-integracion-de-apis-y-plataformas-ia-populares` de `09-flujo-desarrollo-ia` (solo `00` y `01` tienen contenido real; del `02` al `14` son plantillas). El pipeline exige generar desde notas reales — no fabricar contenido. Reintentar la generación cuando el alumno complete esas notas en la bóveda.
+Todos los módulos con notas reales tienen banco. Quedan fuera, con su issue en la bóveda:
+
+- **`14-bonus-productividad`, `15-masterclass`, `00-introduccion`** — no entraron en la primera
+  entrega del TFM. Los dos primeros tienen notas completas; el de introducción es en buena parte
+  logística del curso y necesita un triaje antes de decidir si da para un banco.
+- **Submódulo `04-integracion-de-apis` de `09-flujo-desarrollo-ia`** — sus clases siguen siendo
+  plantillas en la bóveda ("Escribe aquí tus notas"). El pipeline exige generar desde notas
+  reales: no se fabrica contenido. Reintentar cuando el alumno complete esas notas.
+
+Los diez fondos pixel-art ya están asignados a un módulo: un banco nuevo necesita fondo nuevo
+por el pipeline de `tools/pixel-art/`.

@@ -24,7 +24,7 @@
         "testing",
         "piramide"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-002",
@@ -44,7 +44,7 @@
         "testing",
         "unit"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-003",
@@ -64,7 +64,7 @@
         "testing",
         "coverage"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-004",
@@ -84,7 +84,7 @@
         "coverage",
         "riesgo-negocio"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-005",
@@ -104,7 +104,7 @@
         "coverage",
         "calidad"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-006",
@@ -124,7 +124,7 @@
         "tdd",
         "red-green-refactor"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-007",
@@ -144,7 +144,7 @@
         "tdd",
         "patrones"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-008",
@@ -164,7 +164,7 @@
         "tdd",
         "funciones-puras"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-009",
@@ -184,7 +184,7 @@
         "testing-library",
         "queries"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-010",
@@ -204,7 +204,7 @@
         "testing-library",
         "queries"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-011",
@@ -218,7 +218,7 @@
         "testing",
         "piramide"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-012",
@@ -239,7 +239,7 @@
         "playwright",
         "pom"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-013",
@@ -260,7 +260,7 @@
         "playwright",
         "visual-regression"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-014",
@@ -281,13 +281,13 @@
         "observabilidad",
         "playwright"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-015",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — Con las herramientas de IA actuales, ¿cómo se integra mejor la IA en un flujo de TDD?",
+      "pregunta": "ESTADO DEL ARTE 2026 — Con las herramientas de IA actuales, ¿cómo se integra mejor la IA en un flujo de TDD?",
       "opciones": [
         "Reemplazando por completo al desarrollador en el diseño",
         "Convirtiendo los requisitos en tests ejecutables (que fallan) y ayudando a cubrir edge cases, con revisión humana",
@@ -302,7 +302,7 @@
         "ia",
         "bonus"
       ],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "cal-016",
@@ -322,7 +322,7 @@
         "code-smells",
         "numeros-magicos"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-017",
@@ -342,7 +342,7 @@
         "code-smells",
         "codigo-muerto"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-018",
@@ -363,7 +363,7 @@
         "eslint",
         "sonarjs"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-019",
@@ -382,7 +382,7 @@
       "tags": [
         "refactor"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-020",
@@ -403,7 +403,7 @@
         "metricas",
         "complejidad-ciclomatica"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-021",
@@ -424,7 +424,7 @@
         "strangler-fig",
         "legacy"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-022",
@@ -445,7 +445,7 @@
         "strategy",
         "solid"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-023",
@@ -465,7 +465,7 @@
         "patrones",
         "observer"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-024",
@@ -485,7 +485,7 @@
         "patrones",
         "sobre-ingenieria"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-025",
@@ -504,7 +504,7 @@
       "tags": [
         "deuda-tecnica"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-026",
@@ -524,7 +524,7 @@
         "deuda-tecnica",
         "tipos"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-027",
@@ -539,7 +539,7 @@
         "comunicacion",
         "negocio"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-028",
@@ -559,7 +559,7 @@
         "metricas",
         "vanity-vs-actionable"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-029",
@@ -580,7 +580,7 @@
         "error-rate",
         "umbrales"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-030",
@@ -601,7 +601,7 @@
         "husky",
         "git-hooks"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-031",
@@ -621,7 +621,7 @@
         "quality-gates",
         "husky"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-032",
@@ -641,7 +641,7 @@
         "observabilidad",
         "roi"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-033",
@@ -661,7 +661,7 @@
         "observabilidad",
         "mvp-growth-scale"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-034",
@@ -681,7 +681,7 @@
         "observabilidad",
         "sentry"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-035",
@@ -702,7 +702,7 @@
         "sentry",
         "source-maps"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-036",
@@ -722,7 +722,7 @@
         "seguridad",
         "variables-entorno"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-037",
@@ -737,7 +737,7 @@
         "secretos",
         "variables-entorno"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-038",
@@ -757,7 +757,7 @@
         "seguridad",
         "sql-injection"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-039",
@@ -777,7 +777,7 @@
         "seguridad",
         "authn-authz"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-040",
@@ -798,7 +798,7 @@
         "jwt",
         "xss"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-041",
@@ -819,7 +819,7 @@
         "authz",
         "http"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-042",
@@ -840,13 +840,13 @@
         "owasp",
         "access-control"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-043",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — La edición 2025 del OWASP Top 10 sumó como categoría propia, por su crecimiento, las fallas en...",
+      "pregunta": "ESTADO DEL ARTE 2026 — La edición 2025 del OWASP Top 10 sumó como categoría propia, por su crecimiento, las fallas en...",
       "opciones": [
         "La cantidad de comentarios en el código",
         "El diseño de logos",
@@ -862,7 +862,7 @@
         "supply-chain",
         "bonus"
       ],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "cal-044",
@@ -882,7 +882,7 @@
         "documentacion",
         "docs-as-code"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-045",
@@ -902,7 +902,7 @@
         "documentacion",
         "adr"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-046",
@@ -922,7 +922,7 @@
         "documentacion",
         "comentarios"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-047",
@@ -943,7 +943,7 @@
         "accesibilidad",
         "wcag"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-048",
@@ -964,7 +964,7 @@
         "accesibilidad",
         "html-semantico"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-049",
@@ -985,7 +985,7 @@
         "formularios",
         "validacion"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-050",
@@ -1005,7 +1005,7 @@
         "usabilidad",
         "microcopy"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-051",
@@ -1026,13 +1026,13 @@
         "performance-percibida",
         "optimistic-ui"
       ],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "cal-052",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — En 2024 Google reemplazó a FID por otra métrica de responsividad dentro de los Core Web Vitals. ¿Cuál?",
+      "pregunta": "ESTADO DEL ARTE 2026 — En 2024 Google reemplazó a FID por otra métrica de responsividad dentro de los Core Web Vitals. ¿Cuál?",
       "opciones": [
         "INP (Interaction to Next Paint)",
         "LCP (Largest Contentful Paint)",
@@ -1048,7 +1048,7 @@
         "core-web-vitals",
         "bonus"
       ],
-      "bonus2026": true
+      "estadoDelArte2026": true
     }
   ]
 }

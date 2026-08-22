@@ -42,7 +42,7 @@ describe("bancos de contenido", () => {
         expect(reto.modulo, reto.id).toBe(banco.modulo.id);
         expect(reto.pregunta.trim(), reto.id).not.toBe("");
         expect([1, 2, 3], reto.id).toContain(reto.dificultad);
-        expect(typeof reto.bonus2026, reto.id).toBe("boolean");
+        expect(typeof reto.estadoDelArte2026, reto.id).toBe("boolean");
       }
     });
 
@@ -72,8 +72,8 @@ describe("bancos de contenido", () => {
       }
     });
 
-    it("incluye al menos un reto bonus 2026", () => {
-      expect(banco.retos.some((r) => r.bonus2026)).toBe(true);
+    it("incluye al menos un reto de estado del arte 2026", () => {
+      expect(banco.retos.some((r) => r.estadoDelArte2026)).toBe(true);
     });
   });
 });

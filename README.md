@@ -1,6 +1,6 @@
 # Wake Up, Dev 🕶️💊
 
-> Videojuego web 8-bit inspirado en Matrix que repasa, de forma jugable, el contenido del **Máster en Desarrollo con IA** — con actualizaciones bonus al 2026 y una IA integrada en el propio gameplay.
+> Videojuego web 8-bit inspirado en Matrix que repasa, de forma jugable, el contenido del **Máster en Desarrollo con IA** — con retos que llegan hasta el estado del arte de 2026 y una IA integrada en el propio gameplay.
 >
 > **Trabajo de Fin de Máster (TFM)** · Juan José Mayotte · Entrega: 24/08/2026
 
@@ -84,7 +84,7 @@ Reglas de arquitectura (detalle en [AGENTS.md](AGENTS.md)): el dominio es puro y
 
 - ✅ **Combate arcade 8-bit** inspirado en la acción de Matrix: personajes con **sprites pixel-art** (Neo, Smith, Jefe, Oráculo) generados con un pipeline propio desde referencias; piñas, esquive con _telegrafía_ del golpe enemigo, barra de HP y un **Agente Jefe** que dispara al cerrar cada módulo.
 - ✅ **Fondos de escena por nivel**: 10 backgrounds pixel-art (ciudad digital, pasillo de oficina, sala de entrenamiento, tejado bajo la lluvia, desierto de las máquinas, sala de pantallas…) que le dan identidad visual a cada módulo. Conceptos documentados en [docs/niveles.md](docs/niveles.md).
-- ✅ **312 retos** (287 de opción múltiple + 25 abiertas · 26 con actualización **bonus 2026**) en **10 niveles jugables** generados desde las notas reales del máster. Las opciones se **barajan en cada partida** para que no se pueda memorizar la posición de la correcta.
+- ✅ **312 retos** (287 de opción múltiple + 25 abiertas) en **10 niveles jugables**, 26 de ellos marcados **estado del arte 2026** — conceptos que hoy están en la frontera del oficio y que valen más puntos —, generados desde las notas reales del máster. Las opciones se **barajan en cada partida** para que no se pueda memorizar la posición de la correcta.
 - ✅ **El Oráculo**: NPC conversacional con IA y contexto del módulo actual.
 - ✅ **Evaluación de respuestas abiertas** con rúbrica (IA como grader; sin IA caen a su variante de opciones, sin penalizar).
 - ✅ **Modo "píldora roja"**: bridge local que resuelve el Oráculo, la evaluación y las pistas lanzando instancias headless de Claude Code o GitHub Copilot.

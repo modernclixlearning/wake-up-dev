@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { QuizEngine } from "../src/domain/quiz-engine";
 import { BancoModulo, RetoMultipleChoice } from "../src/domain/reto";
-import { GameSession, PUNTOS_BONUS_2026, PUNTOS_POR_ACIERTO, VIDAS_INICIALES } from "../src/domain/session";
+import { GameSession, PUNTOS_ESTADO_DEL_ARTE_2026, PUNTOS_POR_ACIERTO, VIDAS_INICIALES } from "../src/domain/session";
 
 const banco: BancoModulo = {
   modulo: { id: "test", nombre: "Test", descripcion: "" },
@@ -16,7 +16,7 @@ const banco: BancoModulo = {
       explicacion: "Es 4.",
       dificultad: 1,
       tags: [],
-      bonus2026: false,
+      estadoDelArte2026: false,
     },
     {
       id: "ab-1",
@@ -27,7 +27,7 @@ const banco: BancoModulo = {
       fallbackId: "mc-1",
       dificultad: 2,
       tags: [],
-      bonus2026: false,
+      estadoDelArte2026: false,
     },
     {
       id: "mc-bonus",
@@ -39,7 +39,7 @@ const banco: BancoModulo = {
       explicacion: "Sí.",
       dificultad: 1,
       tags: [],
-      bonus2026: true,
+      estadoDelArte2026: true,
     },
   ],
 };
@@ -57,8 +57,8 @@ describe("QuizEngine", () => {
     expect(quiz.siguiente()).toBeNull();
   });
 
-  it("excluye los bonus2026 cuando se pide", () => {
-    const quiz = new QuizEngine(banco, { incluirBonus: false, barajar: false });
+  it("excluye los estadoDelArte2026 cuando se pide", () => {
+    const quiz = new QuizEngine(banco, { incluirEstadoDelArte: false, barajar: false });
     expect(quiz.restantes).toBe(2);
   });
 
@@ -96,7 +96,7 @@ describe("QuizEngine — barajado de opciones", () => {
       explicacion: "e",
       dificultad: 1 as const,
       tags: [],
-      bonus2026: false,
+      estadoDelArte2026: false,
     })),
   };
 
@@ -159,7 +159,7 @@ describe("QuizEngine adaptativo (Smith)", () => {
       explicacion: "e",
       dificultad: dif,
       tags: [],
-      bonus2026: false,
+      estadoDelArte2026: false,
     })),
   };
 
@@ -188,7 +188,7 @@ describe("GameSession", () => {
     const s = new GameSession();
     s.registrarAcierto("test", false);
     s.registrarAcierto("test", true);
-    expect(s.score).toBe(PUNTOS_POR_ACIERTO + PUNTOS_BONUS_2026);
+    expect(s.score).toBe(PUNTOS_POR_ACIERTO + PUNTOS_ESTADO_DEL_ARTE_2026);
     expect(s.progreso.get("test")?.aciertos).toBe(2);
   });
 

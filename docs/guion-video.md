@@ -12,7 +12,7 @@ Duración objetivo: **5–8 minutos**. Grabá la pantalla (OBS, Loom o similar) 
 - ENTER → Zion: mostrar los 10 módulos y el estado de IA.
 - Entrar a Fundamentos: moverse (silueta animada de Neo), tocar un Agente, mostrar el esquive "bullet time" (esquivar la bala con la flecha correcta), responder bien (golpe al Agente, baja su barra de HP) y responder mal (vida perdida + explicación didáctica).
 - Pelear hasta derrotar a un Agente normal (2 golpes) y mostrar el Jefe de nivel al limpiar el módulo.
-- Mencionar: 312 retos generados desde tus notas reales del curso, con retos bonus 2026, y que cada módulo tiene su propio escenario pixel-art.
+- Mencionar: 312 retos generados desde tus notas reales del curso, 26 de ellos marcados «estado del arte 2026» (conceptos en la frontera del oficio, y valen más puntos), y que cada módulo tiene su propio escenario pixel-art.
 
 ## 3. La IA como gameplay (2 min)
 
@@ -65,6 +65,6 @@ Verificadas contra el repo, no de memoria. Si volvés a grabar más adelante, re
 |---|---|
 | Niveles jugables | 10 |
 | Retos | 312 (287 de opción múltiple + 25 abiertas) |
-| Retos con bonus 2026 | 26 |
+| Retos de estado del arte 2026 | 26 |
 | Tests | 112 |
 | Módulos del máster cubiertos | 01, 02, 03, 04, 05, 09, 10, 11, 12, 13 |

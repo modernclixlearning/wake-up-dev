@@ -4,7 +4,7 @@
 // y comer golpes físicos) — con 3 vidas el nivel quedaba injustamente cruel.
 export const VIDAS_INICIALES = 5;
 export const PUNTOS_POR_ACIERTO = 100;
-export const PUNTOS_BONUS_2026 = 150;
+export const PUNTOS_ESTADO_DEL_ARTE_2026 = 150;
 
 export interface ProgresoModulo {
   completado: boolean;
@@ -17,8 +17,8 @@ export class GameSession {
   score = 0;
   progreso = new Map<string, ProgresoModulo>();
 
-  registrarAcierto(moduloId: string, esBonus: boolean): void {
-    this.score += esBonus ? PUNTOS_BONUS_2026 : PUNTOS_POR_ACIERTO;
+  registrarAcierto(moduloId: string, esEstadoDelArte: boolean): void {
+    this.score += esEstadoDelArte ? PUNTOS_ESTADO_DEL_ARTE_2026 : PUNTOS_POR_ACIERTO;
     this.progresoDe(moduloId).aciertos++;
   }
 

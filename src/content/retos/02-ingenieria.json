@@ -21,7 +21,7 @@
       "explicacion": "Primero se entiende qué construir (requisitos), luego cómo (diseño), se construye, se prueba, se despliega y se mantiene. El mantenimiento es un ciclo continuo: el software que no se mantiene acaba muriendo.",
       "dificultad": 1,
       "tags": ["sdlc", "ciclo-de-vida"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-002",
@@ -38,7 +38,7 @@
       "explicacion": "Cascada es secuencial y poco flexible, pero no mala: brilla cuando los requisitos no van a cambiar y el coste de equivocarse es alto, como en pagos, facturación o sector regulado.",
       "dificultad": 2,
       "tags": ["metodologias", "cascada"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-003",
@@ -55,7 +55,7 @@
       "explicacion": "Es el antipatrón de la cascada disfrazada de ágil: reuniones de Scrum sin usuario en el proceso. Agile es una filosofía de iteración corta con validación constante; Scrum es solo un marco que se pone encima.",
       "dificultad": 2,
       "tags": ["metodologias", "agile", "antipatrones"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-004",
@@ -72,7 +72,7 @@
       "explicacion": "El desarrollo en espiral está pensado para alta incertidumbre técnica: en cada ciclo se analizan riesgos y se hacen pequeñas pruebas controladas que validan que lo planeado es posible antes de avanzar.",
       "dificultad": 2,
       "tags": ["metodologias", "espiral", "riesgo"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-005",
@@ -89,7 +89,7 @@
       "explicacion": "MTTR mide cuánto tardas en recuperarte de un fallo. El tiempo de idea a producción es el Lead Time, y las otras dos opciones son la tasa de fallos y la cobertura de tests: los otros KPIs clásicos del proceso.",
       "dificultad": 2,
       "tags": ["kpis", "devops"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-006",
@@ -106,7 +106,7 @@
       "explicacion": "Los funcionales dicen qué hace el sistema (registrar usuarios, procesar pagos); los no funcionales dicen qué tan bien lo hace: rendimiento, seguridad, usabilidad, disponibilidad o compatibilidad, siempre con números concretos.",
       "dificultad": 1,
       "tags": ["requisitos", "no-funcionales"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-007",
@@ -123,7 +123,7 @@
       "explicacion": "Un requisito debe ser claro (sin ambigüedades tipo rápido o intuitivo), útil (aportar valor real al negocio) y comprobable (poder validar con criterios medibles si se cumple o no).",
       "dificultad": 1,
       "tags": ["requisitos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-008",
@@ -140,7 +140,7 @@
       "explicacion": "El formato es: como tipo de usuario, quiero objetivo, para beneficio. Plantea el problema y el valor; la solución técnica la decide después el equipo de diseño y desarrollo, no la historia.",
       "dificultad": 2,
       "tags": ["requisitos", "historias-de-usuario"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-009",
@@ -157,7 +157,7 @@
       "explicacion": "Dado un contexto, cuando ocurre una acción, entonces se espera un resultado: esa estructura es esencialmente un test. Incluso se puede pedir a la IA que los convierta en tests ejecutables.",
       "dificultad": 2,
       "tags": ["requisitos", "criterios-aceptacion", "testing"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-010",
@@ -174,7 +174,7 @@
       "explicacion": "MoSCoW clasifica en Must (imprescindible), Should (debería), Could (podría, es un extra) y Won't (no se hará). Se desarrollan primero los Must; si todo es prioridad alta, nada lo es.",
       "dificultad": 1,
       "tags": ["requisitos", "moscow", "priorizacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-011",
@@ -191,7 +191,7 @@
       "explicacion": "Un requisito debe plantear el problema y el objetivo; la solución la propone el equipo. Cuando el cliente trae soluciones cerradas, hay que investigar la problemática real que hay detrás.",
       "dificultad": 2,
       "tags": ["requisitos", "problemas-comunes"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-012",
@@ -208,7 +208,7 @@
       "explicacion": "Verificar es comprobar que lo construido cumple los requisitos; validar es comprobar que esos requisitos resuelven un problema real del usuario. Se puede verificar perfecto algo que nunca debió construirse.",
       "dificultad": 2,
       "tags": ["validacion", "verificacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-013",
@@ -225,7 +225,7 @@
       "explicacion": "Sin métricas definidas (conversión, tiempo de checkout, abandono) no hay forma de decidir qué variante gana. La variante nueva se expone a un porcentaje pequeño y solo se hace rollout si mejora los números.",
       "dificultad": 2,
       "tags": ["validacion", "ab-testing", "metricas"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-014",
@@ -242,7 +242,7 @@
       "explicacion": "En el diagrama de secuencia cada columna es un sistema o actor y el eje vertical es el tiempo: ideal para documentar flujos como un checkout entre frontend, API, pagos y base de datos. Es de los más útiles en Design Docs.",
       "dificultad": 2,
       "tags": ["uml", "diagramas"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-015",
@@ -259,7 +259,7 @@
       "explicacion": "La documentación debe ser algo vivo: con diagramas como código puedes ver el historial de cambios y actualizar sin redibujar. La contrapartida es que hace falta alguien técnico para modificarlos.",
       "dificultad": 1,
       "tags": ["uml", "documentacion", "herramientas"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-016",
@@ -276,7 +276,7 @@
       "explicacion": "El Design Doc define contexto, objetivos, alternativas evaluadas y diseño a alto nivel. El detalle fino se resuelve en la implementación; buscar la perfección en el documento retrasa el desarrollo sin aportar valor.",
       "dificultad": 2,
       "tags": ["design-docs", "rfc", "documentacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-017",
@@ -293,7 +293,7 @@
       "explicacion": "Un bucle con condicionales que acumula un resultado es imperativo; un filter más un reduce que expresan la intención es declarativo. Un mismo lenguaje multiparadigma como TypeScript permite ambos estilos.",
       "dificultad": 1,
       "tags": ["paradigmas", "imperativo", "declarativo"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-018",
@@ -310,7 +310,7 @@
       "explicacion": "Las jerarquías profundas generan contradicciones y explosión de clases. Con composición, el comportamiento volar es un componente que se inyecta a quien lo necesite; se recomienda no pasar de un nivel de herencia.",
       "dificultad": 2,
       "tags": ["poo", "composicion", "herencia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-019",
@@ -327,7 +327,7 @@
       "explicacion": "Sin efectos secundarios y matemáticamente predecible: eso hace a las funciones puras extremadamente fáciles de testear. La contrapartida de la inmutabilidad es un mayor consumo de memoria por las copias.",
       "dificultad": 1,
       "tags": ["funcional", "funciones-puras"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-020",
@@ -344,7 +344,7 @@
       "explicacion": "reduce recibe una función con el acumulado y el item actual, más un valor inicial. Encadenando filter, map y reduce se montan pipelines completos de transformación de datos en pocas líneas.",
       "dificultad": 2,
       "tags": ["funcional", "reduce", "pipelines"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-021",
@@ -361,7 +361,7 @@
       "explicacion": "Es el principio más malentendido de SOLID. Una función que envía correo, Slack y newsletter no lo viola si su única razón de cambio es el pipeline de notificaciones; interpretarlo como hacer una sola cosa fragmenta el código innecesariamente.",
       "dificultad": 2,
       "tags": ["solid", "srp"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-022",
@@ -378,7 +378,7 @@
       "explicacion": "Abierto para extensión, cerrado para modificación: cada descuento vive en su propia clase o función y añadir uno nuevo no toca el código estable. Menos riesgo de romper lo que ya funcionaba.",
       "dificultad": 2,
       "tags": ["solid", "ocp", "strategy"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-023",
@@ -395,7 +395,7 @@
       "explicacion": "Toda subclase debe comportarse como su tipo base sin sorpresas. La solución es rediseñar la jerarquía, por ejemplo con FlyingBird y SwimmingBird, para que cada ave cumpla el contrato que declara.",
       "dificultad": 2,
       "tags": ["solid", "lsp"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-024",
@@ -412,7 +412,7 @@
       "explicacion": "Los clientes no deben depender de lo que no usan. Segregando en Workable, Eatable o Programmable, cada clase implementa solo sus capacidades reales, los mocks de test son más pequeños y se evita código defensivo.",
       "dificultad": 2,
       "tags": ["solid", "isp"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-025",
@@ -429,7 +429,7 @@
       "explicacion": "Si los servicios dependen de una interfaz Database en vez de MySQL directamente, cambiar de base de datos o mockear en tests es trivial. La inyección por constructor, explícita, es la forma recomendada.",
       "dificultad": 2,
       "tags": ["solid", "dip", "inyeccion-dependencias"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-026",
@@ -446,7 +446,7 @@
       "explicacion": "Si el código repetido siempre cambia junto, unifícalo; si tiene caminos de evolución distintos por razones de dominio, la repetición es la opción sana. Las abstracciones prematuras son deuda difícil de deshacer.",
       "dificultad": 3,
       "tags": ["dry", "abstracciones"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-027",
@@ -463,7 +463,7 @@
       "explicacion": "Los 23 patrones del Gang of Four resolvían limitaciones de lenguajes puramente orientados a objetos. Con funciones como ciudadanos de primera clase, inyectar la función es más simple; montar la infraestructura de clases puede ser sobreingeniería.",
       "dificultad": 3,
       "tags": ["patrones", "strategy", "multiparadigma"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-028",
@@ -480,7 +480,7 @@
       "explicacion": "Se llama objeto Dios no por su tamaño sino porque nadie se atreve a tocarlo. Tiene infinitas razones de cambio; la salida es segregar con SRP en repositorio, autenticación, permisos y notificaciones, de forma gradual y con tests.",
       "dificultad": 1,
       "tags": ["antipatrones", "god-object"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-029",
@@ -497,7 +497,7 @@
       "explicacion": "Spec First escribe toda la especificación antes de generar código, al estilo cascada; Spec Anchored la mantiene viva junto al código, al estilo ágil; y en Spec Source la spec es la única fuente de verdad y el desarrollador ya no toca el código.",
       "dificultad": 2,
       "tags": ["sdd", "ia", "metodologias"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-030",
@@ -514,7 +514,7 @@
       "explicacion": "Con requisitos difusos primero hay que aclararlos, y en cambios triviales la spec es overhead puro: un prompt directo basta. Usar Spec First para todo acaba en una montaña de documentos desactualizados que nadie lee.",
       "dificultad": 3,
       "tags": ["sdd", "ia", "criterio"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-031",
@@ -525,7 +525,7 @@
       "fallbackId": "ing-012",
       "dificultad": 2,
       "tags": ["validacion", "verificacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-032",
@@ -536,13 +536,13 @@
       "fallbackId": "ing-009",
       "dificultad": 2,
       "tags": ["requisitos", "historias-de-usuario", "criterios-aceptacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ing-033",
       "modulo": "02-ingenieria",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — GitHub publicó Spec Kit, un toolkit open source para Spec Driven Development. ¿Cuál es su flujo de trabajo?",
+      "pregunta": "ESTADO DEL ARTE 2026 — GitHub publicó Spec Kit, un toolkit open source para Spec Driven Development. ¿Cuál es su flujo de trabajo?",
       "opciones": [
         "Specify, plan y tasks: la spec se refina en fases antes de que el agente implemente",
         "Un chat libre donde el agente decide la arquitectura sin documentos",
@@ -553,13 +553,13 @@
       "explicacion": "Spec Kit lleva a la práctica el SDD del módulo: comandos como specify, plan y tasks generan artefactos de especificación que guían al agente (Copilot, Claude Code, Gemini CLI u otros) antes de escribir código, igual que el flujo de Kiro.",
       "dificultad": 2,
       "tags": ["sdd", "herramientas", "bonus"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "ing-034",
       "modulo": "02-ingenieria",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — El archivo AGENTS.md se consolidó como estándar abierto entre herramientas de IA. ¿Qué papel cumple en un repositorio?",
+      "pregunta": "ESTADO DEL ARTE 2026 — El archivo AGENTS.md se consolidó como estándar abierto entre herramientas de IA. ¿Qué papel cumple en un repositorio?",
       "opciones": [
         "Es un README para agentes: instrucciones de contexto, comandos y convenciones del proyecto",
         "Reemplaza al README.md para los desarrolladores humanos",
@@ -570,13 +570,13 @@
       "explicacion": "Adoptado por herramientas como Codex, Cursor, Copilot o Claude Code (con su CLAUDE.md equivalente), concentra las reglas y el contexto que el agente necesita: conecta con la idea del módulo de que la calidad del resultado depende del contexto que le des a la IA.",
       "dificultad": 2,
       "tags": ["ia", "contexto", "bonus"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "ing-035",
       "modulo": "02-ingenieria",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — Los últimos informes DORA sobre IA en desarrollo llegan a una conclusión clave. ¿Cuál?",
+      "pregunta": "ESTADO DEL ARTE 2026 — Los últimos informes DORA sobre IA en desarrollo llegan a una conclusión clave. ¿Cuál?",
       "opciones": [
         "La IA amplifica al equipo: acelera el throughput pero puede aumentar la inestabilidad si el proceso es débil",
         "La IA reduce siempre los errores en producción, sin importar el proceso",
@@ -587,7 +587,7 @@
       "explicacion": "DORA observa que la IA actúa como amplificador: los equipos con buenos fundamentos (CI/CD, tests, lotes pequeños) mejoran más, y los que tienen procesos débiles amplifican sus problemas. Los KPIs del módulo siguen siendo la vara de medir.",
       "dificultad": 3,
       "tags": ["devops", "kpis", "ia", "bonus"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     }
   ]
 }

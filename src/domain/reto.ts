@@ -9,7 +9,7 @@ export interface RetoBase {
   pregunta: string;
   dificultad: 1 | 2 | 3;
   tags: string[];
-  bonus2026: boolean;
+  estadoDelArte2026: boolean;
 }
 
 export interface RetoMultipleChoice extends RetoBase {

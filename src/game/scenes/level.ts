@@ -594,11 +594,11 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     // Resultado de la pregunta tras aturdir a un Agente (F12): la respuesta
     // correcta es la que baja el HP real; después el combate arcade continúa
     // (hay que volver a aturdirlo a golpes para la próxima pregunta).
-    const registrarResultado = (agente: GameObj, correcta: boolean, feedback: string, esBonus: boolean) => {
+    const registrarResultado = (agente: GameObj, correcta: boolean, feedback: string, esEstadoDelArte: boolean) => {
       enEncuentro = false;
       if (correcta) {
         sfx.acierto();
-        st.session.registrarAcierto(moduloId, esBonus);
+        st.session.registrarAcierto(moduloId, esEstadoDelArte);
         guardarPartida(st.session);
         const combate = combates.get(agente);
         if (!combate) {
@@ -749,7 +749,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         if (!enEncuentro || indice >= reto.opciones.length) return;
         const resultado = quiz.responderMultipleChoice(reto, indice);
         cerrar();
-        registrarResultado(agente, resultado.correcta, resultado.explicacion, reto.bonus2026);
+        registrarResultado(agente, resultado.correcta, resultado.explicacion, reto.estadoDelArte2026);
       };
 
       for (let i = 0; i < reto.opciones.length; i++) {
@@ -777,7 +777,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         }
         return;
       }
-      registrarResultado(agente, evaluacion.aprobado, evaluacion.feedback, reto.bonus2026);
+      registrarResultado(agente, evaluacion.aprobado, evaluacion.feedback, reto.estadoDelArte2026);
     };
 
     const lanzarPregunta = (agente: GameObj, reto: Reto) => {

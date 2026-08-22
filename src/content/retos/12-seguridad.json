@@ -20,8 +20,12 @@
       "correcta": 1,
       "explicacion": "Son principios complementarios pero distintos. Security by Design significa pensar en seguridad desde la primera línea de código, en el diseño de la arquitectura y los flujos de autenticación. Security by Default complementa esto garantizando que, si nadie cambia la configuración, el sistema sigue siendo seguro — por ejemplo, no tener usuario 'admin/admin' de fábrica ni exponer endpoints administrativos por defecto.",
       "dificultad": 1,
-      "tags": ["security-by-design", "security-by-default", "fundamentos"],
-      "bonus2026": false
+      "tags": [
+        "security-by-design",
+        "security-by-default",
+        "fundamentos"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-002",
@@ -37,8 +41,12 @@
       "correcta": 0,
       "explicacion": "MITRE ATT&CK organiza el conocimiento en dos niveles: las tácticas representan el 'para qué' del atacante (obtener acceso inicial, mantener persistencia, exfiltrar datos...), mientras que las técnicas y subtécnicas describen el 'cómo' concreto (Phishing, Drive-by Compromise, Exploit Public-Facing Application...). Conocer esta estructura permite anticipar rutas de ataque antes de escribir código.",
       "dificultad": 2,
-      "tags": ["mitre-attack", "threat-modeling", "fundamentos"],
-      "bonus2026": false
+      "tags": [
+        "mitre-attack",
+        "threat-modeling",
+        "fundamentos"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-003",
@@ -54,8 +62,12 @@
       "correcta": 1,
       "explicacion": "La IA amplifica capacidades ofensivas: permite generar phishing personalizado con análisis de lenguaje, crear malware polimórfico que muta para evadir antivirus, clonar voces o rostros (suplantación biométrica) y automatizar el descubrimiento de credenciales expuestas. Estudios como el de IBM X-Force indican que más del 30% de campañas de phishing destacadas incorporan componentes de IA generativa. La barrera de entrada baja porque atacar ya no requiere ser un experto técnico.",
       "dificultad": 2,
-      "tags": ["ia-amenazas", "phishing", "malware-polimorfico"],
-      "bonus2026": false
+      "tags": [
+        "ia-amenazas",
+        "phishing",
+        "malware-polimorfico"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-004",
@@ -71,8 +83,13 @@
       "correcta": 2,
       "explicacion": "Broken Access Control ocupa el primer puesto en ambas ediciones. Ocurre cuando la aplicación no valida correctamente quién puede hacer qué sobre qué recurso. Autenticado no equivale a autorizado: hay que verificar permisos en el servidor para cada acción y recurso, no solo comprobar que el usuario tiene sesión activa.",
       "dificultad": 1,
-      "tags": ["owasp", "broken-access-control", "owasp-2021", "owasp-2025"],
-      "bonus2026": false
+      "tags": [
+        "owasp",
+        "broken-access-control",
+        "owasp-2021",
+        "owasp-2025"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-005",
@@ -88,8 +105,12 @@
       "correcta": 1,
       "explicacion": "Esto es un IDOR (Insecure Direct Object Reference): el atacante solo necesita cambiar el ID en la URL para acceder a datos de otros usuarios. La defensa clave es validar en el servidor que el recurso identificado por ese ID pertenece realmente al usuario que hace la petición — nunca fiarse del ID que llega desde el cliente sin comprobarlo contra el estado interno del sistema.",
       "dificultad": 2,
-      "tags": ["idor", "broken-access-control", "autorizacion"],
-      "bonus2026": false
+      "tags": [
+        "idor",
+        "broken-access-control",
+        "autorizacion"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-006",
@@ -105,8 +126,13 @@
       "correcta": 3,
       "explicacion": "MD5 tiene dos problemas graves para contraseñas: es extremadamente rápido (permite probar millones de candidatos por segundo con hardware moderno) y está criptográficamente roto para este uso. Sin sal, contraseñas idénticas generan hashes idénticos, exponiendo patrones. La alternativa correcta es bcrypt, scrypt o Argon2 — diseñados específicamente para ser lentos y con sal aleatoria, lo que hace inviable el cracking masivo incluso si se roba la base de datos.",
       "dificultad": 1,
-      "tags": ["cryptographic-failures", "contrasenas", "md5", "bcrypt"],
-      "bonus2026": false
+      "tags": [
+        "cryptographic-failures",
+        "contrasenas",
+        "md5",
+        "bcrypt"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-007",
@@ -122,8 +148,12 @@
       "correcta": 3,
       "explicacion": "La SQL Injection ocurre cuando el dato del usuario se concatena directamente en la consulta y el motor de base de datos lo interpreta como instrucción. La defensa fundamental es la parametrización: separar la estructura de la consulta (fija) del valor del parámetro (variable). Así, aunque el usuario escriba `' OR 1=1`, la base de datos lo trata como una cadena de texto, nunca como código SQL.",
       "dificultad": 1,
-      "tags": ["injection", "sql-injection", "parametrizacion"],
-      "bonus2026": false
+      "tags": [
+        "injection",
+        "sql-injection",
+        "parametrizacion"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-008",
@@ -139,8 +169,12 @@
       "correcta": 2,
       "explicacion": "La diferencia es el alcance y la persistencia. En el XSS reflejado el código malicioso viaja en la petición y se devuelve en la respuesta de esa misma petición (típicamente a través de un enlace trampa). En el persistente el payload queda almacenado en la aplicación (base de datos, comentarios, etc.) y se ejecuta en el navegador de cualquier usuario que cargue esa página, lo que lo convierte en una amenaza de mayor escala. También existe el DOM-based, donde la vulnerabilidad nace en cómo el JavaScript del cliente manipula el DOM con entradas no saneadas.",
       "dificultad": 2,
-      "tags": ["injection", "xss", "cross-site-scripting"],
-      "bonus2026": false
+      "tags": [
+        "injection",
+        "xss",
+        "cross-site-scripting"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-009",
@@ -156,8 +190,12 @@
       "correcta": 1,
       "explicacion": "Esto es Insecure Design: el problema no está en una línea de código con un bug, sino en una decisión de diseño que permite al cliente controlar el precio. El servidor debe obtener el precio directamente de la base de datos (fuente de verdad interna), no confiar en lo que llega del frontend. Esta falla es estructural — no se soluciona con un parche puntual, sino rediseñando el flujo para que los datos sensibles de negocio siempre se validen en el backend.",
       "dificultad": 2,
-      "tags": ["insecure-design", "validacion-backend", "logica-negocio"],
-      "bonus2026": false
+      "tags": [
+        "insecure-design",
+        "validacion-backend",
+        "logica-negocio"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-010",
@@ -173,8 +211,12 @@
       "correcta": 0,
       "explicacion": "Security Misconfiguration ocurre cuando el sistema se despliega con configuraciones inseguras: credenciales por defecto sin cambiar, servicios expuestos innecesariamente, cabeceras de seguridad ausentes, buckets públicos, mensajes de error con stack traces, etc. No es un bug en la lógica de negocio — el código puede estar perfecto pero el entorno donde corre lo deja vulnerable. La prevención clave es 'Security by Default': cerrar todo por defecto y abrir solo lo necesario.",
       "dificultad": 2,
-      "tags": ["security-misconfiguration", "security-by-default", "configuracion"],
-      "bonus2026": false
+      "tags": [
+        "security-misconfiguration",
+        "security-by-default",
+        "configuracion"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-011",
@@ -190,8 +232,12 @@
       "correcta": 3,
       "explicacion": "SBOM (Software Bill of Materials) es un listado exhaustivo de las dependencias del proyecto con sus versiones exactas. Cuando se publica un nuevo CVE (Common Vulnerabilities and Exposures), el equipo puede cruzarlo contra el SBOM para saber en minutos si algún componente propio está afectado. Sin este inventario, la respuesta a una vulnerabilidad publicada puede tardar días o semanas. Herramientas como Dependabot o Renovate ayudan a mantener el SBOM actualizado y generar PRs automáticos de actualización.",
       "dificultad": 2,
-      "tags": ["vulnerable-components", "sbom", "dependencias"],
-      "bonus2026": false
+      "tags": [
+        "vulnerable-components",
+        "sbom",
+        "dependencias"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-012",
@@ -207,8 +253,13 @@
       "correcta": 2,
       "explicacion": "Los flags de cookies son defensas en capas. HttpOnly evita que un script del lado del cliente lea el valor de la cookie — si hay un XSS, el atacante no puede robar el token de sesión con document.cookie. Secure garantiza que la cookie solo viaja en conexiones HTTPS, protegiéndola de ataques de intermediario en redes no cifradas. Combinar ambos flags es una práctica básica para proteger tokens de sesión y JWT almacenados en cookies.",
       "dificultad": 1,
-      "tags": ["authentication-failures", "cookies", "sesiones", "jwt"],
-      "bonus2026": false
+      "tags": [
+        "authentication-failures",
+        "cookies",
+        "sesiones",
+        "jwt"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-013",
@@ -224,8 +275,12 @@
       "correcta": 1,
       "explicacion": "Los identificadores de sesión predecibles o secuenciales son un fallo clásico de Identification and Authentication Failures. Si un atacante conoce su propio ID de sesión (por ejemplo, 1042), puede iterar hacia arriba o abajo para encontrar IDs de otros usuarios activos. Los tokens de sesión deben ser criptográficamente aleatorios, suficientemente largos (128 bits mínimo) e impredecibles, de modo que no puedan adivinarse aunque el atacante conozca muchos valores válidos.",
       "dificultad": 2,
-      "tags": ["authentication-failures", "sesiones", "session-hijacking"],
-      "bonus2026": false
+      "tags": [
+        "authentication-failures",
+        "sesiones",
+        "session-hijacking"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-014",
@@ -241,8 +296,12 @@
       "correcta": 0,
       "explicacion": "Los ataques a la cadena de suministro comprometen dependencias legítimas para distribuir código malicioso (casos reales: SolarWinds, el paquete event-stream de npm). La defensa requiere: verificar firmas/checksums de paquetes, usar lock files que congelen versiones exactas (no 'latest'), mantener un SBOM actualizado, escanear dependencias en CI con herramientas como Snyk o OWASP Dependency-Check, y aplicar Zero Trust a los ecosistemas públicos — verificar antes de confiar.",
       "dificultad": 2,
-      "tags": ["software-integrity", "supply-chain", "dependencias"],
-      "bonus2026": false
+      "tags": [
+        "software-integrity",
+        "supply-chain",
+        "dependencias"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-015",
@@ -258,8 +317,12 @@
       "correcta": 3,
       "explicacion": "localStorage es accesible por cualquier JavaScript de la página: si hay un XSS, el token queda expuesto. La práctica recomendada es guardar el JWT en una cookie HttpOnly (JavaScript no puede leerla) + Secure (solo viaja por HTTPS). Además, los tokens deben tener expiración corta y el servidor debe poder revocarlos — depender solo de la firma criptográfica sin lista de revocación deja tokens comprometidos activos hasta que expiren.",
       "dificultad": 2,
-      "tags": ["authentication-failures", "jwt", "cookies"],
-      "bonus2026": false
+      "tags": [
+        "authentication-failures",
+        "jwt",
+        "cookies"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-016",
@@ -275,8 +338,12 @@
       "correcta": 1,
       "explicacion": "El logging y monitoring no evita el ataque inicial, pero es esencial para detectarlo, contenerlo y aprender de él. Sin registros adecuados de eventos críticos (inicios de sesión, accesos a recursos sensibles, errores de autorización), un atacante puede moverse lateralmente durante semanas sin generar alertas. La ausencia de observabilidad convierte un incidente contenible en una brecha prolongada y de mayor impacto.",
       "dificultad": 1,
-      "tags": ["logging-monitoring", "deteccion-incidentes", "owasp-2021"],
-      "bonus2026": false
+      "tags": [
+        "logging-monitoring",
+        "deteccion-incidentes",
+        "owasp-2021"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-017",
@@ -292,14 +359,18 @@
       "correcta": 1,
       "explicacion": "SSRF explota el hecho de que el servidor tiene acceso a recursos internos que el atacante desde internet no puede alcanzar directamente. Al forzar al servidor a hacer peticiones a URLs controladas por el atacante (incluyendo 169.254.169.254 — el endpoint de metadatos de cloud), se puede descubrir la topología de red interna, robar credenciales de instancia o acceder a servicios internos no expuestos públicamente. La defensa principal es validar y restringir con allowlist las URLs que el servidor tiene permitido contactar.",
       "dificultad": 2,
-      "tags": ["ssrf", "owasp-2021", "red-interna"],
-      "bonus2026": false
+      "tags": [
+        "ssrf",
+        "owasp-2021",
+        "red-interna"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-018",
       "modulo": "12-seguridad",
       "tipo": "multiple-choice",
-      "pregunta": "El OWASP Top 10 2025 (publicado a comienzos de 2026) introduce 'Software Supply Chain Failures' como categoría independiente. ¿Qué tipo de riesgos agrupa esta nueva entrada que no estaban suficientemente diferenciados en la edición anterior?",
+      "pregunta": "ESTADO DEL ARTE 2026 — El OWASP Top 10 2025 (publicado a comienzos de 2026) introduce 'Software Supply Chain Failures' como categoría independiente. ¿Qué tipo de riesgos agrupa esta nueva entrada que no estaban suficientemente diferenciados en la edición anterior?",
       "opciones": [
         "Riesgos asociados a dependencias comprometidas, paquetes con typosquatting, imágenes de contenedor no verificadas, pipelines de CI/CD con permisos excesivos y falta de validación de integridad en componentes de terceros",
         "Fallos en la autenticación multifactor de los sistemas de control de versiones como Git",
@@ -309,14 +380,19 @@
       "correcta": 0,
       "explicacion": "Software Supply Chain Failures reconoce que las aplicaciones modernas dependen de miles de componentes externos y que comprometer uno de ellos puede afectar a miles de organizaciones simultáneamente (casos como SolarWinds o el paquete event-stream de npm). Los riesgos incluyen: confianza automática en ecosistemas públicos (NPM, PyPI), dependencias transitivas no auditadas, typosquatting, pipelines de CI/CD con secretos accesibles, y falta de firmas o checksums en artefactos. La defensa clave aplica Zero Trust a las dependencias: no confiar, verificar.",
       "dificultad": 3,
-      "tags": ["supply-chain", "owasp-2025", "dependencias", "zero-trust"],
-      "bonus2026": true
+      "tags": [
+        "supply-chain",
+        "owasp-2025",
+        "dependencias",
+        "zero-trust"
+      ],
+      "estadoDelArte2026": true
     },
     {
       "id": "seg-019",
       "modulo": "12-seguridad",
       "tipo": "multiple-choice",
-      "pregunta": "Un atacante manipula las instrucciones de un modelo de IA integrado en una aplicación para que revele información interna o actúe fuera de su propósito original. ¿Cómo se llama este tipo de ataque específico a sistemas de IA?",
+      "pregunta": "ESTADO DEL ARTE 2026 — Un atacante manipula las instrucciones de un modelo de IA integrado en una aplicación para que revele información interna o actúe fuera de su propósito original. ¿Cómo se llama este tipo de ataque específico a sistemas de IA?",
       "opciones": [
         "Data poisoning: alterar los datos de entrenamiento para que el modelo tome decisiones equivocadas en el futuro",
         "Adversarial patch: insertar perturbaciones visuales en imágenes para engañar a clasificadores de visión artificial",
@@ -326,8 +402,12 @@
       "correcta": 3,
       "explicacion": "El prompt injection es un ataque emergente que explota la naturaleza de los modelos de lenguaje: al mezclar instrucciones del sistema con entradas del usuario, un atacante puede insertar instrucciones que anulen o modifiquen el comportamiento previsto. Puede ocurrir directamente (el usuario escribe instrucciones maliciosas) o indirectamente (el modelo procesa contenido externo con instrucciones ocultas). Es distinto del data poisoning, que ataca el proceso de entrenamiento, no el de inferencia en producción.",
       "dificultad": 3,
-      "tags": ["ia-amenazas", "prompt-injection", "llm-security"],
-      "bonus2026": true
+      "tags": [
+        "ia-amenazas",
+        "prompt-injection",
+        "llm-security"
+      ],
+      "estadoDelArte2026": true
     },
     {
       "id": "seg-020",
@@ -343,8 +423,12 @@
       "correcta": 1,
       "explicacion": "Shift-Left es un principio de DevSecOps que propone integrar la seguridad cuanto antes en el ciclo de vida del software — idealmente desde el análisis de requisitos y el diseño. Detectar una vulnerabilidad durante la codificación cuesta mucho menos que encontrarla en producción. En la práctica incluye: análisis estático (SAST) en el IDE, revisiones de código con foco en seguridad, threat modeling por feature y gates de seguridad en el pipeline de CI/CD.",
       "dificultad": 2,
-      "tags": ["shift-left", "devsecops", "ssdlc"],
-      "bonus2026": false
+      "tags": [
+        "shift-left",
+        "devsecops",
+        "ssdlc"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-021",
@@ -360,8 +444,12 @@
       "correcta": 0,
       "explicacion": "DevSecOps extiende DevOps integrando seguridad ('Sec') en cada etapa del pipeline — no como un control de última hora antes del despliegue, sino como parte del flujo habitual de desarrollo. Incluye: análisis estático de código (SAST), escaneo de dependencias (SCA), análisis dinámico (DAST), escaneo de imágenes de contenedor, gestión de secretos y validaciones automáticas en CI. El objetivo es que la seguridad sea responsabilidad compartida de todo el equipo, no un filtro externo.",
       "dificultad": 1,
-      "tags": ["devsecops", "cicd", "ssdlc"],
-      "bonus2026": false
+      "tags": [
+        "devsecops",
+        "cicd",
+        "ssdlc"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-022",
@@ -377,8 +465,12 @@
       "correcta": 1,
       "explicacion": "La validación por whitelist sigue el principio de mínimo privilegio aplicado a datos: defines el conjunto exacto de valores o patrones aceptables y rechazas cualquier cosa que no encaje. La blacklist es inherentemente incompleta: los atacantes siempre pueden usar variantes de codificación, caracteres especiales o vectores no contemplados para evadir los filtros. Para un campo de fecha, por ejemplo, la whitelist es 'exactamente el formato YYYY-MM-DD con valores en rango válido', no 'todo excepto comillas simples y punto y coma'.",
       "dificultad": 2,
-      "tags": ["validacion-entradas", "whitelist", "codificacion-segura"],
-      "bonus2026": false
+      "tags": [
+        "validacion-entradas",
+        "whitelist",
+        "codificacion-segura"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-023",
@@ -394,8 +486,13 @@
       "correcta": 3,
       "explicacion": "La distinción 401 vs 403 es semánticamente importante. 401 (Unauthorized) significa que el sistema no sabe quién es el usuario: falta autenticación o el token es inválido. 403 (Forbidden) significa que el sistema sí sabe quién es, pero esa identidad no tiene permiso para ese recurso. Usar el código correcto ayuda al cliente a diagnosticar el problema (¿debo autenticarme? ¿o simplemente no tengo permisos?) y es parte de diseñar APIs claras y seguras.",
       "dificultad": 1,
-      "tags": ["autenticacion", "autorizacion", "http-status", "codificacion-segura"],
-      "bonus2026": false
+      "tags": [
+        "autenticacion",
+        "autorizacion",
+        "http-status",
+        "codificacion-segura"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-024",
@@ -411,8 +508,13 @@
       "correcta": 2,
       "explicacion": "CSP es una defensa en profundidad contra XSS: aunque un atacante logre inyectar código en la página, el navegador solo ejecutará scripts de los orígenes declarados en la política. Una CSP bien configurada puede bloquear la ejecución de scripts inline y la carga de recursos desde dominios no autorizados, reduciendo drásticamente el impacto de una inyección exitosa. No sustituye a la validación y el escapado, sino que los complementa como capa adicional.",
       "dificultad": 2,
-      "tags": ["csp", "xss", "cabeceras-seguridad", "injection"],
-      "bonus2026": false
+      "tags": [
+        "csp",
+        "xss",
+        "cabeceras-seguridad",
+        "injection"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-025",
@@ -428,8 +530,12 @@
       "correcta": 0,
       "explicacion": "El data poisoning ataca el proceso de entrenamiento: un adversario manipula los datos con los que se entrena el modelo para que aprenda comportamientos incorrectos o inseguros. Por ejemplo, introducir ejemplos de código deliberadamente vulnerables en el conjunto de entrenamiento para que el modelo los replique. Es distinto del prompt injection (que ataca la inferencia en producción) y diferente de una corrupción accidental: es un ataque intencionado y difícil de detectar porque el modelo parece funcionar correctamente en la mayoría de casos.",
       "dificultad": 3,
-      "tags": ["ia-amenazas", "data-poisoning", "ia-seguridad"],
-      "bonus2026": false
+      "tags": [
+        "ia-amenazas",
+        "data-poisoning",
+        "ia-seguridad"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-026",
@@ -439,8 +545,13 @@
       "rubrica": "La respuesta debe mencionar al menos tres de los siguientes elementos: (1) autenticación obligatoria — verificar que el token/sesión es válido antes de procesar; (2) validación de autorización en el backend — comprobar que el documento con ese ID pertenece al usuario autenticado, consultando la relación en la base de datos, no fiándose del dato del cliente; (3) principio de mínimo privilegio — el usuario solo puede acceder a sus propios documentos salvo roles explícitamente autorizados; (4) no exponer IDs secuenciales o predecibles — usar UUIDs o identificadores opacos; (5) logging de accesos — registrar quién accede a qué documento y cuándo para detectar patrones anómalos.",
       "fallbackId": "seg-005",
       "dificultad": 2,
-      "tags": ["broken-access-control", "idor", "autorizacion", "backend"],
-      "bonus2026": false
+      "tags": [
+        "broken-access-control",
+        "idor",
+        "autorizacion",
+        "backend"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-027",
@@ -450,8 +561,12 @@
       "rubrica": "La respuesta debe cubrir la fase de contención (mínimo dos acciones: p. ej. detener pipelines/despliegues, volver a la versión anterior verificada) y la fase de análisis (qué sistemas usaron esa versión, qué datos/secretos pudieron quedar expuestos). Debe mencionar la rotación de credenciales o tokens si hubo exposición. En la parte estructural debe incluir al menos dos medidas preventivas: p. ej. mantener un SBOM, usar lock files con versiones exactas, verificar firmas/checksums de paquetes, integrar escáner de dependencias en CI, aplicar Zero Trust a ecosistemas públicos.",
       "fallbackId": "seg-014",
       "dificultad": 3,
-      "tags": ["supply-chain", "software-integrity", "respuesta-incidentes"],
-      "bonus2026": false
+      "tags": [
+        "supply-chain",
+        "software-integrity",
+        "respuesta-incidentes"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "seg-028",
@@ -461,8 +576,13 @@
       "rubrica": "La respuesta debe mencionar al menos cinco de los siguientes elementos: (1) almacenar contraseñas con bcrypt, scrypt o Argon2 con sal aleatoria — nunca MD5/SHA1 ni texto plano; (2) implementar rate limiting o bloqueo progresivo para frenar fuerza bruta; (3) requerir MFA (especialmente en cuentas privilegiadas), preferiblemente TOTP o FIDO2; (4) cookies de sesión con flags HttpOnly + Secure y expiración razonable; (5) invalidar sesiones y tokens al hacer logout o cambiar contraseña; (6) proceso de recuperación seguro: token único con expiración corta, sin revelar si el usuario existe; (7) logging de intentos de autenticación para detección de anomalías.",
       "fallbackId": "seg-012",
       "dificultad": 2,
-      "tags": ["authentication-failures", "contrasenas", "sesiones", "mfa"],
-      "bonus2026": false
+      "tags": [
+        "authentication-failures",
+        "contrasenas",
+        "sesiones",
+        "mfa"
+      ],
+      "estadoDelArte2026": false
     }
   ]
 }

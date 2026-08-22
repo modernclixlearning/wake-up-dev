@@ -20,7 +20,7 @@
       "explicacion": "El bloque práctico no tiene un guión único: cada docente construye su proyecto con el stack, los modelos y los agentes de IA que considera oportunos, simulando cómo un profesional lo haría en un entorno real. Esto expone al alumno a distintas formas de atacar problemas reales, no solo a una receta fija.",
       "dificultad": 1,
       "tags": ["bloque-practico", "flujo-profesional"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-002",
@@ -37,7 +37,7 @@
       "explicacion": "El CLAUDE.md (o AGENTS.md) es el sistema de instrucciones del agente para ese proyecto concreto. Contiene el stack de tecnologías, las reglas de organización del código, procesos mandatorios como TDD y cualquier convención que el agente debe respetar siempre. Se escribe de forma compacta porque su lector es un LLM, no una persona.",
       "dificultad": 1,
       "tags": ["front", "claude-md", "opencode", "agente"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-003",
@@ -54,7 +54,7 @@
       "explicacion": "TDD sigue siempre el ciclo rojo-verde-refactor: primero el test que falla (rojo), luego el mínimo código que lo hace pasar (verde), y finalmente la refactorización. Un principio que se reitera en el módulo: el test nunca se adapta al código para que pase; es el código el que se adapta al test, nunca al revés.",
       "dificultad": 1,
       "tags": ["front", "tdd", "calidad"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-004",
@@ -71,7 +71,7 @@
       "explicacion": "La Scope Rule establece que el código utilizado en más de un lugar sube a un scope global compartido (src/share: types, utils, constants, components y hooks compartidos). El código propio de una sola feature se queda dentro de ella. Esto facilita la modularidad y el lazy loading por feature con un bundler como Vite.",
       "dificultad": 2,
       "tags": ["front", "scope-rule", "screaming-architecture", "estructura"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-005",
@@ -88,7 +88,7 @@
       "explicacion": "El patrón Strategy define una interfaz común (en este caso DiscountStrategy con isApplicable y calculate) y cada regla de negocio la implementa de forma independiente. Añadir una nueva regla no rompe las existentes; quitarla no afecta al resto. Los bloques de condicionales crecen y se vuelven difíciles de mantener cuando las reglas de negocio se multiplican.",
       "dificultad": 2,
       "tags": ["front", "patron-strategy", "descuentos", "patrones"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-006",
@@ -105,7 +105,7 @@
       "explicacion": "El patrón Optimistic UI usa el ciclo idle → loading → success/error → idle. Mientras la acción se procesa, el botón muestra 'Adding...'; si tiene éxito, 'Added'; si falla, ofrece la opción de reintentar. Tras 1,5–3 segundos, vuelve a idle. Este microcopy claro reduce la incertidumbre del usuario y mejora la percepción de respuesta del sistema.",
       "dificultad": 2,
       "tags": ["front", "optimistic-ui", "ux", "microcopy"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-007",
@@ -122,7 +122,7 @@
       "explicacion": "El Page Object encapsula en una clase los selectores y las acciones (navegar, hacer clic, rellenar formularios) de una pantalla concreta. Si un selector cambia en la UI, solo hay que actualizarlo en ese Page Object, no en todos los tests que usan esa pantalla. En el proyecto se usan selectores accesibles (getByRole, getByText) y data-testid solo cuando no hay alternativa más semántica.",
       "dificultad": 2,
       "tags": ["front", "testing", "playwright", "page-object", "e2e"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-008",
@@ -139,7 +139,7 @@
       "explicacion": "@Preview solo funciona si Android Studio puede instanciar el composable sin argumentos externos. Por eso todos sus parámetros deben tener valores por defecto declarados. Sin ellos, el IDE no puede renderizarlo en la vista previa y hay que recurrir al emulador para ver el resultado visual.",
       "dificultad": 2,
       "tags": ["mobile", "jetpack-compose", "preview", "android"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-009",
@@ -156,7 +156,7 @@
       "explicacion": "En Compose, cada cambio de estado provoca que el bloque composable se reejecutie (recomposición). Si el texto está en una variable local, la recomposición la reinicializa y el valor teclado se pierde en un bucle continuo. La solución es remember { mutableStateOf(\"\") }: remember conserva el valor entre recomposiciones y mutableStateOf lo convierte en un estado observable que Compose sabe cuándo repintar.",
       "dificultad": 2,
       "tags": ["mobile", "jetpack-compose", "estado", "recomposicion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-010",
@@ -173,7 +173,7 @@
       "explicacion": "Stitch genera diseños a partir de prompts, pero el código que exporta es HTML/CSS aproximado, no Jetpack Compose. El flujo recomendado es capturar un componente del diseño y pasárselo a Gemini o Claude con un prompt específico para ese composable, de a uno a la vez. Pasar el diseño entero de golpe tiende a hacer que la IA mezcle varios componentes en uno solo.",
       "dificultad": 2,
       "tags": ["mobile", "stitch", "diseno-ui", "gemini", "android"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-011",
@@ -190,7 +190,7 @@
       "explicacion": "La paginación manual reemplazaba la lista en vez de acumularla. Cuando insistir en que la IA 'lo arregle' no funcionó, la solución fue indicarle directamente la librería correcta: Paging 3. El aprendizaje generalizable: cuando la IA no acierta con algo complejo, guiarla con el nombre de la librería o el patrón adecuado es más eficaz que pedirle que corrija el código sin más contexto.",
       "dificultad": 3,
       "tags": ["mobile", "paginacion", "paging3", "android", "buenas-practicas-ia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-012",
@@ -207,7 +207,7 @@
       "explicacion": "Definir primero el contrato OpenAPI hace que los endpoints, sus parámetros y sus respuestas estén especificados antes de tocar código. Esa especificación se convierte en la fuente de verdad de la que se derivan el esqueleto de la implementación, los tests de integración y la documentación automática. Reduce la ambigüedad cuando un agente de IA genera el código a partir de ella.",
       "dificultad": 2,
       "tags": ["backend", "openapi", "api-design", "arquitectura"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-013",
@@ -224,7 +224,7 @@
       "explicacion": "En Genkit, las tools se definen con un nombre y una descripción en lenguaje natural. El LLM lee esa descripción y decide autónomamente cuándo invocar la herramienta en función de si la necesita para responder correctamente. No hay umbral de confianza numérico ni palabras clave especiales — es el razonamiento del propio modelo el que determina si hace falta la búsqueda web.",
       "dificultad": 2,
       "tags": ["genkit", "tavily", "cli", "tools", "agente"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-014",
@@ -241,7 +241,7 @@
       "explicacion": "definePrompt() transforma un texto en un artefacto nombrado y tipado: el schema Zod valida la entrada en tiempo de compilación, el nombre lo hace invocable desde cualquier parte del código, y aparece en la Developer UI de Genkit (localhost:4000) para ejecutarlo, inspeccionarlo y testearlo visualmente. generate() es una llamada puntual que no se puede referenciar ni probar desde la interfaz de desarrollo.",
       "dificultad": 2,
       "tags": ["genkit", "prompts", "developer-ui", "typescript"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-015",
@@ -258,7 +258,7 @@
       "explicacion": "Los ficheros .prompt (proyecto open source de Google) usan Handlebars como lenguaje de plantillas y separan el texto del prompt del código fuente. Esto permite que el equipo de contenido o de producto gestione los prompts en otro repositorio con su propio ciclo de vida: actualizar un prompt es una operación de configuración, no un despliegue de código. definePrompt() también es reutilizable, pero el prompt vive acoplado al código.",
       "dificultad": 3,
       "tags": ["genkit", "prompts", "dot-prompt", "arquitectura"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-016",
@@ -275,7 +275,7 @@
       "explicacion": "Un LLM no 'sabe' nada en el sentido tradicional: genera la continuación más probable para una entrada dada. Cuando la información necesaria no está en su entrenamiento ni en el contexto proporcionado, ese mecanismo probabilístico produce texto plausible pero incorrecto. La solución no es bajar la temperatura, sino enriquecer el contexto con la información real que necesita el modelo para responder correctamente.",
       "dificultad": 1,
       "tags": ["ia-generativa", "alucinacion", "llm", "contexto"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-017",
@@ -292,7 +292,7 @@
       "explicacion": "/compact genera un resumen de la sesión (objetivo, instrucciones, descubrimientos, archivos revisados, siguientes pasos) y arranca una nueva sesión con ese resumen. Al comprimir, pueden perderse decisiones puntuales, patrones acordados o la razón de fondo de ciertas elecciones: el resumen captura qué se hizo pero no siempre por qué. Es la compensación inevitable entre liberar espacio en la ventana de contexto y mantener la fidelidad del historial.",
       "dificultad": 1,
       "tags": ["context-window", "compactacion", "compact", "memoria"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-018",
@@ -309,7 +309,7 @@
       "explicacion": "Un chat solo procesa texto de entrada y genera texto de salida; no puede ejecutar comandos en la máquina del usuario. Para leer el historial real de Git hay que usar un agente, que vive dentro de la terminal y tiene acceso a herramientas como git log. Si la respuesta fue precisa sobre el estado real del repositorio, la herramienta usada era un agente, no un chat conversacional.",
       "dificultad": 1,
       "tags": ["chat-vs-agente", "agente", "git", "tools"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-019",
@@ -326,7 +326,7 @@
       "explicacion": "Un LLM calcula la respuesta a partir de todo lo que está en su contexto. Si se incluye información irrelevante para la tarea concreta, el modelo tiene que 'procesar el ruido' para encontrar la señal correcta. La solución del módulo (skills con carga perezosa) es precisamente no cargar un AGENTS.md gigante, sino solo la skill pertinente para la tarea en curso.",
       "dificultad": 2,
       "tags": ["contexto", "skills", "lazy-loading", "rendimiento-ia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-020",
@@ -343,7 +343,7 @@
       "explicacion": "Un subagente arranca con un contexto completamente limpio y recibe del orquestador únicamente el prompt con la tarea específica. Al explorar archivos, ejecutar comandos o leer documentación, toda esa información carga en su propio contexto. Cuando termina, entrega al orquestador un informe resumido. Así el orquestador mantiene su contexto libre de ruido y solo acumula las conclusiones de cada delegación.",
       "dificultad": 2,
       "tags": ["subagentes", "orquestador", "contexto", "arquitectura-ia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-021",
@@ -360,7 +360,7 @@
       "explicacion": "Engram no es un sistema de memoria conversacional: no guarda el prompt ni la respuesta del LLM. Guarda señales — el resultado de una decisión: una arquitectura adoptada, un patrón, un bug ya corregido. Usa SQLite con FTS5 (búsqueda de texto, no vectores). Esta simplicidad es intencional: guardar todo el historial acumula ruido; lo que interesa es preservar las decisiones para que no se repitan los mismos errores al abrir una nueva sesión.",
       "dificultad": 2,
       "tags": ["engram", "memoria", "sqlite", "mcp"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-022",
@@ -377,7 +377,7 @@
       "explicacion": "El trigger es la condición de activación de una skill. Cuando el usuario dice algo que coincide con ese trigger (por ejemplo, 'quiero hacer un PR' o 'hay un bug en producción'), el agente carga esa skill en el contexto. Fuera de ese escenario, la skill no está cargada, lo que mantiene el contexto limpio. Es el mecanismo central del lazy loading de skills.",
       "dificultad": 2,
       "tags": ["skills", "trigger", "lazy-loading", "contexto"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-023",
@@ -394,7 +394,7 @@
       "explicacion": "TDD escribe el test antes que el código para verificar que la implementación hace lo que debe. SDD escribe la especificación (requerimientos, diseño, tareas) antes que el código por la misma razón. El módulo los equipara porque ambos invierten el orden habitual (primero especificar, luego implementar) y ambos funcionan como red de seguridad cuando la IA puede avanzar muy rápido. SDD no elimina TDD — el módulo los combina en OpenSpec.",
       "dificultad": 2,
       "tags": ["sdd", "tdd", "especificacion", "flujo"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-024",
@@ -411,13 +411,13 @@
       "explicacion": "La fase Verify compara lo implementado contra las especificaciones y clasifica cada hallazgo en: crítico (no cumple la especificación, debe corregirse), warning (cumple pero hay algo a vigilar) y sugerencia (cumple y además podría mejorarse). Esta clasificación permite al orquestador priorizar qué debe corregir el fix agent y qué puede dejarse para una iteración posterior.",
       "dificultad": 2,
       "tags": ["sdd", "verify", "openspec", "calidad"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-025",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — ¿Qué framework de IA generativa utilizan internamente por defecto herramientas de Google como Firebase Studio y Antigravity para las llamadas a LLMs cuando generan código?",
+      "pregunta": "ESTADO DEL ARTE 2026 — ¿Qué framework de IA generativa utilizan internamente por defecto herramientas de Google como Firebase Studio y Antigravity para las llamadas a LLMs cuando generan código?",
       "opciones": [
         "Genkit, el framework open source creado por el equipo de Firebase/Google",
         "LangChain, que Google adoptó como estándar para sus productos de IA generativa en 2025",
@@ -427,8 +427,8 @@
       "correcta": 0,
       "explicacion": "Según lo mencionado en el módulo, Firebase Studio y Antigravity usan Genkit internamente por defecto para las llamadas a LLMs cuando generan código. Genkit es el framework open source creado por el equipo de Firebase, pensado para aplicaciones backend con IA generativa. Su uso en productos propios de Google confirma la apuesta del ecosistema Google por este framework en 2026.",
       "dificultad": 3,
-      "tags": ["genkit", "firebase", "ecosistema", "bonus2026"],
-      "bonus2026": true
+      "tags": ["genkit", "firebase", "ecosistema", "estadoDelArte2026"],
+      "estadoDelArte2026": true
     },
     {
       "id": "dpi-026",
@@ -445,13 +445,13 @@
       "explicacion": "Un LLM es probabilístico: no siempre detecta los mismos problemas en cada ejecución. Dos jueces con contextos completamente independientes tienen mayor probabilidad combinada de cubrir todos los hallazgos reales. El orquestador contrasta ambos reportes y confirma solo los que considera genuinos. Para proyectos críticos, esta estrategia compensa el coste extra de tokens.",
       "dificultad": 2,
       "tags": ["skill-juicio", "subagentes", "revision-codigo", "no-determinismo"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-027",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — Herramientas como Cursor (con su interfaz simplificada) y Codex (ahora gestor de agentes) ilustran una tendencia del mercado. ¿Cómo describe el módulo el nuevo rol del desarrollador en este contexto?",
+      "pregunta": "ESTADO DEL ARTE 2026 — Herramientas como Cursor (con su interfaz simplificada) y Codex (ahora gestor de agentes) ilustran una tendencia del mercado. ¿Cómo describe el módulo el nuevo rol del desarrollador en este contexto?",
       "opciones": [
         "El desarrollador pasa a ser principalmente prompt engineer: su trabajo central es redactar instrucciones precisas para la IA",
         "El desarrollador deja de necesitar conocer el stack tecnológico porque la IA toma todas las decisiones de arquitectura",
@@ -461,8 +461,8 @@
       "correcta": 2,
       "explicacion": "El módulo describe una evolución clara: Cursor simplificó su interfaz alejándose del código explícito; Codex es ya un gestor de agentes. La dirección apunta a que el desarrollador deje de picar código línea a línea y pase a dirigir a los agentes con criterio. Para hacerlo bien se necesitan conceptos sólidos de arquitectura, patrones y calidad — la idea de que 'con la IA ya no hace falta aprender' es incorrecta.",
       "dificultad": 2,
-      "tags": ["rol-desarrollador", "gentleman-cli", "ecosistema", "bonus2026"],
-      "bonus2026": true
+      "tags": ["rol-desarrollador", "gentleman-cli", "ecosistema", "estadoDelArte2026"],
+      "estadoDelArte2026": true
     },
     {
       "id": "dpi-028",
@@ -473,7 +473,7 @@
       "fallbackId": "dpi-017",
       "dificultad": 2,
       "tags": ["context-window", "compactacion", "engram", "skills"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-029",
@@ -484,7 +484,7 @@
       "fallbackId": "dpi-023",
       "dificultad": 3,
       "tags": ["sdd", "openspec", "tdd", "subagentes", "fases"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "dpi-030",
@@ -495,7 +495,7 @@
       "fallbackId": "dpi-021",
       "dificultad": 3,
       "tags": ["engram", "memoria", "mcp", "sqlite", "persistencia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     }
   ]
 }

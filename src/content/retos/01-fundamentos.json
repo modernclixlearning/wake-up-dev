@@ -21,7 +21,7 @@
       "explicacion": "La descomposición ('divide y vencerás') es uno de los 4 pilares del pensamiento computacional, junto con el reconocimiento de patrones, la abstracción y el diseño de algoritmos.",
       "dificultad": 1,
       "tags": ["pensamiento-computacional"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-002",
@@ -33,7 +33,7 @@
       "explicacion": "El bucle `while` repite su bloque mientras la condición sea verdadera. `if/else` y `switch` son condicionales; `try/catch` maneja errores.",
       "dificultad": 1,
       "tags": ["programacion", "estructuras-de-control"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-003",
@@ -45,7 +45,7 @@
       "explicacion": "HTTP (y su versión cifrada HTTPS) es el protocolo de la web, y también el vehículo de las APIs modernas. FTP transfiere archivos, SSH da acceso remoto seguro y SMTP envía correo.",
       "dificultad": 1,
       "tags": ["redes", "http"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-004",
@@ -62,7 +62,7 @@
       "explicacion": "Un compilador traduce el programa completo antes de ejecutarlo (C, Rust, Go); un intérprete lo traduce mientras se ejecuta (Python, JavaScript clásico). Hay enfoques híbridos como el JIT.",
       "dificultad": 2,
       "tags": ["lenguajes"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-005",
@@ -79,7 +79,7 @@
       "explicacion": "Git es el motor local de control de versiones (el motor del coche). GitHub es la plataforma en la nube que aloja repositorios Git (el garaje y las carreteras) — alternativas: GitLab, Bitbucket.",
       "dificultad": 1,
       "tags": ["ecosistema", "git"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-006",
@@ -91,7 +91,7 @@
       "explicacion": "La cola es FIFO (first in, first out). La pila es LIFO: lo último que entra sale primero, como una pila de platos.",
       "dificultad": 2,
       "tags": ["estructuras-de-datos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-007",
@@ -108,7 +108,7 @@
       "explicacion": "La IP identifica a un dispositivo en la red. El DNS traduce nombres de dominio legibles (ej. google.com) a direcciones IP.",
       "dificultad": 1,
       "tags": ["redes"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-008",
@@ -125,7 +125,7 @@
       "explicacion": "Un algoritmo es una secuencia finita y ordenada de pasos: recibe datos de entrada, los procesa y produce una salida. Sus claves: secuencia, precisión y sin ambigüedades.",
       "dificultad": 1,
       "tags": ["algoritmos", "pensamiento-computacional"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-009",
@@ -136,13 +136,13 @@
       "fallbackId": "fun-001",
       "dificultad": 2,
       "tags": ["pensamiento-computacional", "abstraccion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-010",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — En el desarrollo asistido por IA actual, ¿qué describe mejor el rol del developer?",
+      "pregunta": "ESTADO DEL ARTE 2026 — En el desarrollo asistido por IA actual, ¿qué describe mejor el rol del developer?",
       "opciones": [
         "Escribir cada línea de código a mano, la IA solo autocompleta",
         "Actuar como arquitecto: especificar, orquestar herramientas inteligentes y validar el resultado",
@@ -153,7 +153,7 @@
       "explicacion": "El rol evoluciona de 'constructor que coloca ladrillos' a 'arquitecto que orquesta': el developer da los planos (especificación), la IA construye, y el developer valida — siempre tiene la última palabra.",
       "dificultad": 2,
       "tags": ["ia", "flujo-desarrollo"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "fun-011",
@@ -165,7 +165,7 @@
       "explicacion": "Los 4 pilares son: descomposición, reconocimiento de patrones, abstracción y diseño de algoritmos. La compilación es una fase de traducción de código, no un pilar del pensamiento computacional.",
       "dificultad": 1,
       "tags": ["pensamiento-computacional"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-012",
@@ -182,7 +182,7 @@
       "explicacion": "El pseudocódigo describe un algoritmo de manera informal, sin la sintaxis de ningún lenguaje. Su complemento visual es el diagrama de flujo (óvalos, rectángulos, rombos y flechas).",
       "dificultad": 1,
       "tags": ["algoritmos", "pseudocodigo"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-013",
@@ -199,7 +199,7 @@
       "explicacion": "Editás en el Working Directory, preparás el próximo cambio en la Staging Area (git add) y lo registrás permanentemente en el Repository (git commit).",
       "dificultad": 2,
       "tags": ["git", "ecosistema"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-014",
@@ -211,7 +211,7 @@
       "explicacion": "`git add` prepara los cambios (staging); `git commit -m` crea la instantánea; `git push` la sube al remoto; `git status` muestra el estado actual.",
       "dificultad": 1,
       "tags": ["git", "comandos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-015",
@@ -228,7 +228,7 @@
       "explicacion": "El PR es una propuesta de cambio y una conversación: permite revisar la calidad del código antes de fusionarlo. Es la base del GitHub Flow (feature branches + PRs).",
       "dificultad": 1,
       "tags": ["git", "github", "colaboracion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-016",
@@ -245,7 +245,7 @@
       "explicacion": "Si dos ramas tocan la misma línea del mismo archivo, Git no puede decidir automáticamente y pide una resolución manual del conflicto.",
       "dificultad": 2,
       "tags": ["git", "merge"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-017",
@@ -262,7 +262,7 @@
       "explicacion": "REST se centra en recursos identificados por URLs (endpoints): /productos es la colección y /productos/5 el recurso individual. GET es la operación de lectura.",
       "dificultad": 1,
       "tags": ["apis", "rest"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-018",
@@ -274,7 +274,7 @@
       "explicacion": "Create → POST, Read → GET, Update → PUT/PATCH, Delete → DELETE. Los datos del nuevo recurso viajan en el cuerpo (body) de la solicitud.",
       "dificultad": 1,
       "tags": ["apis", "rest", "crud"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-019",
@@ -291,7 +291,7 @@
       "explicacion": "Sin estado = el servidor no recuerda solicitudes anteriores; cada request es autocontenida. Por eso la autenticación (API key o token) viaja en cada solicitud.",
       "dificultad": 2,
       "tags": ["apis", "http", "rest"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-020",
@@ -308,7 +308,7 @@
       "explicacion": "Primero te identificás (autenticación: login, API key, token) y después el sistema decide a qué tenés acceso (autorización: permisos, roles).",
       "dificultad": 2,
       "tags": ["apis", "seguridad"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-021",
@@ -325,7 +325,7 @@
       "explicacion": "CORS (Cross-Origin Resource Sharing) impide que una página haga solicitudes a otro dominio salvo que el servidor lo permita explícitamente mediante cabeceras.",
       "dificultad": 3,
       "tags": ["apis", "seguridad", "cors"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-022",
@@ -342,7 +342,7 @@
       "explicacion": "JSON (JavaScript Object Notation) es el formato universal de intercambio entre sistemas: objetos entre llaves con pares clave-valor, y listas entre corchetes.",
       "dificultad": 1,
       "tags": ["apis", "json"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-023",
@@ -359,7 +359,7 @@
       "explicacion": "Un objeto sabe cosas (estado/atributos — un libro sabe su título) y puede hacer cosas (comportamiento/métodos — un libro puede prestarse). La clase es la plantilla desde la que se crean objetos.",
       "dificultad": 1,
       "tags": ["poo", "lenguajes"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-024",
@@ -376,7 +376,7 @@
       "explicacion": "La herencia crea clases hijas que reutilizan lo definido en la clase padre y establece relaciones 'es un' (un Ebook ES UN Libro). Promueve la reutilización de código.",
       "dificultad": 2,
       "tags": ["poo", "herencia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-025",
@@ -393,7 +393,7 @@
       "explicacion": "Polimorfismo: el mismo método (ej. describir()) se comporta distinto según el objeto que lo recibe — típicamente sobrescribiendo (override) el método de la clase padre.",
       "dificultad": 2,
       "tags": ["poo", "polimorfismo"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-026",
@@ -410,7 +410,7 @@
       "explicacion": "Encapsular = el objeto gestiona su propio estado y el exterior solo interactúa por su interfaz pública. En Python, el guion bajo `_atributo` señala que algo es interno.",
       "dificultad": 2,
       "tags": ["poo", "encapsulacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-027",
@@ -427,7 +427,7 @@
       "explicacion": "Es la diferencia implícita entre la solución ideal y la fácil/rápida. Causas típicas: presión de fechas, falta de contexto, mala calidad, falta de tests, tecnología obsoleta.",
       "dificultad": 1,
       "tags": ["buenas-practicas", "deuda-tecnica"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-028",
@@ -444,7 +444,7 @@
       "explicacion": "Los tests son la red de seguridad: garantizan que al mejorar la estructura interna no rompés funcionalidad. La refactorización es un proceso disciplinado y continuo, no un evento puntual.",
       "dificultad": 2,
       "tags": ["buenas-practicas", "refactorizacion", "testing"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-029",
@@ -461,7 +461,7 @@
       "explicacion": "Como ordenar la cocina de un restaurante abierto: los clientes no notan nada, pero los chefs trabajan mucho mejor. El comportamiento externo queda intacto.",
       "dificultad": 1,
       "tags": ["buenas-practicas", "refactorizacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-030",
@@ -472,7 +472,7 @@
       "fallbackId": "fun-005",
       "dificultad": 2,
       "tags": ["git", "github", "ecosistema"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-031",
@@ -483,13 +483,13 @@
       "fallbackId": "fun-027",
       "dificultad": 2,
       "tags": ["buenas-practicas", "deuda-tecnica"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-032",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — ¿Qué protocolo abierto se consolidó como estándar para conectar asistentes de IA con herramientas y datos externos?",
+      "pregunta": "ESTADO DEL ARTE 2026 — ¿Qué protocolo abierto se consolidó como estándar para conectar asistentes de IA con herramientas y datos externos?",
       "opciones": [
         "MCP (Model Context Protocol)",
         "SOAP",
@@ -500,13 +500,13 @@
       "explicacion": "MCP estandariza cómo un modelo de IA descubre y usa herramientas externas (repos, bases de datos, APIs). Es al ecosistema de agentes lo que REST fue a las APIs web.",
       "dificultad": 3,
       "tags": ["ia", "mcp", "apis"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "fun-033",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — Los agentes de código actuales (Claude Code, Copilot CLI) pueden ejecutarse en modo 'headless'. ¿Qué significa?",
+      "pregunta": "ESTADO DEL ARTE 2026 — Los agentes de código actuales (Claude Code, Copilot CLI) pueden ejecutarse en modo 'headless'. ¿Qué significa?",
       "opciones": [
         "Corren sin interfaz interactiva: reciben un prompt, trabajan y devuelven el resultado, orquestables desde scripts",
         "Corren sin conexión a internet",
@@ -517,7 +517,7 @@
       "explicacion": "El modo headless (ej. `claude -p`) permite integrar agentes en pipelines y orquestarlos: un proceso les pasa el prompt, captura su salida (a menudo en streaming) y decide el paso siguiente. Este juego usa ese patrón en su modo 'píldora roja'.",
       "dificultad": 3,
       "tags": ["ia", "flujo-desarrollo", "headless"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     }
   ]
 }

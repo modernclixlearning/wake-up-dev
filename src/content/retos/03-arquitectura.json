@@ -21,7 +21,7 @@
       "explicacion": "No es dibujar diagramas: es decidir qué módulos hay, cómo se relacionan, qué responsabilidades tiene cada uno y cómo evoluciona el sistema sin romperse. 'La arquitectura no es lo que defines al principio, sino lo que aguanta con el paso del tiempo'.",
       "dificultad": 1,
       "tags": ["arquitectura", "conceptos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-002",
@@ -38,7 +38,7 @@
       "explicacion": "Programación = cómo escribís el código (bajo). Diseño = cómo lo estructurás con patrones y SOLID (medio). Arquitectura = cómo organizás los grandes bloques y su comunicación (alto).",
       "dificultad": 1,
       "tags": ["arquitectura", "conceptos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-003",
@@ -55,7 +55,7 @@
       "explicacion": "El coste del cambio es el indicador clave: una mala arquitectura hace que añadir o modificar funcionalidades sea cada vez más caro y lento.",
       "dificultad": 1,
       "tags": ["arquitectura", "coste-del-cambio"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-004",
@@ -72,7 +72,7 @@
       "explicacion": "La arquitectura dejó de ser un rol exclusivo: cualquier developer toma decisiones arquitectónicas en su día a día, por eso todos deben entender sus fundamentos.",
       "dificultad": 1,
       "tags": ["arquitectura", "equipos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-005",
@@ -89,7 +89,7 @@
       "explicacion": "La regla de dependencias es el principio más fundamental: el dominio no conoce frameworks ni bases de datos; la infraestructura depende de la aplicación y esta del dominio — nunca al revés.",
       "dificultad": 2,
       "tags": ["clean-architecture", "regla-de-dependencias"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-006",
@@ -106,7 +106,7 @@
       "explicacion": "Pedido o Usuario son entidades (tienen identidad). Precio o Moneda son value objects: tipos enriquecidos con invariantes (ej. un precio no puede ser negativo) que se usan dentro de las entidades.",
       "dificultad": 2,
       "tags": ["clean-architecture", "dominio", "value-objects"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-007",
@@ -123,7 +123,7 @@
       "explicacion": "Los casos de uso coordinan: validan la entrada, llaman al dominio y devuelven el resultado. Las reglas de negocio viven en el dominio y son puras (sin efectos secundarios).",
       "dificultad": 2,
       "tags": ["clean-architecture", "casos-de-uso"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-008",
@@ -140,7 +140,7 @@
       "explicacion": "El puerto es el contrato (interfaz) que declara qué necesita la aplicación (ej. RepositorioDePedidos); el adaptador es la implementación concreta en infraestructura (ej. RepositorioPostgres). Así el dominio nunca conoce la tecnología.",
       "dificultad": 2,
       "tags": ["clean-architecture", "puertos-adaptadores"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-009",
@@ -157,7 +157,7 @@
       "explicacion": "Un fallo de negocio (saldo insuficiente, stock agotado) no es una situación excepcional: modelarlo en el tipo de retorno lo hace visible y verificable. `throw` queda para errores realmente inesperados.",
       "dificultad": 3,
       "tags": ["clean-architecture", "result-either"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-010",
@@ -174,7 +174,7 @@
       "explicacion": "La inversión de dependencias se materializa componiendo en el borde: la infraestructura instancia los adaptadores y los inyecta hacia dentro. No hay singletons mágicos en el dominio.",
       "dificultad": 3,
       "tags": ["clean-architecture", "inversion-de-dependencias"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-011",
@@ -191,7 +191,7 @@
       "explicacion": "Se despliega como una unidad, pero internamente los módulos tienen límites claros. Suele ser el punto de partida recomendado: da orden sin pagar la complejidad operativa de los microservicios.",
       "dificultad": 2,
       "tags": ["estilos", "monolito-modular"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-012",
@@ -208,7 +208,7 @@
       "explicacion": "No son intrínsecamente mejores: aportan escalado y despliegue independientes a cambio de mucha complejidad (red, observabilidad, consistencia). Para muchos equipos, un monolito modular es la mejor decisión.",
       "dificultad": 2,
       "tags": ["estilos", "microservicios", "mitos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-013",
@@ -225,7 +225,7 @@
       "explicacion": "El productor publica y se olvida; el consumidor reacciona cuando puede. Eso da desacoplamiento temporal: no dependen el uno del otro en el tiempo (a diferencia de una llamada HTTP síncrona).",
       "dificultad": 2,
       "tags": ["comunicacion", "asincronia", "eventos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-014",
@@ -242,7 +242,7 @@
       "explicacion": "El broker recibe los eventos publicados y los entrega a los suscriptores (patrón publisher/subscriber). Ejemplos: RabbitMQ, Kafka, Redis Streams, NATS.",
       "dificultad": 2,
       "tags": ["comunicacion", "eventos", "broker"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-015",
@@ -259,7 +259,7 @@
       "explicacion": "Al desacoplar temporalmente, distintos consumidores reaccionan en paralelo y sin orden garantizado; el estado global converge 'eventualmente'. Es un trade-off a cambio de resiliencia y escalabilidad.",
       "dificultad": 3,
       "tags": ["comunicacion", "eventos", "consistencia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-016",
@@ -276,7 +276,7 @@
       "explicacion": "Si `PedidoCreado` incluye los datos del pedido, Pagos e Inventario pueden actuar sin llamar de vuelta al servicio de pedidos — más desacoplamiento a cambio de eventos más pesados.",
       "dificultad": 3,
       "tags": ["comunicacion", "eventos", "patrones"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-017",
@@ -293,7 +293,7 @@
       "explicacion": "Resiliencia: los consumidores son independientes y paralelos. También gana escalabilidad y un registro natural de lo ocurrido. El costo: trazabilidad más difícil y consistencia eventual.",
       "dificultad": 2,
       "tags": ["comunicacion", "eventos", "resiliencia"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-018",
@@ -304,7 +304,7 @@
       "fallbackId": "arq-005",
       "dificultad": 2,
       "tags": ["clean-architecture", "regla-de-dependencias"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-019",
@@ -315,13 +315,13 @@
       "fallbackId": "arq-012",
       "dificultad": 3,
       "tags": ["estilos", "monolito-modular", "microservicios"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "arq-020",
       "modulo": "03-arquitectura",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — En las arquitecturas con agentes de IA, ¿qué papel cumple MCP (Model Context Protocol)?",
+      "pregunta": "ESTADO DEL ARTE 2026 — En las arquitecturas con agentes de IA, ¿qué papel cumple MCP (Model Context Protocol)?",
       "opciones": [
         "Es la capa estándar de integración: define cómo un agente descubre y usa herramientas externas, como un 'puerto' universal",
         "Reemplaza a las bases de datos relacionales",
@@ -332,13 +332,13 @@
       "explicacion": "MCP juega para los agentes el rol que los puertos/adaptadores juegan en Clean Architecture: un contrato estándar entre el agente y las capacidades externas (repos, APIs, datos), independiente de la implementación.",
       "dificultad": 3,
       "tags": ["ia", "mcp", "integracion"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "arq-021",
       "modulo": "03-arquitectura",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — Al diseñar sistemas que incluyen agentes de IA de larga duración, ¿qué patrón arquitectónico clásico se volvió aún más relevante?",
+      "pregunta": "ESTADO DEL ARTE 2026 — Al diseñar sistemas que incluyen agentes de IA de larga duración, ¿qué patrón arquitectónico clásico se volvió aún más relevante?",
       "opciones": [
         "La comunicación asíncrona basada en eventos: el agente trabaja en background y notifica resultados",
         "El acoplamiento fuerte entre módulos",
@@ -349,7 +349,7 @@
       "explicacion": "Un agente puede tardar minutos u horas: bloquear una llamada síncrona no escala. Colas, eventos y webhooks (el mismo toolkit de EDA) son la forma natural de orquestar agentes — el orquestador delega y sigue.",
       "dificultad": 3,
       "tags": ["ia", "eventos", "agentes"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     }
   ]
 }

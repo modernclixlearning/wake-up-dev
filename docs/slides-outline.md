@@ -6,7 +6,7 @@ Estética sugerida: negro + verde fósforo (la del juego). Generables con el pip
 2. **La idea** — Un juego 8-bit que repasa el máster: cada módulo un nivel, cada Agente Smith un reto. La IA no es solo herramienta de desarrollo: es parte del gameplay.
 3. **Demo** — Screenshot del nivel + QR a la URL pública.
 4. **Arquitectura** — Diagrama: domain (puro, testeado) ← game (Kaplay) → ai (AIProvider) → adapters (Anthropic/OpenAI/Gemini/headless/fallback) + content (JSON data-driven).
-5. **Contenido data-driven** — Pipeline notas→JSON con gate de tests en CI; ~174 retos, 6 módulos, bonus 2026; agregar módulo = agregar JSON.
+5. **Contenido data-driven** — Pipeline notas→JSON con gate de tests en CI; 312 retos, 10 módulos, estado del arte 2026; agregar módulo = agregar JSON.
 6. **La IA como gameplay** — El Oráculo (contexto por módulo) · evaluación de abiertas con rúbrica · Smith adaptativo (dificultad + pistas).
 6.5. **Combate arcade 90s** — Personajes y escenarios 100% procedurales (sin sprites externos); esquive "bullet time" + Agentes con HP + Jefe de nivel — el guiño a la película de acción detrás de Matrix.
 7. **La píldora roja** — Bridge local → instancias headless de Claude Code (`claude -p`); diagrama juego→bridge→CLI; el patrón de orquestación del máster hecho visible.

@@ -18,7 +18,7 @@ const retoAbierta: RetoAbierta = {
   fallbackId: "x-0",
   dificultad: 2,
   tags: [],
-  bonus2026: false,
+  estadoDelArte2026: false,
 };
 
 function storageFalso(): Storage {
@@ -159,7 +159,7 @@ describe("BridgeAdapter (fetch mockeado)", () => {
     explicacion: "",
     dificultad: 1 as const,
     tags: [],
-    bonus2026: false,
+    estadoDelArte2026: false,
   };
 
   it("disponible() devuelve true si /salud responde ok, false si no hay bridge", async () => {

@@ -17,13 +17,13 @@ export class QuizEngine {
 
   constructor(
     banco: BancoModulo,
-    opts: { incluirBonus?: boolean; barajar?: boolean; barajarOpciones?: boolean; random?: () => number } = {}
+    opts: { incluirEstadoDelArte?: boolean; barajar?: boolean; barajarOpciones?: boolean; random?: () => number } = {}
   ) {
     this.banco = banco;
-    const { incluirBonus = true, barajar = true, barajarOpciones = true, random = Math.random } = opts;
+    const { incluirEstadoDelArte = true, barajar = true, barajarOpciones = true, random = Math.random } = opts;
     this.random = random;
     this.barajarOpciones = barajarOpciones;
-    this.pendientes = banco.retos.filter((r) => incluirBonus || !r.bonus2026);
+    this.pendientes = banco.retos.filter((r) => incluirEstadoDelArte || !r.estadoDelArte2026);
     if (barajar) this.pendientes = shuffle(this.pendientes, this.random);
     // Los bancos se generan con la correcta casi siempre en la misma posición
     // (detectado jugando: en varios módulos el 100% caía en la opción 1) — sin

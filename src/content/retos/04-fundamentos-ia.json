@@ -21,7 +21,7 @@
       "explicacion": "No solo genera texto: también lo analiza y comprende. Los modelos fundacionales (ChatGPT, Claude, Gemini) son LLMs generalistas reutilizables en múltiples aplicaciones.",
       "dificultad": 1,
       "tags": ["llm", "conceptos"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-002",
@@ -38,7 +38,7 @@
       "explicacion": "Antes se leía palabra a palabra; el Transformer codifica todo como vectores y procesa en paralelo, y su mecanismo de atención (self-attention) identifica qué partes del contexto importan para cada respuesta.",
       "dificultad": 2,
       "tags": ["transformers", "atencion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-003",
@@ -55,7 +55,7 @@
       "explicacion": "Cada palabra/fragmento se traduce a coordenadas en un espacio multidimensional. La cercanía entre vectores refleja similitud de significado; una métrica típica es la similitud del coseno.",
       "dificultad": 2,
       "tags": ["embeddings"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-004",
@@ -72,7 +72,7 @@
       "explicacion": "El texto se trocea en unidades (tokens) antes de procesarse; la relación token/palabra varía según el idioma y el contexto. Por eso el costo y los límites de los modelos se miden en tokens.",
       "dificultad": 1,
       "tags": ["tokenizacion"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-005",
@@ -89,7 +89,7 @@
       "explicacion": "Suele deberse a falta de datos, sobreentrenamiento en modelos pequeños o datos de baja calidad. Mitigaciones típicas: dar más contexto, RAG con fuentes citadas, y verificación humana.",
       "dificultad": 1,
       "tags": ["alucinaciones", "llm"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-006",
@@ -106,7 +106,7 @@
       "explicacion": "Todos los tipos de dato se codifican al mismo espacio de embeddings, lo que permite al modelo trabajar con texto, imágenes, audio y vídeo de forma unificada.",
       "dificultad": 1,
       "tags": ["multimodalidad"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-007",
@@ -123,7 +123,7 @@
       "explicacion": "Los LLMs no acceden por sí solos a información privada ni reciente. RAG conecta el modelo con una base de conocimiento propia y las respuestas citan el origen — sin tocar los pesos del modelo (eso sería fine-tuning).",
       "dificultad": 2,
       "tags": ["rag"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-008",
@@ -140,7 +140,7 @@
       "explicacion": "R-A-G: Retrieve (busca los chunks más similares), Augmented (re-rankea y arma el contexto, típicamente 3-5 chunks) y Generate (el LLM responde citando las fuentes).",
       "dificultad": 2,
       "tags": ["rag", "pipeline"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-009",
@@ -157,7 +157,7 @@
       "explicacion": "El tamaño y tipo de los fragmentos condiciona todo el sistema; documentos con ruido (tablas, doble columna, formatos complejos) pierden información al trocear. El chunking es la parte artesanal de RAG.",
       "dificultad": 3,
       "tags": ["rag", "chunking"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-010",
@@ -174,7 +174,7 @@
       "explicacion": "Almacena los vectores de los chunks y permite recuperar los más cercanos semánticamente a la consulta — el corazón del Retrieve en RAG.",
       "dificultad": 2,
       "tags": ["rag", "vector-db"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-011",
@@ -191,7 +191,7 @@
       "explicacion": "RAG: conocimiento actualizable al instante, citable, sin entrenar. Fine-tuning: ajusta los pesos para especializar comportamiento o estilo — más costoso y estático. A menudo se combinan.",
       "dificultad": 2,
       "tags": ["rag", "fine-tuning"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-012",
@@ -208,7 +208,7 @@
       "explicacion": "Un chatbot solo responde dentro de su interfaz. Un agente ejecuta acciones reales: se conecta a email, archivos, APIs... y gestiona flujos complejos de forma proactiva. Un chatbot sobre documentación NO es un agente.",
       "dificultad": 2,
       "tags": ["agentes"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-013",
@@ -220,7 +220,7 @@
       "explicacion": "Planner descompone y orquesta; executor ejecuta cada subtarea; monitoring hace introspección (sabe en qué punto está el plan y detecta cuándo buscar alternativas); la memoria conserva contexto entre sesiones.",
       "dificultad": 2,
       "tags": ["agentes", "arquitectura"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-014",
@@ -237,7 +237,7 @@
       "explicacion": "El agente ejecuta de forma autónoma y el humano valida el resultado — el mismo principio del developer-arquitecto que valida lo que la IA construye.",
       "dificultad": 1,
       "tags": ["agentes", "rol-usuario"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-015",
@@ -254,7 +254,7 @@
       "explicacion": "Publicado por Anthropic, MCP es a los agentes lo que las APIs REST fueron a las aplicaciones web: un contrato estándar para conectarse a herramientas y datos. A2A (Google) apunta a la comunicación agente-a-agente.",
       "dificultad": 2,
       "tags": ["agentes", "mcp"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-016",
@@ -271,7 +271,7 @@
       "explicacion": "Los modelos razonadores generan cadenas de razonamiento internas antes de la respuesta final, mejorando en matemática, código y planificación — a cambio de más latencia y costo por respuesta.",
       "dificultad": 2,
       "tags": ["razonadores", "estado-del-arte"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-017",
@@ -282,7 +282,7 @@
       "fallbackId": "ia-007",
       "dificultad": 2,
       "tags": ["rag"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-018",
@@ -293,13 +293,13 @@
       "fallbackId": "ia-012",
       "dificultad": 2,
       "tags": ["agentes"],
-      "bonus2026": false
+      "estadoDelArte2026": false
     },
     {
       "id": "ia-019",
       "modulo": "04-fundamentos-ia",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — ¿Cómo evolucionó el 'razonamiento' en los modelos frontera durante 2026?",
+      "pregunta": "ESTADO DEL ARTE 2026 — ¿Cómo evolucionó el 'razonamiento' en los modelos frontera durante 2026?",
       "opciones": [
         "Se volvió adaptativo: el modelo decide cuánto pensar según la dificultad, en vez de usar un presupuesto fijo de tokens",
         "Se eliminó por completo para ahorrar costos",
@@ -310,13 +310,13 @@
       "explicacion": "La tendencia 2026: thinking adaptativo — el modelo calibra su esfuerzo de razonamiento por tarea (los presupuestos fijos de 'thinking tokens' quedaron obsoletos), con niveles de esfuerzo configurables por el desarrollador.",
       "dificultad": 3,
       "tags": ["razonadores", "estado-del-arte"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     },
     {
       "id": "ia-020",
       "modulo": "04-fundamentos-ia",
       "tipo": "multiple-choice",
-      "pregunta": "BONUS 2026 — ¿Qué patrón se consolidó para el trabajo con agentes de código de larga duración?",
+      "pregunta": "ESTADO DEL ARTE 2026 — ¿Qué patrón se consolidó para el trabajo con agentes de código de larga duración?",
       "opciones": [
         "Orquestación multi-agente: un agente coordinador delega subtareas en agentes especializados y verifica sus resultados",
         "Un único agente gigante que hace todo sin supervisión",
@@ -327,7 +327,7 @@
       "explicacion": "El patrón director → orquestador → ejecutores se volvió estándar: agentes headless que trabajan en paralelo, un coordinador que integra, y gates humanos en los puntos irreversibles (merge, deploy).",
       "dificultad": 3,
       "tags": ["agentes", "orquestacion"],
-      "bonus2026": true
+      "estadoDelArte2026": true
     }
   ]
 }

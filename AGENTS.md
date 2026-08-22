@@ -43,7 +43,7 @@ Reglas que ya evitaron problemas:
 
 ## Pipeline de contenido
 
-Documentado en [tools/pipeline-contenido.md](tools/pipeline-contenido.md) (prompt de generación, prefijos por módulo y registro de revisión). Resumen de reglas: retos **reformulados con palabras propias** (nunca copiar literal las notas del máster — tema licencias), distractores plausibles, rúbricas de abiertas **verificables** ("debe mencionar X"), cada banco con `bonus2026` y campo `modulo.resumen` (contexto que se inyecta al Oráculo). **La revisión humana del alumno es obligatoria antes de dar un banco por bueno** — actualizar el registro del pipeline al generar o revisar.
+Documentado en [tools/pipeline-contenido.md](tools/pipeline-contenido.md) (prompt de generación, prefijos por módulo y registro de revisión). Resumen de reglas: retos **reformulados con palabras propias** (nunca copiar literal las notas del máster — tema licencias), distractores plausibles, rúbricas de abiertas **verificables** ("debe mencionar X"), cada banco con al menos un `estadoDelArte2026` (retos de frontera, etiquetados «ESTADO DEL ARTE 2026 — » en el enunciado y con más puntuación) y campo `modulo.resumen` (contexto que se inyecta al Oráculo). **La revisión humana del alumno es obligatoria antes de dar un banco por bueno** — actualizar el registro del pipeline al generar o revisar.
 
 ## Aprendizajes técnicos (costaron bugs reales — no re-descubrir)
 
