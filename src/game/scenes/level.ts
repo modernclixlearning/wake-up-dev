@@ -732,9 +732,15 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
           });
           return;
         }
-        const textoConHp = `${feedback}  -  Agente ${combate.estado.hpActual}/${combate.estado.hpMaximo} HP — seguí a las piñas`;
         actualizarHud();
-        mostrarExplicacion(true, textoConHp, () => darGraciaPostPregunta(agente));
+        // La explicación va sola en el panel: es lo que enseña. El estado del
+        // combate es un aviso de refilo y se queda en el toast de abajo, que no
+        // bloquea (ISSUE-013 AC-6) — mezclarlos diluía la explicación con una
+        // pista de gameplay en el mismo cartel.
+        mostrarExplicacion(true, feedback, () => {
+          mostrarFeedback(true, `Agente ${combate.estado.hpActual}/${combate.estado.hpMaximo} HP — seguí a las piñas`);
+          darGraciaPostPregunta(agente);
+        });
         return;
       }
       sfx.fallo();
