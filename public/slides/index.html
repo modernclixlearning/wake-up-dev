@@ -4,246 +4,373 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wake Up, Dev — TFM Máster en Desarrollo con IA</title>
+<meta name="description" content="Presentación del Trabajo de Fin de Máster: un videojuego 8-bit inspirado en Matrix que repasa el Máster en Desarrollo con IA.">
 <style>
+  /* ───────── Fuentes autoalojadas: la defensa no depende del wifi ───────── */
+  @font-face{font-family:"VT323";src:url("fonts/vt323.woff2") format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"Share Tech Mono";src:url("fonts/sharetechmono.woff2") format("woff2");font-weight:400;font-display:swap}
+
   :root{
-    --verde:#4dff7c; --verde-tenue:#2fa855; --verde-oscuro:#0d3a1c;
-    --negro:#000; --gris:#0a0f0b; --texto:#cfeecf; --rojo:#ff4d4d;
-    --mono:"Courier New",ui-monospace,SFMono-Regular,Menlo,monospace;
+    /* El CRT nunca es negro puro: el fósforo apagado tira a azul. */
+    --vacio:#04060a;
+    --fosforo:#5dfc8a;
+    --fosforo-alto:#b6ffcd;
+    --fosforo-bajo:#1f6b3a;
+    /* Ámbar = "fuera de la Matrix". El juego rompe el verde justo cuando salís
+       de ella (el desierto, el apartamento rojo, el corredor del hotel). Acá
+       marca lo meta: posición, cifras, estado. Nunca decoración. */
+    --ambar:#ffb454;
+
+    --display:"VT323","Courier New",monospace;
+    --cuerpo:"Share Tech Mono",ui-monospace,"Courier New",monospace;
+
+    --hud:44px;
+    --marco:clamp(16px,2.4vw,32px);
   }
+
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
-    background:var(--negro); color:var(--texto); font-family:var(--mono);
-    overflow:hidden; -webkit-font-smoothing:antialiased;
+    background:var(--vacio); color:var(--fosforo-alto);
+    font-family:var(--cuerpo); overflow:hidden;
+    -webkit-font-smoothing:antialiased;
   }
-  #lluvia{position:fixed;inset:0;z-index:0;opacity:.14;pointer-events:none}
-  .deck{position:relative;z-index:1;height:100%}
+
+  /* Rejilla de escaneo: el grano del monitor, no un efecto. Muy tenue. */
+  body::after{
+    content:""; position:fixed; inset:0; z-index:50; pointer-events:none;
+    background:repeating-linear-gradient(180deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+    mix-blend-mode:multiply; opacity:.5;
+  }
+
+  /* ───────── Chrome: la barra de estado del propio juego ───────── */
+  .hud,.pie{
+    position:fixed; left:0; right:0; z-index:40;
+    display:flex; align-items:center; gap:1.3em;
+    padding:0 var(--marco);
+    font-family:var(--display); letter-spacing:.02em;
+  }
+  .hud{top:0; height:var(--hud); font-size:22px; color:var(--fosforo);
+       border-bottom:1px solid var(--fosforo-bajo);
+       background:linear-gradient(180deg,rgba(4,6,10,.96),rgba(4,6,10,.72))}
+  .pie{bottom:0; height:var(--hud); font-size:19px; color:var(--fosforo-bajo);
+       border-top:1px solid rgba(31,107,58,.5);
+       background:linear-gradient(0deg,rgba(4,6,10,.96),rgba(4,6,10,.72))}
+  .hud .sep,.pie .sep{color:var(--fosforo-bajo)}
+  .hud .meta,.pie .meta{margin-left:auto;color:var(--ambar)}
+  .pie b{color:var(--fosforo);font-weight:400}
+  @media (max-width:700px){.hud .larga,.pie .larga{display:none}}
+
+  /* ───────── Slides ───────── */
   .slide{
-    position:absolute; inset:0; display:none;
-    padding:clamp(24px,4vw,56px) clamp(24px,6vw,88px);
-    flex-direction:column; justify-content:center; gap:clamp(12px,1.6vh,22px);
-    animation:fade .35s ease;
+    position:absolute; inset:var(--hud) 0; display:none;
+    padding:clamp(18px,3vh,40px) clamp(24px,6vw,96px);
+    flex-direction:column; justify-content:center; gap:clamp(10px,1.5vh,20px);
   }
   .slide.on{display:flex}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  h1{font-size:clamp(32px,5.4vw,68px);color:var(--verde);letter-spacing:.06em;line-height:1.05}
-  h2{font-size:clamp(22px,3.2vw,40px);color:var(--verde);letter-spacing:.04em;margin-bottom:.2em}
-  h3{font-size:clamp(14px,1.5vw,19px);color:var(--verde-tenue);font-weight:400;letter-spacing:.08em;text-transform:uppercase}
-  p{font-size:clamp(14px,1.55vw,20px);line-height:1.6;max-width:62ch}
-  .lead{font-size:clamp(16px,1.9vw,24px);color:#eafbea}
-  ul{list-style:none;display:flex;flex-direction:column;gap:.55em}
-  li{font-size:clamp(13px,1.45vw,19px);line-height:1.5;padding-left:1.5em;position:relative}
-  li::before{content:"›";position:absolute;left:0;color:var(--verde);font-weight:700}
-  strong{color:var(--verde);font-weight:700}
-  code{color:var(--verde);background:var(--verde-oscuro);padding:.1em .4em;border-radius:3px;font-size:.92em}
-  a{color:var(--verde);text-decoration:none;border-bottom:1px solid var(--verde-oscuro)}
+  .ojo{
+    font-family:var(--display); font-size:clamp(15px,1.5vw,20px);
+    color:var(--fosforo-bajo); letter-spacing:.24em; text-transform:uppercase;
+  }
+  h1{font-family:var(--display); font-size:clamp(46px,8.4vw,116px); color:var(--fosforo);
+     line-height:.92; letter-spacing:.01em; text-shadow:0 0 26px rgba(93,252,138,.28)}
+  h2{font-family:var(--display); font-size:clamp(30px,4.6vw,60px); color:var(--fosforo);
+     line-height:1.02; letter-spacing:.01em}
+  p{font-size:clamp(13px,1.4vw,18px); line-height:1.65; max-width:60ch; color:var(--fosforo-alto)}
+  .lead{font-size:clamp(15px,1.8vw,23px); line-height:1.5; max-width:52ch}
+  .ancho{max-width:none}
+  strong{color:var(--fosforo); font-weight:400}
+  em{color:var(--ambar); font-style:normal}
+  code{font-family:var(--cuerpo); color:var(--fosforo); background:rgba(31,107,58,.24);
+       padding:.08em .38em; border-radius:2px; font-size:.94em}
+  a{color:var(--fosforo); text-decoration:none; border-bottom:1px solid var(--fosforo-bajo)}
+  a:hover,a:focus-visible{color:var(--fosforo-alto); border-bottom-color:var(--fosforo)}
+  :focus-visible{outline:2px solid var(--ambar); outline-offset:3px}
 
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,44px);align-items:center}
-  .cols.wide-left{grid-template-columns:1.25fr 1fr}
-  .cols.wide-right{grid-template-columns:1fr 1.25fr}
-  @media (max-width:820px){.cols,.cols.wide-left,.cols.wide-right{grid-template-columns:1fr}}
+  /* Las viñetas usan el chevron del carril de avance del juego. */
+  ul{list-style:none; display:flex; flex-direction:column; gap:.58em}
+  li{font-size:clamp(12.5px,1.32vw,17.5px); line-height:1.55; padding-left:1.8em; position:relative}
+  li::before{content:"»"; position:absolute; left:0; top:-.05em; color:var(--fosforo-bajo);
+             font-family:var(--display); font-size:1.35em}
+
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3.2vw,52px); align-items:center}
+  .cols.mas-texto{grid-template-columns:1.3fr 1fr}
+  .cols.mas-figura{grid-template-columns:1fr 1.3fr}
+  .pila{display:flex; flex-direction:column; gap:1em}
 
   figure{margin:0}
-  img{width:100%;height:auto;display:block;border:1px solid var(--verde-oscuro);border-radius:4px}
-  figcaption{font-size:12px;color:var(--verde-tenue);margin-top:.5em;letter-spacing:.04em}
-  .dos-img{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  img{width:100%; height:auto; display:block; border:1px solid var(--fosforo-bajo)}
+  figcaption{font-size:12.5px; color:var(--fosforo-bajo); margin-top:.55em; letter-spacing:.03em}
+  .par{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .recorte img{max-height:min(58vh,520px); object-fit:cover; object-position:top left}
 
-  .caja{border:1px solid var(--verde-oscuro);border-radius:4px;padding:clamp(12px,1.6vw,20px);background:rgba(13,58,28,.18)}
-  .caja h3{margin-bottom:.5em}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-  @media (max-width:820px){.grid3,.grid2,.dos-img{grid-template-columns:1fr}}
+  /* Caja = el modal del juego: borde de fósforo, fondo apenas teñido. */
+  .caja{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.12);
+        padding:clamp(14px,1.8vw,24px)}
+  .caja .ojo{margin-bottom:.7em}
+  .tres{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:start}
 
-  .cifras{display:flex;gap:clamp(20px,4vw,56px);flex-wrap:wrap}
-  .cifra{display:flex;flex-direction:column}
-  .cifra b{font-size:clamp(30px,4.4vw,54px);color:var(--verde);line-height:1}
-  .cifra span{font-size:12px;color:var(--verde-tenue);letter-spacing:.1em;text-transform:uppercase;margin-top:.4em}
+  pre{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.12);
+      padding:clamp(14px,1.8vw,24px); overflow:auto; line-height:1.6;
+      font-size:clamp(10.5px,1.05vw,15px); color:var(--fosforo-alto)}
+  pre b{color:var(--fosforo); font-weight:400}
+  pre i{color:var(--ambar); font-style:normal}
 
-  pre{
-    border:1px solid var(--verde-oscuro);border-radius:4px;padding:clamp(12px,1.6vw,20px);
-    background:rgba(13,58,28,.18);overflow:auto;font-size:clamp(11px,1.15vw,15px);line-height:1.55;color:var(--texto)
+  /* Cifras en ámbar: son el mundo real, no la Matrix. */
+  .cifras{display:flex; gap:clamp(22px,4.4vw,64px); flex-wrap:wrap}
+  .cifra b{display:block; font-family:var(--display); font-size:clamp(40px,5.6vw,78px);
+           color:var(--ambar); line-height:.9}
+  .cifra span{display:block; font-size:11.5px; color:var(--fosforo-bajo);
+              letter-spacing:.16em; text-transform:uppercase; margin-top:.5em}
+
+  /* ───────── Portada: gameplay real de fondo ───────── */
+  .portada{position:absolute; inset:var(--hud) 0; display:none; place-items:center}
+  .portada.on{display:grid}
+  .portada video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+                 filter:saturate(.85) brightness(.5); z-index:0}
+  .portada .velo{position:absolute; inset:0; z-index:1;
+                 background:radial-gradient(ellipse at 32% 50%,rgba(4,6,10,.5),rgba(4,6,10,.93) 72%)}
+  .portada .contenido{position:relative; z-index:2; width:100%;
+                      padding:0 clamp(24px,6vw,96px); display:flex; flex-direction:column;
+                      gap:clamp(10px,1.6vh,22px)}
+  .urls{display:flex; flex-direction:column; gap:.42em; font-size:clamp(12px,1.28vw,16.5px)}
+  .urls span b{color:var(--fosforo-bajo); font-weight:400; letter-spacing:.1em;
+               text-transform:uppercase; font-size:.86em}
+
+  /* ───────── El reto: el modal del juego, tal cual ───────── */
+  .reto{border:2px solid var(--fosforo); background:rgba(4,6,10,.9);
+        padding:clamp(18px,2.4vw,34px); max-width:920px; margin:0 auto; width:100%}
+  .reto .quien{font-family:var(--display); font-size:clamp(18px,2vw,26px);
+               color:#ff6b6b; letter-spacing:.04em}
+  .reto .pregunta{font-size:clamp(15px,1.65vw,22px); line-height:1.5; margin:.7em 0 1.1em; max-width:none}
+  .opciones{counter-reset:o; display:flex; flex-direction:column; gap:.72em}
+  .opciones li{padding-left:2.3em; font-size:clamp(13px,1.42vw,18px)}
+  .opciones li::before{content:counter(o) ")"; counter-increment:o; font-family:var(--display);
+                       font-size:1.18em; color:var(--fosforo); top:0}
+  .opciones li.correcta{color:var(--fosforo)}
+
+  /* ───────── Tira del circuito multiagente ───────── */
+  .circuito{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(14px,1.8vw,26px); align-items:start}
+  .paso{display:flex; flex-direction:column; gap:.55em}
+  .paso .ojo{font-size:clamp(13px,1.15vw,16px); letter-spacing:.18em}
+  /* Las tres capturas vienen con proporciones distintas: se recortan a una
+     altura común desde arriba para que la tira se lea como una secuencia. */
+  .paso figure{height:clamp(190px,30vh,300px); overflow:hidden; border:1px solid var(--fosforo-bajo);
+               background:#0a0d12; display:grid; place-items:center}
+  /* contain, no cover: recortar estas capturas corta justo lo que prueban el punto. */
+  .paso img{height:100%; width:100%; object-fit:contain; border:0}
+  .paso p{font-size:clamp(12px,1.15vw,15px); line-height:1.5}
+  @media (max-width:900px){.circuito{grid-template-columns:1fr}.paso figure{height:auto}.paso img{height:auto;object-fit:fill}}
+
+  @media (max-width:900px){
+    .cols,.cols.mas-texto,.cols.mas-figura,.tres,.par{grid-template-columns:1fr}
+    .hud,.pie{font-size:17px}
   }
-  pre b{color:var(--verde)}
-
-  .pie{position:fixed;bottom:14px;left:0;right:0;display:flex;justify-content:space-between;
-       padding:0 clamp(18px,4vw,40px);font-size:12px;color:var(--verde-tenue);letter-spacing:.08em;z-index:2}
-  .pie kbd{border:1px solid var(--verde-oscuro);border-radius:3px;padding:1px 6px;color:var(--verde)}
-  .urls{display:flex;flex-direction:column;gap:.4em;font-size:clamp(12px,1.35vw,17px)}
-  .urls b{color:var(--verde-tenue);font-weight:400;letter-spacing:.06em}
-  .rojo{color:var(--rojo)}
-
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important; transition:none!important}
+    body::after{display:none}
+  }
   @media print{
-    body{overflow:visible;background:#000}
-    .slide{display:flex!important;position:relative;height:100vh;page-break-after:always;inset:auto}
-    .pie{display:none}
+    body{overflow:visible}
+    body::after,.pie{display:none}
+    .slide,.portada{display:flex!important; position:relative; inset:auto; height:100vh; page-break-after:always}
   }
 </style>
 </head>
 <body>
-<canvas id="lluvia"></canvas>
 
-<div class="deck">
+<header class="hud">
+  <span>WAKE UP, DEV</span>
+  <span class="sep larga">|</span>
+  <span class="larga">TFM · Máster en Desarrollo con IA</span>
+  <span class="meta">Slide: <span id="hud-pos">1</span>/<span id="hud-total">14</span></span>
+</header>
 
-  <!-- 1 -->
-  <section class="slide on">
-    <h3>Trabajo de Fin de Máster · Máster en Desarrollo con IA</h3>
-    <h1>WAKE UP, DEV</h1>
-    <p class="lead">Un videojuego 8-bit inspirado en Matrix que repasa el máster jugándolo —
-    y donde la IA no es solo la herramienta con la que se construyó: es parte del gameplay.</p>
-    <div class="urls" style="margin-top:1.2em">
-      <span><b>Juego</b> · <a href="https://modernclixlearning.github.io/wake-up-dev/">modernclixlearning.github.io/wake-up-dev</a></span>
-      <span><b>Código</b> · <a href="https://github.com/modernclixlearning/wake-up-dev">github.com/modernclixlearning/wake-up-dev</a></span>
-      <span><b>Autor</b> · Juan José Mayotte · Entrega 24/08/2026</span>
+<main id="deck">
+
+  <!-- 1 · Portada -->
+  <section class="portada on" data-modulo="PORTADA">
+    <video poster="media/gameplay-poster.jpg" autoplay muted loop playsinline aria-hidden="true">
+      <source src="media/gameplay.webm" type="video/webm">
+      <source src="media/gameplay.mp4" type="video/mp4">
+    </video>
+    <div class="velo"></div>
+    <div class="contenido">
+      <p class="ojo" data-anim>Trabajo de Fin de Máster</p>
+      <h1 data-decode data-anim>WAKE UP, DEV</h1>
+      <p class="lead" data-anim>Un videojuego 8-bit inspirado en Matrix que repasa el máster
+      jugándolo. La IA no es solo la herramienta con la que se construyó:
+      <strong>es parte del gameplay</strong>.</p>
+      <div class="urls" data-anim>
+        <span><b>Juego</b> · <a href="https://modernclixlearning.github.io/wake-up-dev/">modernclixlearning.github.io/wake-up-dev</a></span>
+        <span><b>Código</b> · <a href="https://github.com/modernclixlearning/wake-up-dev">github.com/modernclixlearning/wake-up-dev</a></span>
+        <span><b>Autor</b> · Juan José Mayotte · Entrega 24/08/2026</span>
+      </div>
     </div>
   </section>
 
-  <!-- 2 -->
-  <section class="slide">
-    <h3>El problema</h3>
-    <h2>Un máster se olvida. Un juego se repite.</h2>
-    <div class="cols wide-left">
-      <div>
-        <p>Terminás dieciséis módulos, cientos de notas, y a los tres meses te acordás de la
-        mitad. Quería un repaso que no se sintiera como un repaso.</p>
-        <p style="margin-top:1em"><strong>Sos Neo.</strong> Cada módulo del máster es un nivel de la Matrix
+  <!-- 2 · La idea -->
+  <section class="slide" data-modulo="LA IDEA">
+    <p class="ojo" data-anim>El problema</p>
+    <h2 data-decode data-anim>Un máster se olvida. Un juego se repite.</h2>
+    <div class="cols mas-texto">
+      <div class="pila">
+        <p data-anim>Terminás dieciséis módulos, cientos de notas, y a los tres meses te acordás
+        de la mitad. Quería un repaso que no se sintiera como un repaso.</p>
+        <p data-anim><strong>Sos Neo.</strong> Cada módulo del máster es un nivel de la Matrix
         custodiado por Agentes Smith — los bugs, los antipatrones, la deuda técnica. Los peleás
-        cuerpo a cuerpo y, al aturdirlos, tenés que responder un reto salido del contenido real
-        del curso. Fallás, perdés una vida. Acertás, el Agente cae.</p>
+        cuerpo a cuerpo y, al aturdirlos, respondés un reto salido del contenido real del curso.
+        Fallás, perdés una vida. Acertás, el Agente cae.</p>
       </div>
-      <figure>
-        <img src="img/01-titulo.png" alt="Pantalla de título del juego">
-        <figcaption>La pantalla de título · lluvia de código sobre negro</figcaption>
+      <figure data-anim>
+        <img src="img/01-titulo.png" alt="Pantalla de título del juego, con lluvia de código verde sobre negro">
+        <figcaption>La pantalla de título</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- 3 -->
-  <section class="slide">
-    <h3>El mapa</h3>
-    <h2>Matrix como metáfora del máster</h2>
-    <div class="cols wide-right">
+  <!-- 3 · El mapa -->
+  <section class="slide" data-modulo="EL MAPA">
+    <p class="ojo" data-anim>Traducción</p>
+    <h2 data-decode data-anim>Matrix como metáfora del máster</h2>
+    <div class="cols mas-figura">
       <ul>
-        <li><strong>Zion</strong> — el hub: elegís módulo, ves score y vidas</li>
-        <li><strong>Niveles</strong> — un módulo del máster cada uno, con su escenario propio</li>
-        <li><strong>Agentes Smith</strong> — bugs y antipatrones: se pelean y se responden</li>
-        <li><strong>Agente Jefe</strong> — cierra el módulo, y dispara</li>
-        <li><strong>El Oráculo</strong> — NPC con IA que responde dudas del módulo actual</li>
-        <li><strong>Píldora roja</strong> — modo developer: el juego conectado a instancias headless reales</li>
+        <li data-anim><strong>Zion</strong> — el hub: elegís módulo, ves score y vidas</li>
+        <li data-anim><strong>Niveles</strong> — un módulo del máster cada uno, con su escenario propio</li>
+        <li data-anim><strong>Agentes Smith</strong> — bugs y antipatrones: se pelean y se responden</li>
+        <li data-anim><strong>Agente Jefe</strong> — cierra el módulo, y dispara</li>
+        <li data-anim><strong>El Oráculo</strong> — NPC con IA que responde dudas del módulo actual</li>
+        <li data-anim><strong>Píldora roja</strong> — el juego conectado a instancias headless reales</li>
       </ul>
-      <figure>
-        <img src="img/02-zion.png" alt="Pantalla de Zion con la lista de módulos">
+      <figure data-anim>
+        <img src="img/02-zion.png" alt="Pantalla de Zion listando los diez módulos del máster">
         <figcaption>Zion · cada línea es un módulo del máster</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- 4 -->
-  <section class="slide">
-    <h3>El loop de juego</h3>
-    <h2>Pelear, aturdir, responder</h2>
-    <div class="dos-img">
-      <figure>
-        <img src="img/07-nivel-13-desarrollo-ia.png" alt="Combate en el nivel de desarrollo potenciado por IA">
-        <figcaption>Cada módulo, su escenario · el Agente telegrafía el golpe; tu piña lo cancela</figcaption>
+  <!-- 4 · El loop -->
+  <section class="slide" data-modulo="EL LOOP">
+    <p class="ojo" data-anim>Mecánica</p>
+    <h2 data-decode data-anim>Pelear, aturdir, responder</h2>
+    <div class="par">
+      <figure data-anim>
+        <img src="img/07-nivel-13-desarrollo-ia.png" alt="Combate en el nivel de desarrollo potenciado por IA, ambientado en el apartamento rojo">
+        <figcaption>Cada módulo, su escenario</figcaption>
       </figure>
-      <figure>
+      <figure data-anim>
         <img src="img/04-reto.png" alt="Reto de opción múltiple tras aturdir a un Agente">
-        <figcaption>Agente aturdido · el reto sale de las notas reales del curso</figcaption>
+        <figcaption>Agente aturdido · el reto sale de las notas del curso</figcaption>
       </figure>
     </div>
-    <p>El combate no es decorado: sin el <em>stagger</em> —que tu golpe interrumpa el del Agente—
-    pelear bien igual te costaba una vida cada dos segundos. Lo descubrió un bot de Playwright
-    muriendo con respuestas perfectas.</p>
+    <p class="ancho" data-anim>El combate no es decorado. Sin el <em>stagger</em> —que tu golpe
+    interrumpa el del Agente— pelear bien igual te costaba una vida cada dos segundos. Lo descubrió
+    un bot de Playwright muriendo con respuestas perfectas.</p>
   </section>
 
-  <!-- 5 -->
-  <section class="slide">
-    <h3>Arquitectura</h3>
-    <h2>El dominio no sabe que existe un canvas</h2>
-    <pre>src/domain    <b>dominio puro y testeado</b> — retos, quiz engine, sesión, combate
+  <!-- 5 · Arquitectura -->
+  <section class="slide" data-modulo="ARQUITECTURA">
+    <p class="ojo" data-anim>Cómo está hecho</p>
+    <h2 data-decode data-anim>El dominio no sabe que existe un canvas</h2>
+    <pre data-anim>src/domain    <b>dominio puro y testeado</b> — retos, quiz engine, sesión, combate
               nunca importa de Kaplay, del DOM ni de la capa de IA
 src/content   <b>bancos JSON</b> — el contenido es data, no código
 src/ai        <b>AIProvider</b> (interfaz) + adapters intercambiables
               ├── Anthropic · OpenAI · Gemini        (BYOK, browser directo)
               ├── ClaudeHeadless / CopilotHeadless   (bridge local)
-              └── StaticFallback                     <b>el juego SIEMPRE funciona</b>
+              └── StaticFallback                     <i>el juego SIEMPRE funciona</i>
 src/game      presentación — escenas Kaplay + overlays DOM
 bridge/       server local que spawnea el CLI headless (Node puro, sin deps)</pre>
-    <p>Tres reglas que sostienen todo: el dominio es puro, el contenido es data, y
-    <strong>cualquier feature de IA degrada al fallback sin penalizar al jugador</strong>.</p>
+    <p class="ancho" data-anim>Tres reglas sostienen todo: el dominio es puro, el contenido es data,
+    y <strong>cualquier feature de IA degrada al fallback sin penalizar al jugador</strong>.</p>
   </section>
 
-  <!-- 6 -->
-  <section class="slide">
-    <h3>Contenido</h3>
-    <h2>Agregar un módulo es agregar un JSON</h2>
+  <!-- 6 · Contenido -->
+  <section class="slide" data-modulo="CONTENIDO">
+    <p class="ojo" data-anim>Data-driven</p>
+    <h2 data-decode data-anim>Agregar un módulo es agregar un JSON</h2>
     <div class="cols">
-      <div>
-        <pre>notas markdown del módulo
+      <div class="pila">
+        <pre data-anim>notas markdown del módulo
         ↓  generación asistida por IA
 retos candidatos (JSON)
-        ↓  <b>revisión humana obligatoria</b>
+        ↓  <i>revisión humana obligatoria</i>
         ↓  test de invariantes en CI
 banco del nivel</pre>
-        <p style="margin-top:1em">El gate automático valida ids únicos, rangos, fallbacks y que
-        cada banco traiga contenido bonus 2026. La revisión humana es la que decide si un reto
-        <em>enseña</em>.</p>
+        <p data-anim>El gate automático valida ids únicos, rangos, fallbacks y que cada banco traiga
+        contenido bonus 2026. La revisión humana decide si un reto <strong>enseña</strong>.</p>
       </div>
-      <div>
-        <div class="caja">
-          <h3>Un sesgo real, y su backstop</h3>
-          <p>Los primeros bancos generados tenían la respuesta correcta casi siempre en la
-          primera opción: el juego era ganable apretando <code>1</code> sin leer.</p>
-          <p style="margin-top:.8em">Se arregló en dos capas: la regla de generación reparte la
-          posición, y el motor <strong>baraja las opciones en cada partida</strong> — así el juego
-          no es explotable aunque un banco venga sesgado.</p>
-        </div>
+      <div class="caja" data-anim>
+        <p class="ojo">Un sesgo real, y su backstop</p>
+        <p>Los primeros bancos generados traían la respuesta correcta casi siempre en la primera
+        opción: el juego era ganable apretando <code>1</code> sin leer.</p>
+        <p style="margin-top:.9em">Se arregló en dos capas: la regla de generación reparte la
+        posición, y el motor <strong>baraja las opciones en cada partida</strong>. Así el juego no
+        es explotable aunque un banco venga sesgado.</p>
       </div>
     </div>
   </section>
 
-  <!-- 7 -->
-  <section class="slide">
-    <h3>La IA como gameplay</h3>
-    <h2>Tres features, no tres demos</h2>
-    <div class="grid3">
-      <div class="caja">
-        <h3>El Oráculo</h3>
-        <p>NPC conversacional con el resumen del módulo actual inyectado como contexto.
-        Le preguntás lo que no entendiste, ahí mismo, sin salir del juego.</p>
+  <!-- 7 · El reto al tribunal -->
+  <section class="slide" data-modulo="TU TURNO">
+    <div class="reto" data-anim>
+      <p class="quien">AGENTE SMITH ATURDIDO — remátalo respondiendo:</p>
+      <p class="pregunta">El juego carga los retos desde archivos JSON y un test valida que ningún
+      banco tenga ids repetidos. ¿Qué compra ese test, exactamente?</p>
+      <ul class="opciones">
+        <li data-anim>Que el contenido sea correcto y esté bien explicado</li>
+        <li data-anim>Que el juego cargue más rápido</li>
+        <li class="correcta" data-anim>Que el error aparezca al abrir el PR, no jugando el nivel</li>
+        <li data-anim>Que no haga falta revisar los retos a mano</li>
+      </ul>
+    </div>
+    <p data-anim style="text-align:center;max-width:74ch;margin:0 auto">Un gate automático no valida el contenido:
+    valida <strong>las invariantes</strong>. Confundir las dos cosas es lo que hace que uno confíe
+    de más en su CI.</p>
+  </section>
+
+  <!-- 8 · IA como gameplay -->
+  <section class="slide" data-modulo="LA IA JUEGA">
+    <p class="ojo" data-anim>Features, no demos</p>
+    <h2 data-decode data-anim>La IA como gameplay</h2>
+    <div class="tres">
+      <div class="caja" data-anim>
+        <p class="ojo">El Oráculo</p>
+        <p>NPC conversacional con el resumen del módulo actual inyectado como contexto. Le
+        preguntás lo que no entendiste, ahí mismo, sin salir del juego.</p>
       </div>
-      <div class="caja">
-        <h3>Retos abiertos</h3>
+      <div class="caja" data-anim>
+        <p class="ojo">Retos abiertos</p>
         <p>Escribís la respuesta y una IA la califica contra una <strong>rúbrica explícita</strong>
-        del propio reto. Criterios gradeables, no "vibes". Sin IA, el reto cae a su variante de
+        del propio reto. Criterios gradeables, no impresiones. Sin IA, el reto cae a su variante de
         opciones sin penalizarte.</p>
       </div>
-      <div class="caja">
-        <h3>Smith adaptativo</h3>
-        <p>La dificultad sigue tu desempeño. Tras dos fallos podés pedir una pista generada
-        al Oráculo. Dominás el tema, sube la apuesta.</p>
+      <div class="caja" data-anim>
+        <p class="ojo">Smith adaptativo</p>
+        <p>La dificultad sigue tu desempeño. Tras dos fallos podés pedir una pista generada al
+        Oráculo. Dominás el tema, sube la apuesta.</p>
       </div>
     </div>
-    <p>Los mismos patrones que se usaron para construir el juego —prompts con rúbrica, headless,
-    fallbacks— terminaron siendo mecánicas del juego.</p>
+    <p class="ancho" data-anim>Los mismos patrones que usé para construir el juego —prompts con
+    rúbrica, headless, fallbacks— terminaron siendo mecánicas del juego.</p>
   </section>
 
-  <!-- 8 -->
-  <section class="slide">
-    <h3>El diferencial</h3>
-    <h2>La píldora roja</h2>
+  <!-- 9 · Píldora roja -->
+  <section class="slide" data-modulo="PÍLDORA ROJA">
+    <p class="ojo" data-anim>El diferencial</p>
+    <h2 data-decode data-anim>El juego lanza agentes de verdad</h2>
     <div class="cols">
-      <div>
-        <pre>juego  →  bridge local (Node)  →  <b>claude -p</b>
+      <div class="pila">
+        <pre data-anim>juego  →  bridge local (Node)  →  <b>claude -p</b>
                                →  <b>copilot</b> headless</pre>
-        <p style="margin-top:1em">En modo developer, cada consulta al Oráculo <strong>lanza una
-        instancia headless real</strong> del CLI de Claude Code o de GitHub Copilot. No es una
-        simulación del patrón de orquestación de agentes que enseña el máster: es el patrón,
-        corriendo, visible desde dentro del juego.</p>
+        <p data-anim>En modo developer, cada consulta al Oráculo <strong>lanza una instancia
+        headless real</strong> del CLI de Claude Code o de GitHub Copilot. No es una simulación del
+        patrón de orquestación de agentes que enseña el máster: es el patrón, corriendo, visible
+        desde dentro del juego.</p>
       </div>
-      <div class="caja">
-        <h3>Decisiones de seguridad</h3>
+      <div class="caja" data-anim>
+        <p class="ojo">Decisiones de seguridad</p>
         <ul>
           <li>El prompt va al CLI <strong>por stdin</strong>, nunca como argumento de shell — inyección de comandos</li>
           <li>El bridge escucha solo en <code>127.0.0.1</code></li>
@@ -253,95 +380,119 @@ banco del nivel</pre>
     </div>
   </section>
 
-  <!-- 9 -->
-  <section class="slide">
-    <h3>Seguridad y coste</h3>
-    <h2>BYOK: sin backend, sin keys mías, sin factura</h2>
+  <!-- 10 · BYOK -->
+  <section class="slide" data-modulo="SEGURIDAD">
+    <p class="ojo" data-anim>Claves y coste</p>
+    <h2 data-decode data-anim>Sin backend, sin claves mías, sin factura</h2>
     <div class="cols">
       <ul>
-        <li>La API key es <strong>del jugador</strong> y vive solo en su <code>localStorage</code></li>
-        <li>Las llamadas van directo al proveedor: <strong>no hay backend intermedio</strong> que pueda filtrar nada</li>
-        <li><strong>Cero keys propias en el bundle</strong> — verificable en el <code>dist/</code> construido</li>
-        <li>Sin key, el juego se juega entero con el banco estático</li>
+        <li data-anim>La API key es <strong>del jugador</strong> y vive solo en su <code>localStorage</code></li>
+        <li data-anim>Las llamadas van directo al proveedor: <strong>no hay backend intermedio</strong> que pueda filtrar nada</li>
+        <li data-anim><strong>Cero claves propias en el bundle</strong> — verificable en el <code>dist/</code> construido</li>
+        <li data-anim>Sin key, el juego se juega entero con el banco estático</li>
       </ul>
-      <div class="caja">
-        <h3>El hueco, dicho en voz alta</h3>
-        <p>Quien abra la URL pública sin API key ve el juego completo pero no las features de IA.
+      <div class="caja" data-anim>
+        <p class="ojo">El hueco, dicho en voz alta</p>
+        <p>Quien abra la URL pública sin API key ve el juego completo, pero no las features de IA.
         Es el precio de no montar un backend con costes.</p>
-        <p style="margin-top:.8em">Está en el backlog como decisión abierta: proxy serverless con
-        rate limit, modo demo pregrabado, o dejarlo así y documentarlo mejor.
-        <strong>La restricción firme no se mueve: nunca una key propia en el cliente.</strong></p>
+        <p style="margin-top:.9em">Está en el backlog como decisión abierta: proxy serverless con
+        rate limit, modo demo pregrabado, o dejarlo así y documentarlo mejor en la propia UI.
+        <strong>La restricción firme no se mueve: nunca una clave propia en el cliente.</strong></p>
       </div>
     </div>
   </section>
 
-  <!-- 10 -->
-  <section class="slide">
-    <h3>Calidad</h3>
-    <h2>El gate no es la opinión de nadie</h2>
-    <div class="cifras" style="margin-bottom:.6em">
-      <div class="cifra"><b id="dato-tests">112</b><span>tests</span></div>
-      <div class="cifra"><b id="dato-niveles">10</b><span>niveles jugables</span></div>
-      <div class="cifra"><b id="dato-retos">312</b><span>retos</span></div>
+  <!-- 11 · Calidad -->
+  <section class="slide" data-modulo="CALIDAD">
+    <p class="ojo" data-anim>Gates</p>
+    <h2 data-decode data-anim>El gate no es la opinión de nadie</h2>
+    <div class="cifras" data-anim>
+      <div class="cifra"><b>112</b><span>tests</span></div>
+      <div class="cifra"><b>10</b><span>niveles jugables</span></div>
+      <div class="cifra"><b>312</b><span>retos</span></div>
       <div class="cifra"><b>0</b><span>llamadas reales a IA en CI</span></div>
     </div>
     <ul>
-      <li><strong>Vitest</strong> sobre el dominio, la capa de IA (adapters con <code>fetch</code> mockeado) y las invariantes de todos los bancos</li>
-      <li><strong>GitHub Actions</strong> — CI (typecheck + tests + build) en cada push y PR</li>
-      <li><strong>Deploy automático</strong> a GitHub Pages: main verde es main publicado</li>
-      <li>Verificación <strong>en navegador real</strong> antes de commitear: los bugs que importaban no los vieron los tests</li>
+      <li data-anim><strong>Vitest</strong> sobre el dominio, la capa de IA (adapters con <code>fetch</code> mockeado) y las invariantes de todos los bancos</li>
+      <li data-anim><strong>GitHub Actions</strong> — typecheck + tests + build en cada push y cada PR</li>
+      <li data-anim><strong>Deploy automático</strong> a GitHub Pages: main en verde es main publicado</li>
+      <li data-anim>Verificación <strong>en navegador real</strong> antes de commitear</li>
     </ul>
-    <p>Handlers de teclado sin cancelar que bloqueaban el segundo encuentro, el parser de Kaplay
-    rompiéndose con corchetes, texto verde ilegible sobre un fondo blanco. Todos se encontraron
-    jugando.</p>
+    <p class="ancho" data-anim>Handlers de teclado sin cancelar que bloqueaban el segundo encuentro.
+    El parser de Kaplay rompiéndose con corchetes. Texto verde ilegible sobre fondo blanco. Un
+    décimo módulo inalcanzable porque la tecla se calculaba como <code>String(i+1)</code> y daba
+    <code>"10"</code>. Ninguno lo vieron los tests: todos salieron jugando.</p>
   </section>
 
-  <!-- 11 -->
-  <section class="slide">
-    <h3>El proceso</h3>
-    <h2>La cocina: desarrollo multiagente</h2>
-    <div class="cols wide-right">
-      <div>
-        <p>El juego se construyó con el flujo que enseña el propio máster, sobre un sistema
-        personal de orquestación: <strong>un coordinador reparte el trabajo en instancias headless
-        que corren en paralelo</strong>, cada una en su worktree de git.</p>
-        <p style="margin-top:.9em">El reparto se hace por <em>blast radius</em>: los tres bancos de
-        contenido nuevos se generaron a la vez porque cada instancia tocaba <strong>un solo archivo
-        distinto</strong>. Los archivos compartidos los toca un único agente al integrar.</p>
-        <p style="margin-top:.9em">El humano no copia prompts ni espera: revisa, decide y mergea.</p>
+  <!-- 12 · La cocina -->
+  <section class="slide" data-modulo="LA COCINA">
+    <p class="ojo" data-anim>El proceso</p>
+    <h2 data-decode data-anim>Un coordinador, varias manos</h2>
+    <div class="cols mas-figura">
+      <div class="pila">
+        <p data-anim>El juego se construyó con el flujo que enseña el propio máster, sobre un
+        sistema personal de orquestación: <strong>un coordinador reparte el trabajo en instancias
+        headless que corren en paralelo</strong>, cada una en su worktree de git.</p>
+        <p data-anim>El reparto se hace por <em>blast radius</em>. Los tres últimos bancos de
+        contenido se generaron a la vez porque cada instancia tocaba <strong>un solo archivo
+        distinto</strong>; los archivos compartidos los toca un único agente al integrar.</p>
+        <p data-anim>El humano no copia prompts ni espera: revisa, decide y mergea.</p>
       </div>
-      <div class="dos-img" style="grid-template-columns:1fr">
+      <figure data-anim class="recorte">
+        <img src="img/09-orquestador.png" alt="Informe del coordinador tras integrar el trabajo de las instancias">
+        <figcaption>El coordinador rinde cuentas de lo hecho y lo verificado</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 13 · El circuito -->
+  <section class="slide" data-modulo="EL CIRCUITO">
+    <p class="ojo" data-anim>De punta a punta</p>
+    <h2 data-decode data-anim>Reparte, trabaja, avisa</h2>
+    <div class="circuito">
+      <div class="paso" data-anim>
+        <p class="ojo">1 · Reparte</p>
         <figure>
-          <img src="img/10-flujo-multiagente.png" alt="Panel del sistema con las instancias corriendo">
-          <figcaption>Las instancias headless trabajando en paralelo</figcaption>
+          <img src="img/10-flujo-multiagente.png" alt="Panel del sistema con varias instancias headless corriendo en paralelo">
         </figure>
+        <p style="font-size:.92em">Tres writers arrancan a la vez, una por módulo.</p>
+      </div>
+      <div class="paso" data-anim>
+        <p class="ojo">2 · Trabaja</p>
         <figure>
-          <img src="img/11-instancia-headless.png" alt="Detalle de una instancia writer">
-          <figcaption>Una writer y su alcance declarado: un archivo</figcaption>
+          <img src="img/11-instancia-headless.png" alt="Detalle de una instancia writer y el único archivo que tiene permitido tocar">
         </figure>
+        <p style="font-size:.92em">Cada una declara su alcance: un archivo, y nada más.</p>
+      </div>
+      <div class="paso" data-anim>
+        <p class="ojo">3 · Avisa</p>
+        <figure>
+          <img src="img/12-notificacion-telegram.png" alt="Notificación en el móvil avisando de que una instancia terminó">
+        </figure>
+        <p style="font-size:.92em">Al terminar, el aviso llega al móvil. El humano vuelve solo cuando hace falta.</p>
       </div>
     </div>
   </section>
 
-  <!-- 12 -->
-  <section class="slide">
-    <h3>Cierre</h3>
-    <h2>Qué me llevo</h2>
+  <!-- 14 · Cierre -->
+  <section class="slide" data-modulo="CIERRE">
+    <p class="ojo" data-anim>Qué me llevo</p>
+    <h2 data-decode data-anim>Lo que el proyecto me enseñó</h2>
     <div class="cols">
       <ul>
-        <li>Separar <strong>dominio de presentación</strong> no es ceremonia: es lo que hizo que agregar un módulo sea agregar un archivo</li>
-        <li>Un <strong>gate automático</strong> vale más que una intención; el test de invariantes atajó bancos que yo habría dado por buenos</li>
-        <li>La IA acelera de verdad cuando le das <strong>criterios verificables</strong>, no cuando le pedís que adivine</li>
-        <li>Lo que no se juega, no se sabe si funciona: <strong>verificar en el navegador</strong> encontró todos los bugs reales</li>
+        <li data-anim>Separar <strong>dominio de presentación</strong> no es ceremonia: es lo que hizo que agregar un módulo sea agregar un archivo</li>
+        <li data-anim>Un <strong>gate automático</strong> vale más que una intención — atajó bancos que yo habría dado por buenos</li>
+        <li data-anim>La IA acelera de verdad cuando le das <strong>criterios verificables</strong>, no cuando le pedís que adivine</li>
+        <li data-anim>Lo que no se juega, no se sabe si funciona</li>
       </ul>
-      <div class="caja">
-        <h3>Roadmap</h3>
+      <div class="caja" data-anim>
+        <p class="ojo">Qué sigue</p>
         <ul>
           <li>Los módulos que faltan: solo agregar sus JSON</li>
           <li>Decidir la estrategia de IA para quien juega sin API key</li>
           <li>Más mecánicas por nivel, no una sola para todos</li>
         </ul>
-        <div class="urls" style="margin-top:1.2em">
+        <div class="urls" style="margin-top:1.3em">
           <span><b>Jugar</b> · <a href="https://modernclixlearning.github.io/wake-up-dev/">modernclixlearning.github.io/wake-up-dev</a></span>
           <span><b>Código</b> · <a href="https://github.com/modernclixlearning/wake-up-dev">github.com/modernclixlearning/wake-up-dev</a></span>
         </div>
@@ -349,56 +500,95 @@ banco del nivel</pre>
     </div>
   </section>
 
-</div>
+</main>
 
-<div class="pie">
-  <span>WAKE UP, DEV · TFM Máster en Desarrollo con IA</span>
-  <span><kbd>←</kbd> <kbd>→</kbd> navegar · <span id="contador">1 / 12</span></span>
-</div>
+<footer class="pie">
+  <span><b>←</b> <b>→</b> navegar</span>
+  <span class="sep larga">·</span>
+  <span class="larga"><b>Inicio</b> volver al arranque</span>
+  <span class="meta" id="pie-modulo">PORTADA</span>
+</footer>
 
+<script src="vendor/motion.js"></script>
 <script>
-(function(){
-  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
-  var contador = document.getElementById('contador');
+(function () {
+  var M = window.Motion;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll('#deck > section'));
+  var hudPos = document.getElementById('hud-pos');
+  var hudTotal = document.getElementById('hud-total');
+  var pieModulo = document.getElementById('pie-modulo');
   var i = 0;
-  function ir(n){
-    i = Math.max(0, Math.min(slides.length - 1, n));
-    slides.forEach(function(s, k){ s.classList.toggle('on', k === i); });
-    contador.textContent = (i + 1) + ' / ' + slides.length;
-    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+  hudTotal.textContent = slides.length;
+
+  // Los glifos que resuelven: los mismos katakana de la lluvia de código del juego.
+  var GLIFOS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノヰヱ01<>{}/*+=$#';
+
+  function decodificar(el) {
+    if (reduce) return;
+    var texto = el.dataset.textoReal || el.textContent;
+    el.dataset.textoReal = texto;
+    var pasos = 0, total = 11;
+    el._t = setInterval(function () {
+      pasos++;
+      var listos = Math.floor((texto.length * pasos) / total), salida = '';
+      for (var c = 0; c < texto.length; c++) {
+        var ch = texto[c];
+        salida += (c < listos || ch === ' ') ? ch : GLIFOS[Math.floor(Math.random() * GLIFOS.length)];
+      }
+      el.textContent = salida;
+      if (pasos >= total) { clearInterval(el._t); el._t = null; el.textContent = texto; }
+    }, 34);
   }
-  document.addEventListener('keydown', function(e){
+
+  function entrar(slide) {
+    var piezas = slide.querySelectorAll('[data-anim]');
+    if (piezas.length) {
+      if (reduce || !M) {
+        Array.prototype.forEach.call(piezas, function (p) { p.style.opacity = 1; p.style.transform = 'none'; });
+      } else {
+        M.animate(
+          piezas,
+          { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
+          { delay: M.stagger(0.055), duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+        );
+      }
+    }
+    var titulo = slide.querySelector('[data-decode]');
+    if (titulo) decodificar(titulo);
+  }
+
+  function ir(n) {
+    if (n < 0 || n >= slides.length) return;
+    var previa = slides[i];
+    if (previa) {
+      previa.classList.remove('on');
+      var t = previa.querySelector('[data-decode]');
+      if (t && t._t) { clearInterval(t._t); t._t = null; t.textContent = t.dataset.textoReal; }
+    }
+    i = n;
+    var slide = slides[i];
+    slide.classList.add('on');
+    hudPos.textContent = i + 1;
+    pieModulo.textContent = slide.dataset.modulo || '';
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+    entrar(slide);
+  }
+
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); ir(i + 1); }
     else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); ir(i - 1); }
     else if (e.key === 'Home') ir(0);
     else if (e.key === 'End') ir(slides.length - 1);
   });
-  document.addEventListener('click', function(e){
+  document.addEventListener('click', function (e) {
     if (e.target.closest('a')) return;
     ir(e.clientX < window.innerWidth * 0.25 ? i - 1 : i + 1);
   });
-  var inicio = parseInt((location.hash || '').slice(1), 10);
-  ir(isNaN(inicio) ? 0 : inicio - 1);
 
-  // Lluvia de código de fondo
-  var c = document.getElementById('lluvia'), x = c.getContext('2d');
-  var letras = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ01{}<>/;=+*$#'.split('');
-  var cols, gotas, paso = 16;
-  function medir(){
-    c.width = innerWidth; c.height = innerHeight;
-    cols = Math.floor(c.width / paso);
-    gotas = new Array(cols).fill(0).map(function(){ return Math.random() * -50; });
-  }
-  medir(); addEventListener('resize', medir);
-  setInterval(function(){
-    x.fillStyle = 'rgba(0,0,0,0.09)'; x.fillRect(0, 0, c.width, c.height);
-    x.fillStyle = '#4dff7c'; x.font = paso + 'px monospace';
-    for (var n = 0; n < cols; n++){
-      x.fillText(letras[Math.floor(Math.random() * letras.length)], n * paso, gotas[n] * paso);
-      if (gotas[n] * paso > c.height && Math.random() > 0.975) gotas[n] = 0;
-      gotas[n]++;
-    }
-  }, 62);
+  var inicio = parseInt((location.hash || '').slice(1), 10);
+  ir(isNaN(inicio) || inicio < 1 ? 0 : Math.min(inicio, slides.length) - 1);
 })();
 </script>
 </body>
