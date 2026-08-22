@@ -15,6 +15,7 @@ import {
   HP_JEFE,
   recibirGolpe,
 } from "../../domain/combate";
+import { calcularDuracionFeedback } from "../../domain/feedback";
 import { QuizEngine } from "../../domain/quiz-engine";
 import { Reto, RetoAbierta, RetoMultipleChoice } from "../../domain/reto";
 import {
@@ -176,6 +177,100 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         k.fixed(),
       ]);
       k.wait(4, () => k.destroy(msg));
+    };
+
+    /**
+     * Cartel didáctico centrado: muestra la explicación completa tras responder
+     * un reto. Tamaño grande, fondo propio, legible en cualquier escenario.
+     * - Duración calculada por longitud del texto (mínimo 3s, máximo 12s).
+     * - Cualquier tecla cierra el cartel antes de que expire.
+     * - Mientras está visible, `enEncuentro` permanece true → Neo no recibe golpes.
+     * - Solo puede haber un cartel de este tipo a la vez (deduplicación por flag).
+     */
+    let explicacionActiva = false;
+    const mostrarExplicacion = (ok: boolean, texto: string, alCerrar?: () => void) => {
+      // Deduplicación: si ya hay un cartel central, no apilar otro encima.
+      if (explicacionActiva) return;
+      explicacionActiva = true;
+      enEncuentro = true;
+
+      const duracion = calcularDuracionFeedback(texto);
+      const PADDING = 40;
+      const ANCHO_PANEL = ANCHO - PADDING * 2;
+      const teclaHandlers: KEventController[] = [];
+
+      const prefijo = ok ? "CORRECTO" : "FALLASTE";
+      // Fondo semitransparente oscuro: legible sobre el escenario blanco (sala de
+      // entrenamiento) y sobre los fondos oscuros del resto de módulos.
+      const fondo = k.add([
+        k.rect(ANCHO, ALTO),
+        k.pos(0, 0),
+        k.color(0, 0, 0),
+        k.opacity(0.75),
+        k.z(20),
+        k.fixed(),
+      ]);
+      const borde = k.add([
+        k.rect(ANCHO_PANEL, ALTO - PADDING * 2),
+        k.pos(PADDING, PADDING),
+        k.color(...NEGRO),
+        k.outline(3, k.rgb(...(ok ? VERDE : ROJO))),
+        k.z(21),
+        k.fixed(),
+      ]);
+      const etiqueta = k.add([
+        k.text(prefijo, { size: 32 }),
+        k.pos(ANCHO / 2, PADDING + 40),
+        k.color(...(ok ? VERDE : ROJO)),
+        k.anchor("center"),
+        k.z(22),
+        k.fixed(),
+      ]);
+      const cuerpo = k.add([
+        k.text(texto, { size: 28, width: ANCHO_PANEL - 48 }),
+        k.pos(ANCHO / 2, PADDING + 100),
+        k.color(...BLANCO),
+        k.anchor("top"),
+        k.z(22),
+        k.fixed(),
+      ]);
+      const instruccion = k.add([
+        k.text("Pulsá cualquier tecla para continuar", { size: 16 }),
+        k.pos(ANCHO / 2, ALTO - PADDING - 24),
+        k.color(...VERDE_OSCURO),
+        k.anchor("center"),
+        k.z(22),
+        k.fixed(),
+      ]);
+
+      const piezas = [fondo, borde, etiqueta, cuerpo, instruccion];
+
+      const cerrar = () => {
+        if (!explicacionActiva) return;
+        explicacionActiva = false;
+        enEncuentro = false;
+        teclaHandlers.forEach((h) => h.cancel());
+        teclaHandlers.length = 0;
+        piezas.forEach((p) => k.destroy(p));
+        alCerrar?.();
+      };
+
+      // Timer de cierre automático
+      const timer = k.wait(duracion, cerrar);
+
+      // Registrar el handler en el SIGUIENTE frame para evitar que el mismo
+      // keypress que cerró el overlay de pregunta cierre este cartel al instante.
+      // Kaplay procesa todos los onKeyPress del mismo evento en una sola pasada:
+      // si registramos aquí, la tecla "2" (o la que sea) ya está siendo procesada
+      // y el handler disparará dentro del mismo frame → panel abre y se cierra solo.
+      k.wait(0, () => {
+        if (!explicacionActiva) return; // ya cerrado (timeout llegó antes del próximo frame)
+        const manejador = k.onKeyPress(() => {
+          timer.cancel();
+          cerrar();
+        });
+        teclaHandlers.push(manejador);
+      });
     };
 
     // ---- Geometría del combate: cajas de Neo y el Agente ----
@@ -604,9 +699,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         if (!combate) {
           // Sin estado de combate registrado: red de seguridad, comportamiento anterior (1 golpe = 1 baja).
           k.destroy(agente);
-          mostrarFeedback(true, feedback);
-          actualizarHud();
-          comprobarNivelLimpio();
+          mostrarExplicacion(true, feedback, () => {
+            actualizarHud();
+            comprobarNivelLimpio();
+          });
           return;
         }
         combate.estado = golpear(combate.estado);
@@ -620,10 +716,12 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         if (derrotado(combate.estado)) {
           // Derrota (F11 v3): el Agente cae (frame "derrota") y recién después
           // explota — `muriendo` evita que dispare encuentros en esa ventana.
+          // La explicación se muestra antes de la explosión: el cartel ya está en
+          // pantalla cuando el `k.wait(0.6)` detona la animación de explosión.
           combates.delete(agente);
           muriendo.add(agente);
           fijarPose(agente, "derrota");
-          mostrarFeedback(true, feedback);
+          mostrarExplicacion(true, feedback);
           k.wait(0.6, () => {
             sfx.explosion();
             crearExplosion(k, agente.pos.x + combate.ancho / 2, agente.pos.y + combate.alto / 2);
@@ -634,9 +732,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
           });
           return;
         }
-        mostrarFeedback(true, `${feedback}  (Agente ${combate.estado.hpActual}/${combate.estado.hpMaximo} HP — seguí a las piñas)`);
+        const textoConHp = `${feedback}  -  Agente ${combate.estado.hpActual}/${combate.estado.hpMaximo} HP — seguí a las piñas`;
         actualizarHud();
-        darGraciaPostPregunta(agente);
+        mostrarExplicacion(true, textoConHp, () => darGraciaPostPregunta(agente));
         return;
       }
       sfx.fallo();
@@ -657,13 +755,14 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       // El offset descuenta el ancho de Neo: con el sprite 3x, un margen fijo
       // chico lo dejaba todavía en colisión y reabría el encuentro al instante.
       player.pos = k.vec2(k.clamp(agente.pos.x - (ANCHO_NEO + 60), 0, anchoNivel - ANCHO_NEO), player.pos.y);
-      mostrarFeedback(false, feedback);
       actualizarHud();
       if (st.session.derrotado) {
-        k.wait(1.6, () => k.go("gameover"));
+        // El gameover espera a que el jugador lea la explicación (se cierra por
+        // tecla o por el timer calculado) y solo entonces cambia de escena.
+        mostrarExplicacion(false, feedback, () => k.go("gameover"));
         return;
       }
-      darGraciaPostPregunta(agente);
+      mostrarExplicacion(false, feedback, () => darGraciaPostPregunta(agente));
     };
 
     // Encuentro clásico: pregunta de opciones en el canvas (teclas 1-4).
