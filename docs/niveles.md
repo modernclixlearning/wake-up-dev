@@ -38,8 +38,9 @@ despertar → llegar al mundo real).
 
 ## Los 10 niveles
 
-Estado: **✅ en juego** (mapeado a un módulo y testeado en engine) ·
-**🔜 futuro** (procesado y cargado, sin módulo asignado aún).
+Estado: **✅ en juego** (mapeado a un módulo y testeado en engine).
+Desde 2026-08-22 los **10 fondos están asignados a un módulo**: no queda ninguno libre.
+Un módulo nuevo necesita fondo nuevo por el pipeline de `tools/pixel-art/`.
 
 | # | Nivel | Módulo | Paleta | Estado | Viabilidad |
 |---|---|---|---|---|---|
@@ -47,12 +48,12 @@ Estado: **✅ en juego** (mapeado a un módulo y testeado en engine) ·
 | 2 | Pasillo de oficina | 02 · Ingeniería | Verde/gris | ✅ | Muy buena. Puertas corporativas idénticas = proceso/burocracia. Composición frontal, funciona plano. |
 | 3 | La sala de entrenamiento | 05 · Herramientas | Blanco | ✅ | Buena **con banda oscura**. El "cuarto de carga" con armas en la pared = herramientas. El blanco exige la banda para legibilidad del texto. |
 | 4 | Tejado bajo la lluvia | 03 · Arquitectura | Verde azulado | ✅ | Excelente. Vista elevada de la ciudad = mirar el sistema desde arriba (arquitectura). Relámpagos cinematográficos. |
-| 5 | Cabina telefónica de escape | — | Verde/neón | 🔜 | Frontal, cabina central iluminada. Viable como backdrop fijo. Candidata a **nivel-portal / salida**. |
-| 6 | El apartamento rojo | — | Rojo | 🔜 | "WAKE UP, THE MATRIX HAS YOU" pintado en la pared: candidato ideal para la **intro / pantalla de título**, no un nivel de combate. |
+| 5 | Cabina telefónica de escape | 11 · Infraestructura y cloud | Verde/neón | ✅ | La cabina es el punto de conexión y de salida: el deploy. Frontal, cabina central iluminada. |
+| 6 | El apartamento rojo | 13 · Desarrollo potenciado por IA | Rojo | ✅ | El cuarto donde se toma la píldora: tomar la IA como forma de construir. Rompe el verde, y ese es el punto. |
 | 7 | El desierto de las máquinas | 09 · Flujo con IA | Naranja | ✅ | Excelente. El **mundo real** postapocalíptico = el nivel más avanzado. Rompe el verde a propósito (saliste de la Matrix). |
-| 8 | La nave subterránea | — | Verde/oscuro | 🔜 | Nebuchadnezzar. Frontal, claustrofóbica. Viable. Candidata a **hub / Zion** o nivel de rebeldes. |
+| 8 | La nave subterránea | 10 · Calidad | Verde/oscuro | ✅ | Nebuchadnezzar: sala de control con monitores y alertas = observabilidad. Frontal, claustrofóbica. |
 | 9 | La sala de pantallas | 04 · Fundamentos de IA | Verde | ✅ | Excelente. Muro de monitores con código y una red neuronal = IA. Encaje temático perfecto. |
-| 10 | El corredor del hotel | — | Ámbar | 🔜 | Perspectiva de punto de fuga fuerte: funciona como backdrop **fijo** (estás en el corredor), no tileado. Candidata a **transición / jefe**. |
+| 10 | El corredor del hotel | 12 · Seguridad | Ámbar | ✅ | El corredor de la persecución: perímetro e intrusión. Punto de fuga fuerte, funciona como backdrop **fijo**. |
 
 ### Mapeo actual módulo → fondo
 

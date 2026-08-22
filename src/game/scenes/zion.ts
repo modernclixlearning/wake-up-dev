@@ -8,6 +8,18 @@ import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
 import { abrirAjustes, hayOverlayAbierto } from "../ui/overlay";
 
 /** Hub entre niveles: muestra los módulos, el progreso y el acceso a ajustes. */
+/**
+ * Tecla que entra a cada módulo de la lista. Los nueve primeros van en 1-9 y el
+ * décimo en 0: `String(i + 1)` daba "10" para el décimo, que no es una tecla
+ * válida — con diez módulos el último quedaba inaccesible desde el teclado.
+ * Un undécimo módulo va a necesitar otra forma de selección (flechas + Enter).
+ */
+function teclaDeModulo(i: number): string {
+  if (i < 9) return String(i + 1);
+  if (i === 9) return "0";
+  return "";
+}
+
 export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
   k.scene("zion", () => {
     const st = estado();
@@ -32,7 +44,7 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
       // "unclosed tags" en cada frame (p.ej. con "[LIBERADO]").
       const estadoTxt = prog?.completado ? "— LIBERADO —" : "— EN LA MATRIX —";
       k.add([
-        k.text(`${i + 1}. ${banco.modulo.nombre} ${estadoTxt}`, { size: 20, width: 800 }),
+        k.text(`${teclaDeModulo(i)}. ${banco.modulo.nombre} ${estadoTxt}`, { size: 20, width: 800 }),
         k.pos(ANCHO / 2, 150 + i * pasoLista),
         k.anchor("center"),
         k.color(...(prog?.completado ? VERDE_OSCURO : BLANCO)),
@@ -95,7 +107,9 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
     });
 
     st.bancos.forEach((banco, i) => {
-      k.onKeyPress(String(i + 1) as never, () => {
+      const tecla = teclaDeModulo(i);
+      if (!tecla) return;
+      k.onKeyPress(tecla as never, () => {
         if (hayOverlayAbierto()) return;
         k.go("level", { moduloId: banco.modulo.id });
       });

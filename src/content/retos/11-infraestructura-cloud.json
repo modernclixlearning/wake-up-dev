@@ -1,0 +1,468 @@
+{
+  "modulo": {
+    "id": "11-infraestructura-cloud",
+    "nombre": "Infraestructura y Cloud",
+    "descripcion": "DevOps y CI/CD, cloud computing, bases de datos, contenerización con Kubernetes, LangChain con Python, LLMOps y arquitecturas multiagente.",
+    "resumen": "DevOps: bucle infinito (Inner Loop = planificar/codificar/construir/testear; Outer Loop = publicar/desplegar/monitorizar/rollback). CI automatiza el SDLC en cada integración; CD automatiza el despliegue. Cloud: servicios bajo demanda, regiones con ≥3 AZs, elasticidad, seguridad gestionada. AWS/Azure/GCP son los hyperscalers; serverless = pagar solo al invocar. Terraform es el IaC estándar (HCL, provider/data/resource, state). Bases de datos: relacionales (ACID, SQL), NoSQL (documento/clave-valor/columnar/grafos), vectoriales (embeddings + similarity search, Qdrant/Pinecone/Weaviate). Contenedores: comparten kernel del host, más ligeros que VMs; containerd reemplaza a Docker en producción. Kubernetes: control plane (apiserver/etcd/scheduler/controller) + worker nodes (kubelet/kube-proxy/pods); objetos clave: Deployment, Service, Ingress, ConfigMap, Secret, StatefulSet. RAG: indexing (chunking + embeddings + vector DB) + retrieval (mismo modelo de embeddings + similarity search) + generation (LLM con system prompt anti-alucinaciones). LangChain abstrae indexing, retrieval y agentes. LLMOps: trazas, gestión de prompts, evaluaciones (LLM-as-a-Judge) con LangSmith. Arquitecturas multiagente: Supervisor, Hierarchical, Sequential, Network; Google ADK simplifica su construcción."
+  },
+  "retos": [
+    {
+      "id": "inf-001",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En el bucle infinito de DevOps, ¿cuál de las siguientes etapas pertenece al Outer Loop (la parte de Ops)?",
+      "opciones": [
+        "Planificar el sprint con metodologías ágiles y organizar el trabajo en tareas",
+        "Codificar la funcionalidad y hacer commit a una rama feature",
+        "Desplegar el artefacto, monitorizarlo y aplicar rollback si algo falla en producción",
+        "Mergear una pull request a la rama develop tras la revisión de código"
+      ],
+      "correcta": 2,
+      "explicacion": "El Outer Loop abarca todo lo que ocurre tras construir el artefacto: publicarlo en un registro, desplegarlo, monitorizarlo y, si algo falla en producción, volver a la versión anterior mediante rollback. Las etapas de planificar, codificar y mergear son del Inner Loop, el lado del desarrollador que termina cuando el código está integrado.",
+      "dificultad": 1,
+      "tags": ["devops"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-002",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia principal entre Continuous Integration y Continuous Deployment?",
+      "opciones": [
+        "La CI solo cubre tests unitarios; el CD cubre los tests de integración y end-to-end",
+        "La CI automatiza el ciclo de desarrollo (instalar dependencias, testear, construir el artefacto); el CD automatiza el despliegue en producción sin intervención manual",
+        "La CI y el CD son sinónimos: ambos términos describen la misma práctica de automatización",
+        "La CI requiere servidores propios (self-hosted); el CD siempre se ejecuta en runners cloud"
+      ],
+      "correcta": 1,
+      "explicacion": "CI (Continuous Integration) automatiza el Inner Loop: instalar dependencias, ejecutar tests y construir el artefacto cada vez que se integra código nuevo. CD (Continuous Deployment) automatiza el Outer Loop: desplegar la aplicación en producción de forma automática, sin que nadie decida manualmente cuándo ni dónde. En la práctica muchas empresas tienen bien automatizado el CI pero realizan el CD de forma manual, siendo recomendable avanzar hacia la automatización completa.",
+      "dificultad": 1,
+      "tags": ["ci-cd"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-003",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En un workflow de GitHub Actions, ¿qué ocurre cuando un job declara la clave `needs` apuntando a otro job?",
+      "opciones": [
+        "El job espera a que los jobs listados en `needs` terminen antes de ejecutarse",
+        "El job se ejecuta en paralelo con todos los jobs listados en `needs`",
+        "El job hereda automáticamente las variables de entorno de los jobs listados",
+        "El job se cancela si alguno de los jobs listados en `needs` no produce ningún output"
+      ],
+      "correcta": 0,
+      "explicacion": "`needs` crea dependencias explícitas entre jobs. Cuando un job declara `needs: [job-a, job-b]`, GitHub Actions no lo arranca hasta que job-a y job-b hayan terminado con éxito. Los jobs sin dependencias en común se ejecutan en paralelo, optimizando el tiempo total de la pipeline. Esto permite, por ejemplo, ejecutar tests unitarios, de integración y de calidad en paralelo y luego hacer el build solo cuando todos han pasado.",
+      "dificultad": 2,
+      "tags": ["github-actions", "ci-cd"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-004",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "Según las buenas prácticas de CI/CD, ¿por qué se recomienda compilar el artefacto una sola vez y compartirlo entre los distintos jobs del pipeline?",
+      "opciones": [
+        "Para reducir el número de licencias de la plataforma de CI/CD necesarias",
+        "Porque el runner solo puede ejecutar una compilación simultánea por repositorio",
+        "Para que todos los jobs (tests, análisis, despliegue) trabajen con exactamente el mismo artefacto y no existan variaciones entre builds",
+        "Para evitar que el pipeline agote el almacenamiento del runner al generar múltiples artefactos"
+      ],
+      "correcta": 2,
+      "explicacion": "Si el artefacto se reconstruye en cada job, podrían aparecer diferencias sutiles entre builds (por ejemplo, una dependencia que cambia su versión minor entre una build y la siguiente). Compilar una vez garantiza que lo que se testea es idéntico a lo que llega al registro de artefactos y después a producción. Este principio de trazabilidad es una de las buenas prácticas fundamentales de CI/CD.",
+      "dificultad": 2,
+      "tags": ["ci-cd", "artefactos"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-005",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es una Availability Zone (AZ) dentro de la infraestructura de un cloud provider?",
+      "opciones": [
+        "Un conjunto de regiones agrupadas por continente para reducir la latencia de red",
+        "Cada una de las réplicas físicas (datacenters) que componen una región, separadas físicamente para garantizar alta disponibilidad",
+        "La sección de la consola web donde se configuran los parámetros de autoescalado",
+        "Un servicio de enrutamiento que distribuye el tráfico entre distintas regiones del proveedor"
+      ],
+      "correcta": 1,
+      "explicacion": "Una región en un cloud provider es, en la práctica, un datacenter gigantesco replicado normalmente en tres copias, separadas físicamente varios kilómetros. Cada réplica es una Availability Zone. Al desplegar réplicas de una aplicación en varias AZs, si una falla (por un corte de suministro, un incendio o incluso un ataque físico) las demás siguen operativas, garantizando alta disponibilidad real.",
+      "dificultad": 1,
+      "tags": ["cloud-computing", "alta-disponibilidad"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-006",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la principal ventaja del modelo serverless frente a tener un servidor corriendo permanentemente para un endpoint de uso muy esporádico?",
+      "opciones": [
+        "Las funciones serverless siempre tienen menor latencia que un servidor dedicado en caliente",
+        "El serverless elimina la necesidad de definir variables de entorno o gestionar secretos",
+        "No se paga por cómputo cuando la función está inactiva; el coste se genera solo al invocarla",
+        "Permite usar cualquier lenguaje de programación sin modificar el código fuente de la función"
+      ],
+      "correcta": 2,
+      "explicacion": "Con serverless (AWS Lambda, Azure Functions, Google Cloud Functions) el código está «apagado» entre invocaciones y no consume cómputo ni genera coste. Solo se paga por el tiempo que tarda en ejecutarse cada llamada. Para cargas esporádicas esto supone un ahorro enorme frente a mantener un servidor activo 24/7 esperando peticiones, que se factura aunque no llegue ninguna.",
+      "dificultad": 2,
+      "tags": ["cloud-computing", "serverless"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-007",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué son las Spot Instances en los principales cloud providers?",
+      "opciones": [
+        "Máquinas muy baratas asignadas desde la capacidad no utilizada de otros clientes, que el proveedor puede recuperar en cualquier momento",
+        "Instancias reservadas con gran descuento a cambio de comprometerse con el proveedor durante varios años",
+        "Máquinas de alta gama diseñadas para picos de cómputo intensivo de muy corta duración",
+        "Instancias que solo se facturan si el tiempo de uso acumulado supera un umbral diario mínimo"
+      ],
+      "correcta": 0,
+      "explicacion": "Las Spot Instances son capacidad excedente de otros clientes que el proveedor reasigna a un precio muy bajo. La contrapartida es que el proveedor puede recuperarlas en cualquier momento cuando el cliente original las necesite. Por eso son útiles para entornos de desarrollo, staging o cargas tolerantes a interrupciones, pero no se recomiendan para producción donde la disponibilidad es crítica.",
+      "dificultad": 2,
+      "tags": ["cloud-computing", "costes"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-008",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En Terraform, ¿qué diferencia hay entre un bloque `data` y un bloque `resource`?",
+      "opciones": [
+        "`data` define las variables de entrada del módulo; `resource` define los valores que se exportan como outputs",
+        "`data` solo se puede usar en módulos de terceros publicados en el Terraform Registry",
+        "`data` descarga el provider necesario; `resource` lo configura con las credenciales del proveedor cloud",
+        "`data` consulta infraestructura ya existente sin crearla ni modificarla; `resource` declara lo que Terraform debe crear o gestionar"
+      ],
+      "correcta": 3,
+      "explicacion": "`data` permite leer información de recursos que ya existen (por ejemplo, el ID de una AMI de Ubuntu publicada en AWS) sin que Terraform los toque. `resource` es la declaración de lo que Terraform debe provisionar. Un `resource` puede referenciar los resultados de un `data`, permitiendo construir sobre infraestructura preexistente de forma declarativa.",
+      "dificultad": 2,
+      "tags": ["infraestructura-como-codigo", "terraform"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-009",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es una Knowledge Base en servicios como Vertex AI, Amazon Bedrock o Azure AI Foundry?",
+      "opciones": [
+        "Un repositorio de código con ejemplos oficiales de integración de los modelos del proveedor",
+        "Una funcionalidad que automatiza la vectorización de documentos subidos y el retrieval RAG sin que el desarrollador construya el sistema desde cero",
+        "El catálogo de modelos disponibles para fine-tuning dentro del proveedor cloud",
+        "Una base de datos relacional gestionada específicamente para almacenar los system prompts de los agentes"
+      ],
+      "correcta": 1,
+      "explicacion": "Las Knowledge Bases de los hyperscalers permiten subir documentos (arrastrando y soltando o vía API) y el propio cloud provider se encarga de generar los embeddings, guardarlos en una base de datos vectorial interna y resolver las consultas de retrieval. Es RAG completamente gestionado: útil para equipos que necesitan añadir contexto a un LLM sin implementar el pipeline de indexing y retrieval manualmente.",
+      "dificultad": 2,
+      "tags": ["cloud-ia", "rag"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-010",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "La propiedad de Aislamiento (Isolation) en las transacciones ACID garantiza que…",
+      "opciones": [
+        "Todos los cambios de una transacción se ejecutan completamente o no se ejecutan en absoluto",
+        "Los datos persisten en disco incluso después de un fallo inesperado del sistema",
+        "El estado intermedio de una transacción no es visible para otras transacciones concurrentes hasta que esta finaliza con commit",
+        "La base de datos acepta solo una transacción activa al mismo tiempo para evitar conflictos"
+      ],
+      "correcta": 2,
+      "explicacion": "Aislamiento significa que, mientras una transacción está en curso, ninguna consulta concurrente verá los cambios a medias. Solo cuando la transacción termina con commit su resultado se vuelve visible para el resto. Esto previene lecturas sucias (dirty reads). La opción A describe la Atomicidad, la B describe la Durabilidad.",
+      "dificultad": 2,
+      "tags": ["bases-de-datos", "acid"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-011",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Para qué tipo de caso de uso está diseñada principalmente una base de datos clave-valor como Redis?",
+      "opciones": [
+        "Como capa de caché de alta velocidad, almacenando pares clave-valor en memoria RAM para respuestas muy rápidas",
+        "Para guardar objetos JSON con esquema variable y realizar búsquedas flexibles sobre sus propiedades",
+        "Para modelar relaciones complejas entre entidades interconectadas mediante nodos y aristas",
+        "Para ejecutar consultas analíticas sobre grandes volúmenes de datos históricos en modo batch"
+      ],
+      "correcta": 0,
+      "explicacion": "Redis almacena los datos en RAM, lo que le proporciona una latencia extremadamente baja. Su uso más habitual es como caché: guardar resultados de consultas costosas o datos de sesión para evitar ir a la base de datos principal en cada petición. Al ser en memoria, aumentar la capacidad implica añadir más nodos con más RAM (escalado horizontal).",
+      "dificultad": 1,
+      "tags": ["bases-de-datos", "nosql"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-012",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En una base de datos vectorial, si los documentos se indexaron con el modelo de embeddings A y las consultas se procesan con el modelo B, ¿qué problema surge?",
+      "opciones": [
+        "El índice vectorial queda corrupto y hay que reconstruirlo desde cero",
+        "El sistema invierte los resultados y devuelve siempre el documento con el score más bajo",
+        "Las consultas funcionan correctamente porque cualquier modelo genera vectores numéricos equivalentes",
+        "Los vectores de los documentos y los de las consultas viven en espacios matemáticos distintos, haciendo que la búsqueda por similaridad devuelva resultados sin sentido semántico"
+      ],
+      "correcta": 3,
+      "explicacion": "La búsqueda por similaridad compara el vector de una consulta con los vectores almacenados para encontrar los más cercanos matemáticamente. Dos modelos distintos generan vectores en espacios de representación diferentes: la distancia entre un vector del modelo A y uno del modelo B no refleja su parecido semántico real. Es como intentar comparar dos textos escritos en idiomas distintos usando un diccionario de solo uno de ellos.",
+      "dificultad": 3,
+      "tags": ["bases-de-datos-vectoriales", "embeddings"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-013",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "abierta",
+      "pregunta": "Describe cuándo conviene usar una base de datos vectorial especializada (como Qdrant, Pinecone o Weaviate) frente a añadir la extensión pgvector a PostgreSQL. Justifica tu respuesta con argumentos técnicos.",
+      "rubrica": "La respuesta debe mencionar al menos tres de estos cuatro puntos con argumentos técnicos: (1) las bases de datos vectoriales especializadas están optimizadas para búsquedas por similaridad y rinden notablemente mejor a gran escala; (2) pgvector genera consultas muy lentas y consume mucha CPU y RAM cuando el volumen de vectores es alto; (3) migrar de pgvector a una base de datos especializada es costoso y doloroso, por lo que es mejor elegir bien desde el inicio; (4) las opciones cloud de Qdrant, Pinecone o Weaviate tienen precios bajos (por debajo de 10 €/mes para proyectos pequeños) y ofrecen autoescalado gestionado. Se valora positivamente que la respuesta mencione que para 25 usuarios concurrentes cualquiera de las tres opciones especializadas funciona bien, y negativamente que se defienda pgvector sin justificación técnica sólida.",
+      "fallbackId": "inf-012",
+      "dificultad": 3,
+      "tags": ["bases-de-datos-vectoriales", "pgvector"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-014",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia fundamental entre un contenedor y una máquina virtual?",
+      "opciones": [
+        "Las máquinas virtuales se despliegan con un Dockerfile; los contenedores se despliegan con un Vagrantfile",
+        "Un contenedor comparte el kernel del sistema operativo anfitrión y solo virtualiza la capa de aplicación, mientras que una VM virtualiza el hardware completo incluyendo su propio sistema operativo",
+        "Los contenedores no pueden conectarse a internet; las VMs tienen acceso completo a la red",
+        "Las máquinas virtuales arrancan en segundos; los contenedores pueden tardar varios minutos en iniciarse"
+      ],
+      "correcta": 1,
+      "explicacion": "Los contenedores comparten el kernel del host y aíslan los procesos mediante namespaces de Linux, lo que los hace mucho más ligeros (30-40 MB frente a 4-5 GB de una VM) y rápidos de arrancar (segundos vs. minutos). Las VMs incluyen su propio SO completo y necesitan un hipervisor, ofreciendo mayor aislamiento pero a costa de más recursos y tiempo de inicio.",
+      "dificultad": 1,
+      "tags": ["contenedores", "docker"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-015",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué muchas empresas han migrado de Docker a containerd en sus entornos de producción y en los clústeres de Kubernetes gestionados?",
+      "opciones": [
+        "Docker cambió su política de licencias y exige una licencia de pago (Docker Enterprise) para empresas que superan cierto umbral de facturación, mientras que containerd es completamente open source sin restricciones",
+        "Docker dejó de dar soporte a Linux y solo funciona en macOS y Windows desde 2024",
+        "Containerd puede construir imágenes directamente sin necesidad de Dockerfile, lo que simplifica el pipeline",
+        "Containerd reduce el tamaño de las imágenes a la mitad automáticamente respecto a las generadas con Docker"
+      ],
+      "correcta": 0,
+      "explicacion": "Docker cambió su modelo de negocio y requiere Docker Enterprise (de pago, con multas por incumplimiento) para empresas que superen un determinado nivel de facturación. Containerd es open source sin restricciones de uso comercial, su interfaz de comandos es prácticamente idéntica a la de Docker, y hoy es el container runtime por defecto en los clústeres de Kubernetes gestionados de AWS, Azure y GCP.",
+      "dificultad": 2,
+      "tags": ["contenedores", "containerd"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-016",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — En Kubernetes, ¿para qué sirve KEDA (Kubernetes Event-Driven Autoscaler)?",
+      "opciones": [
+        "KEDA reemplaza al scheduler de Kubernetes para mejorar la asignación de pods a nodos según la carga",
+        "KEDA gestiona los Secrets del clúster de forma más cifrada que la implementación nativa de Kubernetes",
+        "KEDA permite autoescalar pods según métricas personalizadas como el tamaño de una cola de mensajería o de una tabla de base de datos, más allá del escalado estándar por CPU y memoria",
+        "KEDA actúa como CNI (Container Network Interface) mejorando el rendimiento de red entre pods"
+      ],
+      "correcta": 2,
+      "explicacion": "El HPA (Horizontal Pod Autoscaler) estándar de Kubernetes solo puede escalar en función de CPU y memoria. KEDA extiende este mecanismo con conectores a eventos externos (colas de mensajería, métricas de bases de datos, custom metrics de cloud providers, etc.), permitiendo escalar en función de métricas de negocio reales. En 2026 es una herramienta consolidada para arquitecturas event-driven.",
+      "dificultad": 3,
+      "tags": ["kubernetes", "autoscaling", "keda"],
+      "bonus2026": true
+    },
+    {
+      "id": "inf-017",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué tipo de objeto de Kubernetes se recomienda para desplegar una base de datos como PostgreSQL, y por qué no sirve un Deployment normal?",
+      "opciones": [
+        "Un DaemonSet, porque garantiza que siempre haya exactamente un pod de base de datos en el clúster",
+        "Un Job, porque las bases de datos se ejecutan como tareas de duración finita que terminan cuando completan su trabajo",
+        "Un ConfigMap, porque PostgreSQL necesita almacenar su configuración de forma persistente entre reinicios",
+        "Un StatefulSet, porque cada réplica tiene su propio almacenamiento persistente independiente, a diferencia de un Deployment donde todas las réplicas comparten el mismo storage"
+      ],
+      "correcta": 3,
+      "explicacion": "Un Deployment es ideal para aplicaciones sin estado donde todas las réplicas son intercambiables. Un StatefulSet asigna a cada pod su propio volumen persistente (PVC) y mantiene identidades de red estables, imprescindible para bases de datos donde cada réplica guarda su propia porción de datos. Con un Deployment, si dos réplicas intentaran escribir en el mismo volumen simultáneamente, se producirían corrupciones.",
+      "dificultad": 2,
+      "tags": ["kubernetes", "statefulset"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-018",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuándo considera Kubernetes que un pod ha superado su Readiness Probe y puede empezar a recibir tráfico?",
+      "opciones": [
+        "Cuando el proceso del contenedor lleva más de 30 segundos en ejecución sin errores fatales registrados",
+        "Cuando el pod responde con éxito a la comprobación definida (por ejemplo, el endpoint `/health` devuelve HTTP 200), indicando que está listo para aceptar peticiones",
+        "Cuando el nodo donde corre el pod tiene una utilización de CPU por debajo del umbral configurado",
+        "Cuando los Init Containers del pod han terminado su ejecución correctamente y han liberado el proceso principal"
+      ],
+      "correcta": 1,
+      "explicacion": "La Readiness Probe comprueba si el pod está preparado para recibir tráfico del Service. Mientras no la supere, el Service no le enviará peticiones, aunque el pod esté en ejecución. Es distinta de la Liveness Probe, que comprueba si el pod sigue vivo (si falla, Kubernetes lo reinicia). En la práctica, un endpoint `/health` que devuelva 200 cuando la aplicación está lista se usa para ambas.",
+      "dificultad": 2,
+      "tags": ["kubernetes", "probes"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-019",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué papel cumple el system prompt en la fase de generación de un sistema RAG?",
+      "opciones": [
+        "Divide los documentos en chunks durante la fase de indexing para preparar el contexto",
+        "Convierte la pregunta del usuario en un vector para la búsqueda por similaridad",
+        "Indica al LLM que priorice la información recuperada de los documentos y que no invente datos ausentes en ellos, reduciendo así las alucinaciones",
+        "Define qué modelo de embeddings se usará y su umbral mínimo de similaridad en el retrieval"
+      ],
+      "correcta": 2,
+      "explicacion": "El system prompt en RAG suele instruir al modelo algo como «responde únicamente con información de los documentos recuperados; si no aparece en ellos, admítelo sin inventarlo». Esto reduce las alucinaciones porque el LLM no genera respuestas «de memoria» sino a partir del contexto real inyectado junto con la pregunta del usuario. Sin este prompt, el modelo podría completar con información plausible pero incorrecta.",
+      "dificultad": 2,
+      "tags": ["rag", "langchain"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-020",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "abierta",
+      "pregunta": "Explica el flujo completo de un sistema RAG desde que el administrador sube un documento hasta que el usuario recibe una respuesta. Detalla las fases de indexing y retrieval e indica qué ocurriría si se usaran modelos de embeddings distintos en cada fase.",
+      "rubrica": "La respuesta debe cubrir: (1) fase de indexing — carga del documento, chunking (división en fragmentos pequeños), generación de embeddings con un modelo concreto, almacenamiento en base de datos vectorial; (2) fase de retrieval — conversión de la query del usuario con el mismo modelo de embeddings, similarity search en la BD vectorial para obtener los chunks más relevantes, combinación con el contexto de conversación; (3) fase de generación — envío al LLM con system prompt que le indica no inventarse información, generación de respuesta en lenguaje natural; (4) consecuencia de usar modelos distintos — los vectores viven en espacios matemáticos incomparables, haciendo que los resultados de la búsqueda sean semánticamente sin sentido. Se penaliza no mencionar el requisito de usar el mismo modelo en indexing y retrieval.",
+      "fallbackId": "inf-019",
+      "dificultad": 3,
+      "tags": ["rag", "langchain"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-021",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En LangChain, ¿para qué sirve `trim_messages` dentro de un agente conversacional?",
+      "opciones": [
+        "Para devolver solo los últimos N mensajes del historial antes de enviarlo al LLM, evitando el coste de mandar una conversación entera en cada turno",
+        "Para eliminar palabras irrelevantes de los documentos antes del proceso de chunking",
+        "Para dividir mensajes del usuario que superen el límite de tokens del modelo en fragmentos manejables",
+        "Para filtrar mensajes del historial que tengan una puntuación de relevancia por debajo de un umbral"
+      ],
+      "correcta": 0,
+      "explicacion": "`trim_messages` es una utilidad del core de LangChain que devuelve los últimos N mensajes del historial según el `memory_window` configurado. Esto evita mandar conversaciones muy largas al LLM en cada turno, lo cual sería muy costoso en tokens. Es la forma recomendada de gestionar la memoria conversacional sin tener que implementar un gestor de memoria propio.",
+      "dificultad": 2,
+      "tags": ["langchain", "memoria"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-022",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — ¿Qué ventaja ofrece Google Cloud Run frente a mantener un contenedor activo permanentemente para una aplicación de uso esporádico?",
+      "opciones": [
+        "Cloud Run permite desplegar aplicaciones sin Dockerfile, generando la imagen automáticamente desde el código fuente",
+        "Cloud Run escala a cero instancias cuando no hay tráfico, eliminando el coste de cómputo inactivo; la primera petición tras el silencio tarda algo más en arrancar (cold start) pero las siguientes son rápidas",
+        "Cloud Run incluye una base de datos vectorial gestionada sin coste adicional para las aplicaciones desplegadas",
+        "Cloud Run no requiere contenerizar la aplicación y puede desplegar directamente desde un repositorio de GitHub con un solo clic"
+      ],
+      "correcta": 1,
+      "explicacion": "Cloud Run implementa el patrón «scale to zero»: cuando no llegan peticiones, el servicio se apaga y no genera costes de cómputo. Al recibir la primera petición tras el periodo de inactividad hay un arranque en frío ligeramente más lento, pero la segunda petición ya es rápida. En 2026, frente a Railway (que cobra aunque esté inactivo), Cloud Run con capa gratuita es la opción habitual para proyectos con tráfico intermitente.",
+      "dificultad": 2,
+      "tags": ["cloud-run", "despliegue", "serverless"],
+      "bonus2026": true
+    },
+    {
+      "id": "inf-023",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué es especialmente importante la observabilidad en aplicaciones que usan LLMs, más allá de la monitorización de infraestructura habitual?",
+      "opciones": [
+        "Porque los LLMs consumen más CPU que cualquier otro servicio y necesitan alertas de hardware específicas",
+        "Porque los proveedores de LLMs tienen una disponibilidad peor que otros servicios cloud y se caen con más frecuencia",
+        "Porque permite detectar comportamientos anómalos de los modelos: alucinaciones, tools invocadas incorrectamente o cambios de comportamiento cuando el proveedor actualiza silenciosamente la versión del modelo",
+        "Porque la observabilidad es el único mecanismo disponible para conocer el coste exacto de los tokens consumidos por llamada"
+      ],
+      "correcta": 2,
+      "explicacion": "Con LLMOps se monitoriza no solo la infraestructura sino también lo que ocurre dentro de cada llamada al modelo: si el agente invoca las tools que debería, si las respuestas contienen información inventada, o si el comportamiento cambia cuando el proveedor actualiza la versión «latest» de un modelo sin previo aviso. Esta proactividad es imposible de conseguir solo con métricas de infraestructura convencionales.",
+      "dificultad": 2,
+      "tags": ["llmops", "observabilidad"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-024",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la principal ventaja de gestionar los prompts en una herramienta como LangSmith en lugar de tenerlos hardcodeados en el código fuente?",
+      "opciones": [
+        "Los prompts externalizados se compilan más rápido porque están en un servidor con hardware dedicado",
+        "LangSmith optimiza automáticamente el texto del prompt para reducir el número de tokens consumidos",
+        "LangSmith cifra los prompts en reposo para evitar que se filtren por accidente en los logs de producción",
+        "Permite versionar prompts con commits, hacer rollback si una versión empeora el comportamiento y actualizar el prompt en producción sin desplegar una nueva versión de la aplicación"
+      ],
+      "correcta": 3,
+      "explicacion": "En aplicaciones de IA generativa se itera mucho más sobre los prompts que sobre el código. Tenerlos en LangSmith como entidades versionadas permite actualizarlos en producción al instante, hacer rollback si una nueva versión empeora la calidad de las respuestas, y hacer A/B testing entre versiones sin tocar el repositorio de código ni realizar un despliegue.",
+      "dificultad": 2,
+      "tags": ["llmops", "langsmith"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-025",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En el contexto de LLMOps, ¿qué significa la técnica «LLM-as-a-Judge»?",
+      "opciones": [
+        "Usar un LLM como evaluador que juzga automáticamente si las respuestas de otro LLM son correctas, relevantes o apropiadas, de forma escalable y consistente",
+        "Configurar el LLM para que rechace peticiones que no superen un umbral de confianza mínimo definido en el system prompt",
+        "Delegar en un panel humano de expertos la puntuación periódica de muestras de respuestas del modelo",
+        "Integrar los logs de producción directamente como dataset de evaluación sin ningún procesado previo"
+      ],
+      "correcta": 0,
+      "explicacion": "LLM-as-a-Judge usa un modelo de lenguaje (por ejemplo GPT-5 u o3-mini) para evaluar las salidas de otro modelo. El LLM juez recibe la pregunta, la respuesta esperada del dataset y la respuesta real, y dictamina si es correcta, concisa u apropiada. Esto permite evaluar aspectos cualitativos de forma automática y a escala, algo imposible de hacer manualmente con miles de ejemplos.",
+      "dificultad": 2,
+      "tags": ["llmops", "evaluaciones"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-026",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "En el patrón Supervisor de arquitecturas multiagente, ¿cuál es el problema principal que resuelve frente a un único agente con muchas tools?",
+      "opciones": [
+        "Evita que múltiples usuarios interactúen simultáneamente con el mismo agente, serializando las peticiones",
+        "Cada subagente recibe solo las tools que necesita para su rol, evitando que la ventana de contexto del LLM se sature con decenas de descripciones de tools y degrade el rendimiento",
+        "Permite escribir cada subagente en un lenguaje de programación distinto, mejorando la flexibilidad tecnológica",
+        "Impide que los subagentes llamen directamente a APIs externas sin pasar primero por el agente root para autorización"
+      ],
+      "correcta": 1,
+      "explicacion": "Cuando un único agente tiene muchas tools, sus descripciones consumen una gran parte de la ventana de contexto del LLM, haciendo que el modelo pierda información y cometa errores al elegir qué tool ejecutar. Con el patrón Supervisor, cada subagente recibe solo las 3-6 tools de su dominio específico, lo que mejora la precisión del razonamiento y hace la arquitectura mucho más escalable.",
+      "dificultad": 2,
+      "tags": ["multi-agentes", "arquitectura"],
+      "bonus2026": false
+    },
+    {
+      "id": "inf-027",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "multiple-choice",
+      "pregunta": "BONUS 2026 — En Google ADK, ¿qué hace la tool interna `transfer_to_agent` y qué patrón multiagente habilita principalmente?",
+      "opciones": [
+        "Exporta el estado completo del agente a una base de datos externa para persistirlo entre sesiones de usuario",
+        "Envía el historial de conversación a otro framework de agentes externo como LangChain o CrewAI",
+        "Transfiere el control de la conversación de un agente a otro dentro de la misma arquitectura multiagente, sin que el desarrollador implemente esa lógica, habilitando el patrón Network (peer-to-peer)",
+        "Llama a una API externa utilizando las credenciales del agente activo en ese momento sin exponerlas al LLM"
+      ],
+      "correcta": 2,
+      "explicacion": "`transfer_to_agent` es una tool que ADK inyecta automáticamente en todos los agentes. Cuando el modelo decide que otra persona del equipo debería responder, invoca esta tool y el framework transfiere la conversación al subagente indicado. Esto es lo que hace posible el patrón Network: desde cualquier agente se puede saltar a cualquier otro libremente. Google ADK, disponible desde finales de 2024 y con versión 1.x estable en 2025-2026, simplifica enormemente este tipo de arquitecturas.",
+      "dificultad": 2,
+      "tags": ["multi-agentes", "adk"],
+      "bonus2026": true
+    },
+    {
+      "id": "inf-028",
+      "modulo": "11-infraestructura-cloud",
+      "tipo": "abierta",
+      "pregunta": "Compara el patrón Supervisor y el patrón Network en arquitecturas multiagente. ¿En qué casos usarías cada uno? Proporciona un ejemplo concreto de aplicación real para cada patrón.",
+      "rubrica": "La respuesta debe incluir: (1) descripción correcta del patrón Supervisor — un agente root delega en subagentes especializados que no se conocen entre sí y reciben solo sus tools; (2) descripción correcta del patrón Network — todos los agentes se ven mutuamente y pueden transferirse el control sin pasar por el root; (3) caso de uso concreto para Supervisor — sistemas con dominios bien delimitados (ej. agente bancario con subagente de transacciones, otro de hipotecas, otro de cuentas); (4) caso de uso concreto para Network — cuando el usuario puede pasar fluidamente de un dominio a otro en la misma conversación (ej. asistente de soporte que cubre tanto facturación como dispositivos). Una respuesta de nivel alto menciona que el patrón Network consume más contexto porque todos los agentes conocen la existencia de los demás, y que el patrón Hierarchical es una extensión del Supervisor en múltiples niveles.",
+      "fallbackId": "inf-026",
+      "dificultad": 3,
+      "tags": ["multi-agentes", "arquitectura", "adk"],
+      "bonus2026": false
+    }
+  ]
+}

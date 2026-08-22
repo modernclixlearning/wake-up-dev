@@ -1,6 +1,6 @@
 # Guía para agentes — Wake Up, Dev
 
-Videojuego web 8-bit inspirado en Matrix que repasa el contenido del Máster en Desarrollo con IA. Es el **TFM del máster** (entrega: **24/08/2026** — README completo, repo público, deploy con URL, slides y vídeo). El plan maestro y la consigna oficial viven en la bóveda del máster: `C:\apps\Master en Desarrollo con IA\notas\16-proyecto-final\00-proyecto-final\`.
+Videojuego web 8-bit inspirado en Matrix que repasa el contenido del Máster en Desarrollo con IA. Es el **TFM del máster** (entrega: **24/08/2026** — README completo, repo público, deploy con URL, slides y vídeo). El plan maestro, la consigna oficial y las notas del curso viven fuera de este repo, en la bóveda personal del autor (no publicada).
 
 ## Comandos
 
@@ -89,4 +89,4 @@ Documentado en [tools/pipeline-contenido.md](tools/pipeline-contenido.md) (promp
 
 ## Estado y pendientes
 
-El estado por fases (F1–F11), los pendientes del TFM y el prompt de handoff completo están en la bóveda: `notas\16-proyecto-final\00-proyecto-final\handoff-prompt.md`. Los entregables en preparación viven en [docs/](docs/) (guión del vídeo, outline de slides).
+El estado por fases (F1–F13), los pendientes del TFM y el handoff completo se llevan fuera de este repo, en la bóveda personal del autor. Los entregables en preparación viven en [docs/](docs/) (guión del vídeo, outline de slides).

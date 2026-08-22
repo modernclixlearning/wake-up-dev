@@ -8,7 +8,7 @@
 |---|---|
 | 🎮 Juego desplegado | **https://modernclixlearning.github.io/wake-up-dev/** |
 | 📦 Repositorio | https://github.com/modernclixlearning/wake-up-dev |
-| 📊 Slides | _pendiente (ver [docs/slides-outline.md](docs/slides-outline.md))_ |
+| 📊 Slides | **https://modernclixlearning.github.io/wake-up-dev/slides/** |
 | 🎥 Vídeo | _pendiente (ver [docs/guion-video.md](docs/guion-video.md))_ |
 | 🔑 Login | No aplica — el juego no tiene autenticación |
 
@@ -25,7 +25,7 @@ El proyecto demuestra el máster en dos planos:
 
 - **TypeScript** + **Vite** — build y dev server.
 - **Kaplay** — motor 2D estilo retro sobre canvas.
-- **Vitest** — **92 tests** del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con `fetch` mockeado; cero llamadas reales en CI).
+- **Vitest** — **112 tests** del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con `fetch` mockeado; cero llamadas reales en CI).
 - **GitHub Actions** — CI (typecheck + tests + build) y deploy automático a GitHub Pages.
 - **@anthropic-ai/sdk** — adapter oficial de Anthropic en el browser (BYOK).
 - **Node.js** — bridge headless local (`bridge/server.mjs`, sin dependencias) que spawnea el CLI de **Claude Code** o **GitHub Copilot**.
@@ -84,7 +84,7 @@ Reglas de arquitectura (detalle en [AGENTS.md](AGENTS.md)): el dominio es puro y
 
 - ✅ **Combate arcade 8-bit** inspirado en la acción de Matrix: personajes con **sprites pixel-art** (Neo, Smith, Jefe, Oráculo) generados con un pipeline propio desde referencias; piñas, esquive con _telegrafía_ del golpe enemigo, barra de HP y un **Agente Jefe** que dispara al cerrar cada módulo.
 - ✅ **Fondos de escena por nivel**: 10 backgrounds pixel-art (ciudad digital, pasillo de oficina, sala de entrenamiento, tejado bajo la lluvia, desierto de las máquinas, sala de pantallas…) que le dan identidad visual a cada módulo. Conceptos documentados en [docs/niveles.md](docs/niveles.md).
-- ✅ **174 retos** (161 de opción múltiple + 13 abiertas · 16 con actualización **bonus 2026**) en **6 niveles jugables** generados desde las notas reales del máster. Las opciones se **barajan en cada partida** para que no se pueda memorizar la posición de la correcta.
+- ✅ **312 retos** (287 de opción múltiple + 25 abiertas · 26 con actualización **bonus 2026**) en **10 niveles jugables** generados desde las notas reales del máster. Las opciones se **barajan en cada partida** para que no se pueda memorizar la posición de la correcta.
 - ✅ **El Oráculo**: NPC conversacional con IA y contexto del módulo actual.
 - ✅ **Evaluación de respuestas abiertas** con rúbrica (IA como grader; sin IA caen a su variante de opciones, sin penalizar).
 - ✅ **Modo "píldora roja"**: bridge local que resuelve el Oráculo, la evaluación y las pistas lanzando instancias headless de Claude Code o GitHub Copilot.

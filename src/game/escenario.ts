@@ -45,6 +45,12 @@ const FONDO_POR_MODULO: Record<string, string> = {
   "09-flujo-desarrollo-ia": "07-desierto-maquinas",
   // Calidad = sala de control de la nave: monitores, alertas, observabilidad.
   "10-calidad": "08-nave-subterranea",
+  // Infra/cloud = la cabina telefonica: el punto de conexion y de salida (el deploy).
+  "11-infraestructura-cloud": "05-cabina-telefonica",
+  // Seguridad = el corredor del hotel: perimetro, intrusion y persecucion.
+  "12-seguridad": "10-corredor-hotel",
+  // Desarrollo con IA = el apartamento rojo: el cuarto donde se toma la pildora.
+  "13-desarrollo-potenciado-ia": "06-apartamento-rojo",
 };
 
 /** Carga los fondos una vez al iniciar, junto a los sprites (main.ts). */
