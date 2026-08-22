@@ -2,7 +2,8 @@
   "modulo": {
     "id": "13-desarrollo-potenciado-ia",
     "nombre": "Desarrollo potenciado por IA",
-    "descripcion": "Proyectos prácticos con flujo profesional asistido por IA: front con React/Vite, mobile con Jetpack Compose, backend con OpenAPI y Express, CLI tipo Perplexity con Genkit y Tavily. Más el ecosistema teórico: LLMs, ventana de contexto, chat vs agente, Engram, skills, SDD y orquestación."
+    "descripcion": "Proyectos prácticos con flujo profesional asistido por IA: front con React/Vite, mobile con Jetpack Compose, backend con OpenAPI y Express, CLI tipo Perplexity con Genkit y Tavily. Más el ecosistema teórico: LLMs, ventana de contexto, chat vs agente, Engram, skills, SDD y orquestación.",
+    "resumen": "Bloque práctico final del máster: cuatro proyectos con flujo profesional asistido por IA más una unidad teórica sobre el ecosistema. Proyecto front (Simple Product Shop): tienda e-commerce construida 100% con prompts usando OpenCode; stack React + TypeScript + Vite + Tailwind v4; Screaming Architecture (Scope Rule: lo compartido va a src/share, lo propio de cada feature a src/features); TDD estricto con Vitest + Testing Library; Patrón Strategy para reglas de descuento (10% al comprar 5+ unidades del mismo producto, 15% adicional si el total supera los 100 USD); CartContext con useReducer persistido en localStorage; tests E2E con Playwright usando el patrón Page Object; Husky para gates de pre-commit y pre-push; Sentry para observabilidad, breadcrumbs y Web Vitals. Proyecto mobile: app Android con Jetpack Compose asistida por Claude Code, desde prototipo hasta consumo de API paginada. Proyecto backend: API REST diseñada con OpenAPI, implementada con Express y PostgreSQL, arquitectura en capas y tests de integración. Proyecto CLI tipo Perplexity: agente conversacional en Node.js con Genkit (framework open source de Firebase/Google, ligero y con buena developer experience, alternativa a LangChain/LlamaIndex) y Tavily (API de búsqueda web con operaciones search/extract/crawl); defineTool describe herramientas que el LLM invoca solo cuando las necesita; definePrompt crea prompts reutilizables con schema Zod; ai.chat (API beta) mantiene memoria de la conversación durante la sesión; Developer UI en localhost:4000 con trazas OpenTelemetry incluidas. Ecosistema teórico: los LLMs son redes neuronales probabilísticas — no son deterministas y alucinan cuando no tienen suficiente contexto; la ventana de contexto tiene un límite de tokens (128k–256k según el modelo) y al agotarse se compacta (/compact genera un resumen de la sesión, pero puede perder decisiones y convenciones acordadas); chat (texto entra, texto sale) vs agente (ejecuta herramientas reales: lee y escribe archivos, corre comandos, inspecciona Git); Engram (creado por Alan Buscaglia): memoria persistente entre sesiones usando SQLite + FTS5 expuesta como servidor MCP, guarda señales (decisiones arquitectónicas, patrones, bugs corregidos) no conversaciones completas, funciona entre sesiones y entre máquinas y permite que los subagentes compartan lo que aprendieron; skills: contexto especializado que se carga bajo demanda mediante triggers, el AGENTS.md actúa como índice y apunta a cada skill, el Skill Creator genera nuevas skills desde lenguaje natural; Spec Driven Development (SDD): se especifica primero qué se quiere construir y el agente implementa contra esa especificación."
   },
   "retos": [
     {
@@ -19,7 +20,10 @@
       "correcta": 1,
       "explicacion": "El bloque práctico no tiene un guión único: cada docente construye su proyecto con el stack, los modelos y los agentes de IA que considera oportunos, simulando cómo un profesional lo haría en un entorno real. Esto expone al alumno a distintas formas de atacar problemas reales, no solo a una receta fija.",
       "dificultad": 1,
-      "tags": ["bloque-practico", "flujo-profesional"],
+      "tags": [
+        "bloque-practico",
+        "flujo-profesional"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -36,7 +40,12 @@
       "correcta": 2,
       "explicacion": "El CLAUDE.md (o AGENTS.md) es el sistema de instrucciones del agente para ese proyecto concreto. Contiene el stack de tecnologías, las reglas de organización del código, procesos mandatorios como TDD y cualquier convención que el agente debe respetar siempre. Se escribe de forma compacta porque su lector es un LLM, no una persona.",
       "dificultad": 1,
-      "tags": ["front", "claude-md", "opencode", "agente"],
+      "tags": [
+        "front",
+        "claude-md",
+        "opencode",
+        "agente"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -53,7 +62,11 @@
       "correcta": 0,
       "explicacion": "TDD sigue siempre el ciclo rojo-verde-refactor: primero el test que falla (rojo), luego el mínimo código que lo hace pasar (verde), y finalmente la refactorización. Un principio que se reitera en el módulo: el test nunca se adapta al código para que pase; es el código el que se adapta al test, nunca al revés.",
       "dificultad": 1,
-      "tags": ["front", "tdd", "calidad"],
+      "tags": [
+        "front",
+        "tdd",
+        "calidad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -70,7 +83,12 @@
       "correcta": 3,
       "explicacion": "La Scope Rule establece que el código utilizado en más de un lugar sube a un scope global compartido (src/share: types, utils, constants, components y hooks compartidos). El código propio de una sola feature se queda dentro de ella. Esto facilita la modularidad y el lazy loading por feature con un bundler como Vite.",
       "dificultad": 2,
-      "tags": ["front", "scope-rule", "screaming-architecture", "estructura"],
+      "tags": [
+        "front",
+        "scope-rule",
+        "screaming-architecture",
+        "estructura"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -87,7 +105,12 @@
       "correcta": 1,
       "explicacion": "El patrón Strategy define una interfaz común (en este caso DiscountStrategy con isApplicable y calculate) y cada regla de negocio la implementa de forma independiente. Añadir una nueva regla no rompe las existentes; quitarla no afecta al resto. Los bloques de condicionales crecen y se vuelven difíciles de mantener cuando las reglas de negocio se multiplican.",
       "dificultad": 2,
-      "tags": ["front", "patron-strategy", "descuentos", "patrones"],
+      "tags": [
+        "front",
+        "patron-strategy",
+        "descuentos",
+        "patrones"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -104,7 +127,12 @@
       "correcta": 0,
       "explicacion": "El patrón Optimistic UI usa el ciclo idle → loading → success/error → idle. Mientras la acción se procesa, el botón muestra 'Adding...'; si tiene éxito, 'Added'; si falla, ofrece la opción de reintentar. Tras 1,5–3 segundos, vuelve a idle. Este microcopy claro reduce la incertidumbre del usuario y mejora la percepción de respuesta del sistema.",
       "dificultad": 2,
-      "tags": ["front", "optimistic-ui", "ux", "microcopy"],
+      "tags": [
+        "front",
+        "optimistic-ui",
+        "ux",
+        "microcopy"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -121,7 +149,13 @@
       "correcta": 2,
       "explicacion": "El Page Object encapsula en una clase los selectores y las acciones (navegar, hacer clic, rellenar formularios) de una pantalla concreta. Si un selector cambia en la UI, solo hay que actualizarlo en ese Page Object, no en todos los tests que usan esa pantalla. En el proyecto se usan selectores accesibles (getByRole, getByText) y data-testid solo cuando no hay alternativa más semántica.",
       "dificultad": 2,
-      "tags": ["front", "testing", "playwright", "page-object", "e2e"],
+      "tags": [
+        "front",
+        "testing",
+        "playwright",
+        "page-object",
+        "e2e"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -138,7 +172,12 @@
       "correcta": 3,
       "explicacion": "@Preview solo funciona si Android Studio puede instanciar el composable sin argumentos externos. Por eso todos sus parámetros deben tener valores por defecto declarados. Sin ellos, el IDE no puede renderizarlo en la vista previa y hay que recurrir al emulador para ver el resultado visual.",
       "dificultad": 2,
-      "tags": ["mobile", "jetpack-compose", "preview", "android"],
+      "tags": [
+        "mobile",
+        "jetpack-compose",
+        "preview",
+        "android"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -155,7 +194,12 @@
       "correcta": 0,
       "explicacion": "En Compose, cada cambio de estado provoca que el bloque composable se reejecutie (recomposición). Si el texto está en una variable local, la recomposición la reinicializa y el valor teclado se pierde en un bucle continuo. La solución es remember { mutableStateOf(\"\") }: remember conserva el valor entre recomposiciones y mutableStateOf lo convierte en un estado observable que Compose sabe cuándo repintar.",
       "dificultad": 2,
-      "tags": ["mobile", "jetpack-compose", "estado", "recomposicion"],
+      "tags": [
+        "mobile",
+        "jetpack-compose",
+        "estado",
+        "recomposicion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -172,7 +216,13 @@
       "correcta": 1,
       "explicacion": "Stitch genera diseños a partir de prompts, pero el código que exporta es HTML/CSS aproximado, no Jetpack Compose. El flujo recomendado es capturar un componente del diseño y pasárselo a Gemini o Claude con un prompt específico para ese composable, de a uno a la vez. Pasar el diseño entero de golpe tiende a hacer que la IA mezcle varios componentes en uno solo.",
       "dificultad": 2,
-      "tags": ["mobile", "stitch", "diseno-ui", "gemini", "android"],
+      "tags": [
+        "mobile",
+        "stitch",
+        "diseno-ui",
+        "gemini",
+        "android"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -189,7 +239,13 @@
       "correcta": 2,
       "explicacion": "La paginación manual reemplazaba la lista en vez de acumularla. Cuando insistir en que la IA 'lo arregle' no funcionó, la solución fue indicarle directamente la librería correcta: Paging 3. El aprendizaje generalizable: cuando la IA no acierta con algo complejo, guiarla con el nombre de la librería o el patrón adecuado es más eficaz que pedirle que corrija el código sin más contexto.",
       "dificultad": 3,
-      "tags": ["mobile", "paginacion", "paging3", "android", "buenas-practicas-ia"],
+      "tags": [
+        "mobile",
+        "paginacion",
+        "paging3",
+        "android",
+        "buenas-practicas-ia"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -206,7 +262,12 @@
       "correcta": 3,
       "explicacion": "Definir primero el contrato OpenAPI hace que los endpoints, sus parámetros y sus respuestas estén especificados antes de tocar código. Esa especificación se convierte en la fuente de verdad de la que se derivan el esqueleto de la implementación, los tests de integración y la documentación automática. Reduce la ambigüedad cuando un agente de IA genera el código a partir de ella.",
       "dificultad": 2,
-      "tags": ["backend", "openapi", "api-design", "arquitectura"],
+      "tags": [
+        "backend",
+        "openapi",
+        "api-design",
+        "arquitectura"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -223,7 +284,13 @@
       "correcta": 0,
       "explicacion": "En Genkit, las tools se definen con un nombre y una descripción en lenguaje natural. El LLM lee esa descripción y decide autónomamente cuándo invocar la herramienta en función de si la necesita para responder correctamente. No hay umbral de confianza numérico ni palabras clave especiales — es el razonamiento del propio modelo el que determina si hace falta la búsqueda web.",
       "dificultad": 2,
-      "tags": ["genkit", "tavily", "cli", "tools", "agente"],
+      "tags": [
+        "genkit",
+        "tavily",
+        "cli",
+        "tools",
+        "agente"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -240,7 +307,12 @@
       "correcta": 1,
       "explicacion": "definePrompt() transforma un texto en un artefacto nombrado y tipado: el schema Zod valida la entrada en tiempo de compilación, el nombre lo hace invocable desde cualquier parte del código, y aparece en la Developer UI de Genkit (localhost:4000) para ejecutarlo, inspeccionarlo y testearlo visualmente. generate() es una llamada puntual que no se puede referenciar ni probar desde la interfaz de desarrollo.",
       "dificultad": 2,
-      "tags": ["genkit", "prompts", "developer-ui", "typescript"],
+      "tags": [
+        "genkit",
+        "prompts",
+        "developer-ui",
+        "typescript"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -257,7 +329,12 @@
       "correcta": 2,
       "explicacion": "Los ficheros .prompt (proyecto open source de Google) usan Handlebars como lenguaje de plantillas y separan el texto del prompt del código fuente. Esto permite que el equipo de contenido o de producto gestione los prompts en otro repositorio con su propio ciclo de vida: actualizar un prompt es una operación de configuración, no un despliegue de código. definePrompt() también es reutilizable, pero el prompt vive acoplado al código.",
       "dificultad": 3,
-      "tags": ["genkit", "prompts", "dot-prompt", "arquitectura"],
+      "tags": [
+        "genkit",
+        "prompts",
+        "dot-prompt",
+        "arquitectura"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -274,7 +351,12 @@
       "correcta": 3,
       "explicacion": "Un LLM no 'sabe' nada en el sentido tradicional: genera la continuación más probable para una entrada dada. Cuando la información necesaria no está en su entrenamiento ni en el contexto proporcionado, ese mecanismo probabilístico produce texto plausible pero incorrecto. La solución no es bajar la temperatura, sino enriquecer el contexto con la información real que necesita el modelo para responder correctamente.",
       "dificultad": 1,
-      "tags": ["ia-generativa", "alucinacion", "llm", "contexto"],
+      "tags": [
+        "ia-generativa",
+        "alucinacion",
+        "llm",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -291,7 +373,12 @@
       "correcta": 0,
       "explicacion": "/compact genera un resumen de la sesión (objetivo, instrucciones, descubrimientos, archivos revisados, siguientes pasos) y arranca una nueva sesión con ese resumen. Al comprimir, pueden perderse decisiones puntuales, patrones acordados o la razón de fondo de ciertas elecciones: el resumen captura qué se hizo pero no siempre por qué. Es la compensación inevitable entre liberar espacio en la ventana de contexto y mantener la fidelidad del historial.",
       "dificultad": 1,
-      "tags": ["context-window", "compactacion", "compact", "memoria"],
+      "tags": [
+        "context-window",
+        "compactacion",
+        "compact",
+        "memoria"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -308,7 +395,12 @@
       "correcta": 1,
       "explicacion": "Un chat solo procesa texto de entrada y genera texto de salida; no puede ejecutar comandos en la máquina del usuario. Para leer el historial real de Git hay que usar un agente, que vive dentro de la terminal y tiene acceso a herramientas como git log. Si la respuesta fue precisa sobre el estado real del repositorio, la herramienta usada era un agente, no un chat conversacional.",
       "dificultad": 1,
-      "tags": ["chat-vs-agente", "agente", "git", "tools"],
+      "tags": [
+        "chat-vs-agente",
+        "agente",
+        "git",
+        "tools"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -325,7 +417,12 @@
       "correcta": 2,
       "explicacion": "Un LLM calcula la respuesta a partir de todo lo que está en su contexto. Si se incluye información irrelevante para la tarea concreta, el modelo tiene que 'procesar el ruido' para encontrar la señal correcta. La solución del módulo (skills con carga perezosa) es precisamente no cargar un AGENTS.md gigante, sino solo la skill pertinente para la tarea en curso.",
       "dificultad": 2,
-      "tags": ["contexto", "skills", "lazy-loading", "rendimiento-ia"],
+      "tags": [
+        "contexto",
+        "skills",
+        "lazy-loading",
+        "rendimiento-ia"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -342,7 +439,12 @@
       "correcta": 3,
       "explicacion": "Un subagente arranca con un contexto completamente limpio y recibe del orquestador únicamente el prompt con la tarea específica. Al explorar archivos, ejecutar comandos o leer documentación, toda esa información carga en su propio contexto. Cuando termina, entrega al orquestador un informe resumido. Así el orquestador mantiene su contexto libre de ruido y solo acumula las conclusiones de cada delegación.",
       "dificultad": 2,
-      "tags": ["subagentes", "orquestador", "contexto", "arquitectura-ia"],
+      "tags": [
+        "subagentes",
+        "orquestador",
+        "contexto",
+        "arquitectura-ia"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -359,7 +461,12 @@
       "correcta": 0,
       "explicacion": "Engram no es un sistema de memoria conversacional: no guarda el prompt ni la respuesta del LLM. Guarda señales — el resultado de una decisión: una arquitectura adoptada, un patrón, un bug ya corregido. Usa SQLite con FTS5 (búsqueda de texto, no vectores). Esta simplicidad es intencional: guardar todo el historial acumula ruido; lo que interesa es preservar las decisiones para que no se repitan los mismos errores al abrir una nueva sesión.",
       "dificultad": 2,
-      "tags": ["engram", "memoria", "sqlite", "mcp"],
+      "tags": [
+        "engram",
+        "memoria",
+        "sqlite",
+        "mcp"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -376,7 +483,12 @@
       "correcta": 1,
       "explicacion": "El trigger es la condición de activación de una skill. Cuando el usuario dice algo que coincide con ese trigger (por ejemplo, 'quiero hacer un PR' o 'hay un bug en producción'), el agente carga esa skill en el contexto. Fuera de ese escenario, la skill no está cargada, lo que mantiene el contexto limpio. Es el mecanismo central del lazy loading de skills.",
       "dificultad": 2,
-      "tags": ["skills", "trigger", "lazy-loading", "contexto"],
+      "tags": [
+        "skills",
+        "trigger",
+        "lazy-loading",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -393,7 +505,12 @@
       "correcta": 2,
       "explicacion": "TDD escribe el test antes que el código para verificar que la implementación hace lo que debe. SDD escribe la especificación (requerimientos, diseño, tareas) antes que el código por la misma razón. El módulo los equipara porque ambos invierten el orden habitual (primero especificar, luego implementar) y ambos funcionan como red de seguridad cuando la IA puede avanzar muy rápido. SDD no elimina TDD — el módulo los combina en OpenSpec.",
       "dificultad": 2,
-      "tags": ["sdd", "tdd", "especificacion", "flujo"],
+      "tags": [
+        "sdd",
+        "tdd",
+        "especificacion",
+        "flujo"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -410,7 +527,12 @@
       "correcta": 3,
       "explicacion": "La fase Verify compara lo implementado contra las especificaciones y clasifica cada hallazgo en: crítico (no cumple la especificación, debe corregirse), warning (cumple pero hay algo a vigilar) y sugerencia (cumple y además podría mejorarse). Esta clasificación permite al orquestador priorizar qué debe corregir el fix agent y qué puede dejarse para una iteración posterior.",
       "dificultad": 2,
-      "tags": ["sdd", "verify", "openspec", "calidad"],
+      "tags": [
+        "sdd",
+        "verify",
+        "openspec",
+        "calidad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -427,7 +549,12 @@
       "correcta": 0,
       "explicacion": "Según lo mencionado en el módulo, Firebase Studio y Antigravity usan Genkit internamente por defecto para las llamadas a LLMs cuando generan código. Genkit es el framework open source creado por el equipo de Firebase, pensado para aplicaciones backend con IA generativa. Su uso en productos propios de Google confirma la apuesta del ecosistema Google por este framework en 2026.",
       "dificultad": 3,
-      "tags": ["genkit", "firebase", "ecosistema", "estadoDelArte2026"],
+      "tags": [
+        "genkit",
+        "firebase",
+        "ecosistema",
+        "estadoDelArte2026"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -444,7 +571,12 @@
       "correcta": 1,
       "explicacion": "Un LLM es probabilístico: no siempre detecta los mismos problemas en cada ejecución. Dos jueces con contextos completamente independientes tienen mayor probabilidad combinada de cubrir todos los hallazgos reales. El orquestador contrasta ambos reportes y confirma solo los que considera genuinos. Para proyectos críticos, esta estrategia compensa el coste extra de tokens.",
       "dificultad": 2,
-      "tags": ["skill-juicio", "subagentes", "revision-codigo", "no-determinismo"],
+      "tags": [
+        "skill-juicio",
+        "subagentes",
+        "revision-codigo",
+        "no-determinismo"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -461,7 +593,12 @@
       "correcta": 2,
       "explicacion": "El módulo describe una evolución clara: Cursor simplificó su interfaz alejándose del código explícito; Codex es ya un gestor de agentes. La dirección apunta a que el desarrollador deje de picar código línea a línea y pase a dirigir a los agentes con criterio. Para hacerlo bien se necesitan conceptos sólidos de arquitectura, patrones y calidad — la idea de que 'con la IA ya no hace falta aprender' es incorrecta.",
       "dificultad": 2,
-      "tags": ["rol-desarrollador", "gentleman-cli", "ecosistema", "estadoDelArte2026"],
+      "tags": [
+        "rol-desarrollador",
+        "gentleman-cli",
+        "ecosistema",
+        "estadoDelArte2026"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -472,7 +609,12 @@
       "rubrica": "Debe mencionar: (1) /compact genera un resumen de la sesión que incluye objetivo, instrucciones, descubrimientos, archivos revisados y siguientes pasos, y restablece el contador de tokens a 0%; (2) el riesgo principal es la pérdida de decisiones, convenciones acordadas o el razonamiento detrás de ciertas elecciones que no queden bien capturados en el resumen; (3) al menos una estrategia de mitigación entre las siguientes: guardar señales en Engram antes de compactar, mantener skills bien definidas con sus triggers en AGENTS.md para que el contexto se reconstruya bajo demanda, o hacer commits frecuentes para preservar el estado del código independientemente del estado de la sesión.",
       "fallbackId": "dpi-017",
       "dificultad": 2,
-      "tags": ["context-window", "compactacion", "engram", "skills"],
+      "tags": [
+        "context-window",
+        "compactacion",
+        "engram",
+        "skills"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -483,7 +625,13 @@
       "rubrica": "Debe mencionar las siguientes fases en orden aproximado: (1) explorar el estado actual del proyecto; (2) propuesta (entender qué se quiere construir y por qué, problema de negocio); (3) definir specs y diseño (requerimientos, arquitectura, planos); (4) crear tareas concretas derivadas de las specs; (5) aplicar con TDD (ciclo rojo-verde-refactor generando tests a partir de los requerimientos antes que el código); (6) verificar contra las specs con clasificación crítico/warning/sugerencia; (7) archivar lo aprendido en Engram u OpenSpec. Debe mencionar también que cada fase se delega en un subagente con contexto limpio y acotado, y que el orquestador coordina y se comunica con el humano manteniendo la trazabilidad.",
       "fallbackId": "dpi-023",
       "dificultad": 3,
-      "tags": ["sdd", "openspec", "tdd", "subagentes", "fases"],
+      "tags": [
+        "sdd",
+        "openspec",
+        "tdd",
+        "subagentes",
+        "fases"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -494,7 +642,13 @@
       "rubrica": "Debe mencionar: (1) Engram es una herramienta de memoria basada en SQLite con búsqueda de texto FTS5 (no vectores), deliberadamente simple frente a soluciones más complejas; (2) guarda señales (decisiones de arquitectura, patrones adoptados, bugs corregidos), no el historial completo de prompts ni respuestas; (3) se expone como servidor MCP (Model Context Protocol) con herramientas invocables por el agente, como mem_context o mem_get_observation; (4) permite que la información persista entre sesiones (incluso en distintas máquinas) y sea compartida entre subagentes y el orquestador, evitando repetir los mismos errores en sesiones futuras.",
       "fallbackId": "dpi-021",
       "dificultad": 3,
-      "tags": ["engram", "memoria", "mcp", "sqlite", "persistencia"],
+      "tags": [
+        "engram",
+        "memoria",
+        "mcp",
+        "sqlite",
+        "persistencia"
+      ],
       "estadoDelArte2026": false
     }
   ]
