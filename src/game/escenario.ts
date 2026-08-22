@@ -184,9 +184,11 @@ function agregarFondoImagen(k: KAPLAYCtx, nombre: string): void {
   // ellas, el texto verde de la UI se vuelve ilegible sobre los fondos claros
   // (la sala de entrenamiento blanca lo dejó invisible). Además asientan a los
   // personajes y separan el piso del combate del suelo pintado (que queda
-  // estático mientras ellos scrollean). Suaves para no tapar la escena.
-  k.add([k.rect(ANCHO, 56), k.pos(0, 0), k.color(0, 0, 0), k.opacity(0.42), k.z(-99), k.fixed()]);
-  k.add([k.rect(ANCHO, 110), k.pos(0, ALTO - 110), k.color(0, 0, 0), k.opacity(0.5), k.z(-99), k.fixed()]);
+  // estático mientras ellos scrollean). Opacidad calculada para que el texto
+  // VERDE (0,255,70) alcance al menos 4.5:1 sobre fondos claros (WCAG AA):
+  // con opacity=0.72 sobre blanco el fondo efectivo da ratio ~6.8:1.
+  k.add([k.rect(ANCHO, 56), k.pos(0, 0), k.color(0, 0, 0), k.opacity(0.72), k.z(-99), k.fixed()]);
+  k.add([k.rect(ANCHO, 110), k.pos(0, ALTO - 110), k.color(0, 0, 0), k.opacity(0.72), k.z(-99), k.fixed()]);
 }
 
 /** Dibuja el decorado del nivel según el módulo. Se llama una vez al entrar a la escena. */

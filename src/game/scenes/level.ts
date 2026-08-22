@@ -237,7 +237,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       const instruccion = k.add([
         k.text("Pulsá cualquier tecla para continuar", { size: 16 }),
         k.pos(ANCHO / 2, ALTO - PADDING - 24),
-        k.color(...VERDE_OSCURO),
+        k.color(...VERDE),
         k.anchor("center"),
         k.z(22),
         k.fixed(),
@@ -813,6 +813,18 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
           ])
         );
       });
+
+      // Indicación explícita de las teclas para responder (sin corchetes — Kaplay los parsea como tags).
+      overlay.push(
+        k.add([
+          k.text("Teclas 1, 2, 3 o 4 para responder", { size: 13 }),
+          k.pos(ANCHO / 2, ALTO - 60),
+          k.color(...VERDE_OSCURO),
+          k.anchor("center"),
+          k.z(11),
+          k.fixed(),
+        ])
+      );
 
       // Smith adaptativo (F9): si venís fallando y hay IA, podés pedir una pista.
       const conPista = hayIA(st.ai) && st.session.nivelJugador(moduloId) === 1;
