@@ -1,0 +1,468 @@
+{
+  "modulo": {
+    "id": "12-seguridad",
+    "nombre": "Seguridad",
+    "descripcion": "Security by Design y Security by Default, impacto de la IA en el panorama de amenazas, MITRE ATT&CK, OWASP Top 10 (2021 y 2025), metodologías de desarrollo seguro (SSDLC, DevSecOps, Shift-Left), prácticas de codificación segura y uso de IA en el desarrollo seguro.",
+    "resumen": "Security by Design: integrar seguridad desde el inicio (arquitectura, APIs, autenticación, dependencias); Security by Default: configuraciones seguras por defecto, denegar por defecto y permitir solo lo explícito. MITRE ATT&CK: matriz de tácticas (objetivos del atacante: acceso inicial, movimiento lateral, persistencia, exfiltración) y técnicas/subtécnicas (métodos concretos). OWASP Top 10 2021: A01 Broken Access Control (IDOR, validar en backend), A02 Cryptographic Failures (MD5/SHA1 rotos, usar bcrypt/Argon2, TLS, claves rotadas), A03 Injection (SQLi + XSS; parametrizar + escapar + CSP), A04 Insecure Design (threat modeling, fail-safe, mínimo privilegio desde diseño), A05 Security Misconfiguration (Security by Default, IaC, CSPM), A06 Vulnerable and Outdated Components (SBOM, Dependabot, CVE/NVD), A07 Identification and Authentication Failures (bcrypt, MFA/FIDO2, JWT HttpOnly, rate-limiting), A08 Software and Data Integrity Failures (firmas, lockfiles, HMAC, supply chain), A09 Security Logging and Monitoring Failures (registrar eventos críticos, alertas, SIEM), A10 SSRF (validar URLs del servidor, allowlist). OWASP Top 10 2025: publica a inicios de 2026; A01 sigue siendo Broken Access Control; nueva entrada Software Supply Chain Failures (typosquatting, dependencias transitivas, SBOM, zero trust en dependencias). Metodologías: SSDLC (seguridad en cada fase del ciclo de vida), DevSecOps (integrar seguridad en CI/CD), Shift-Left (mover controles de seguridad lo más temprano posible), herramientas SAST/DAST/SCA (Snyk). Prácticas: validación de entradas (whitelist), parametrización de consultas, escapado contextual, autenticación robusta, autorización centralizada (backend), seguridad en APIs (rate limiting, scopes). IA en seguridad: phishing generado por IA, malware polimórfico, suplantación biométrica; data poisoning y prompt injection como nuevas amenazas; código generado por IA puede ser inseguro (estudio Stanford: ~40% con vulnerabilidades); IA como copiloto, no piloto automático."
+  },
+  "retos": [
+    {
+      "id": "seg-001",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la diferencia fundamental entre 'Security by Design' y 'Security by Default'?",
+      "opciones": [
+        "Son sinónimos: ambos significan aplicar seguridad al final del proyecto",
+        "Security by Design integra la seguridad desde el inicio del desarrollo; Security by Default asegura que las configuraciones iniciales sean seguras aunque nadie las toque",
+        "Security by Default requiere auditorías externas; Security by Design se aplica solo en producción",
+        "Security by Design es solo para la base de datos; Security by Default solo para el frontend"
+      ],
+      "correcta": 1,
+      "explicacion": "Son principios complementarios pero distintos. Security by Design significa pensar en seguridad desde la primera línea de código, en el diseño de la arquitectura y los flujos de autenticación. Security by Default complementa esto garantizando que, si nadie cambia la configuración, el sistema sigue siendo seguro — por ejemplo, no tener usuario 'admin/admin' de fábrica ni exponer endpoints administrativos por defecto.",
+      "dificultad": 1,
+      "tags": ["security-by-design", "security-by-default", "fundamentos"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-002",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "En el marco MITRE ATT&CK, ¿qué diferencia hay entre una 'táctica' y una 'técnica'?",
+      "opciones": [
+        "Las tácticas representan el objetivo del atacante (p. ej. acceso inicial, movimiento lateral); las técnicas son los métodos concretos para lograr ese objetivo (p. ej. Phishing)",
+        "Las tácticas son los fallos del código; las técnicas son los fallos de configuración",
+        "Las tácticas son exclusivas de redes; las técnicas son exclusivas de aplicaciones web",
+        "No hay diferencia real: son términos intercambiables en el marco"
+      ],
+      "correcta": 0,
+      "explicacion": "MITRE ATT&CK organiza el conocimiento en dos niveles: las tácticas representan el 'para qué' del atacante (obtener acceso inicial, mantener persistencia, exfiltrar datos...), mientras que las técnicas y subtécnicas describen el 'cómo' concreto (Phishing, Drive-by Compromise, Exploit Public-Facing Application...). Conocer esta estructura permite anticipar rutas de ataque antes de escribir código.",
+      "dificultad": 2,
+      "tags": ["mitre-attack", "threat-modeling", "fundamentos"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-003",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "La IA ha reducido drásticamente la 'barrera de entrada' para los atacantes. ¿Cuál de los siguientes es un ejemplo de cómo la IA potencia las amenazas?",
+      "opciones": [
+        "La IA permite cifrar automáticamente todos los archivos del servidor de la víctima sin intervención humana",
+        "Con IA se pueden analizar patrones de escritura para crear correos de phishing casi indistinguibles de los reales, o generar malware que cambia de forma en cada ejecución para evadir firmas de antivirus",
+        "La IA elimina completamente la necesidad de conocimiento técnico para atacar sistemas bien parcheados",
+        "La IA solo beneficia a los defensores, nunca a los atacantes"
+      ],
+      "correcta": 1,
+      "explicacion": "La IA amplifica capacidades ofensivas: permite generar phishing personalizado con análisis de lenguaje, crear malware polimórfico que muta para evadir antivirus, clonar voces o rostros (suplantación biométrica) y automatizar el descubrimiento de credenciales expuestas. Estudios como el de IBM X-Force indican que más del 30% de campañas de phishing destacadas incorporan componentes de IA generativa. La barrera de entrada baja porque atacar ya no requiere ser un experto técnico.",
+      "dificultad": 2,
+      "tags": ["ia-amenazas", "phishing", "malware-polimorfico"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-004",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la vulnerabilidad número 1 del OWASP Top 10 tanto en la edición de 2021 como en la de 2025?",
+      "opciones": [
+        "Injection",
+        "Security Misconfiguration",
+        "Broken Access Control",
+        "Cryptographic Failures"
+      ],
+      "correcta": 2,
+      "explicacion": "Broken Access Control ocupa el primer puesto en ambas ediciones. Ocurre cuando la aplicación no valida correctamente quién puede hacer qué sobre qué recurso. Autenticado no equivale a autorizado: hay que verificar permisos en el servidor para cada acción y recurso, no solo comprobar que el usuario tiene sesión activa.",
+      "dificultad": 1,
+      "tags": ["owasp", "broken-access-control", "owasp-2021", "owasp-2025"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-005",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un endpoint de API devuelve `GET /facturas/{id}` sin comprobar que la factura pertenece al usuario autenticado. ¿Cómo se llama este patrón de vulnerabilidad y cuál es la defensa correcta?",
+      "opciones": [
+        "SQL Injection; la defensa es parametrizar la consulta que recupera la factura",
+        "IDOR (Insecure Direct Object Reference); la defensa es validar en el backend que el recurso solicitado pertenece al usuario autenticado antes de devolverlo",
+        "SSRF; la defensa es bloquear peticiones hacia URLs internas",
+        "Security Misconfiguration; la defensa es añadir cabeceras HTTP de seguridad al endpoint"
+      ],
+      "correcta": 1,
+      "explicacion": "Esto es un IDOR (Insecure Direct Object Reference): el atacante solo necesita cambiar el ID en la URL para acceder a datos de otros usuarios. La defensa clave es validar en el servidor que el recurso identificado por ese ID pertenece realmente al usuario que hace la petición — nunca fiarse del ID que llega desde el cliente sin comprobarlo contra el estado interno del sistema.",
+      "dificultad": 2,
+      "tags": ["idor", "broken-access-control", "autorizacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-006",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué MD5 no es adecuado para almacenar contraseñas, aunque las 'convierta en un hash'?",
+      "opciones": [
+        "Porque es un algoritmo demasiado lento para entornos de producción y degrada el rendimiento",
+        "Porque produce hashes muy largos que no caben en las bases de datos tradicionales",
+        "Porque requiere una clave secreta adicional que hay que rotar cada semana",
+        "Porque es un algoritmo rápido y roto: permite ataques de diccionario y rainbow tables; sin sal, dos usuarios con la misma contraseña producen el mismo hash, lo que facilita el cracking masivo"
+      ],
+      "correcta": 3,
+      "explicacion": "MD5 tiene dos problemas graves para contraseñas: es extremadamente rápido (permite probar millones de candidatos por segundo con hardware moderno) y está criptográficamente roto para este uso. Sin sal, contraseñas idénticas generan hashes idénticos, exponiendo patrones. La alternativa correcta es bcrypt, scrypt o Argon2 — diseñados específicamente para ser lentos y con sal aleatoria, lo que hace inviable el cracking masivo incluso si se roba la base de datos.",
+      "dificultad": 1,
+      "tags": ["cryptographic-failures", "contrasenas", "md5", "bcrypt"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-007",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la defensa principal contra la SQL Injection?",
+      "opciones": [
+        "Ocultar el nombre de las tablas de la base de datos en los mensajes de error",
+        "Usar HTTPS en lugar de HTTP para cifrar las consultas en tránsito",
+        "Limitar la longitud máxima del campo de búsqueda a 20 caracteres",
+        "Parametrizar las consultas (usar binding de parámetros o prepared statements), de modo que el dato del usuario nunca se interprete como parte de la instrucción SQL"
+      ],
+      "correcta": 3,
+      "explicacion": "La SQL Injection ocurre cuando el dato del usuario se concatena directamente en la consulta y el motor de base de datos lo interpreta como instrucción. La defensa fundamental es la parametrización: separar la estructura de la consulta (fija) del valor del parámetro (variable). Así, aunque el usuario escriba `' OR 1=1`, la base de datos lo trata como una cadena de texto, nunca como código SQL.",
+      "dificultad": 1,
+      "tags": ["injection", "sql-injection", "parametrizacion"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-008",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué distingue a un XSS persistente (stored) de uno reflejado (reflected)?",
+      "opciones": [
+        "El reflejado requiere que el atacante tenga cuenta en la aplicación; el persistente no",
+        "El reflejado solo afecta a aplicaciones móviles; el persistente solo a aplicaciones web",
+        "En el persistente el payload malicioso se almacena en el servidor y se sirve a múltiples usuarios; en el reflejado el payload se incluye en la respuesta inmediata a una petición específica",
+        "No hay diferencia real de impacto: ambos solo muestran alertas en pantalla"
+      ],
+      "correcta": 2,
+      "explicacion": "La diferencia es el alcance y la persistencia. En el XSS reflejado el código malicioso viaja en la petición y se devuelve en la respuesta de esa misma petición (típicamente a través de un enlace trampa). En el persistente el payload queda almacenado en la aplicación (base de datos, comentarios, etc.) y se ejecuta en el navegador de cualquier usuario que cargue esa página, lo que lo convierte en una amenaza de mayor escala. También existe el DOM-based, donde la vulnerabilidad nace en cómo el JavaScript del cliente manipula el DOM con entradas no saneadas.",
+      "dificultad": 2,
+      "tags": ["injection", "xss", "cross-site-scripting"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-009",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "En un checkout de e-commerce, el precio del producto viaja en un campo oculto del formulario HTML y el servidor lo usa directamente para procesar el pago sin verificarlo contra la base de datos. ¿Qué vulnerabilidad representa esto?",
+      "opciones": [
+        "SQL Injection, porque el precio puede contener código SQL",
+        "Insecure Design: el sistema fue diseñado confiando en datos del cliente para una decisión crítica de negocio, sin ningún control compensatorio en el servidor",
+        "Security Misconfiguration, porque los campos hidden no deberían existir en formularios de pago",
+        "Broken Authentication, porque el usuario no está autenticado antes de pagar"
+      ],
+      "correcta": 1,
+      "explicacion": "Esto es Insecure Design: el problema no está en una línea de código con un bug, sino en una decisión de diseño que permite al cliente controlar el precio. El servidor debe obtener el precio directamente de la base de datos (fuente de verdad interna), no confiar en lo que llega del frontend. Esta falla es estructural — no se soluciona con un parche puntual, sino rediseñando el flujo para que los datos sensibles de negocio siempre se validen en el backend.",
+      "dificultad": 2,
+      "tags": ["insecure-design", "validacion-backend", "logica-negocio"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-010",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál de los siguientes ejemplos corresponde a Security Misconfiguration?",
+      "opciones": [
+        "Un bucket de almacenamiento en la nube configurado como público que expone backups con datos de clientes, junto con un panel de administración accesible sin autenticación",
+        "Un formulario de registro que no valida el formato del correo electrónico",
+        "Una función de pago que no verifica el saldo del usuario antes de procesar la transacción",
+        "Una API que devuelve todos los registros de la tabla en lugar de paginar los resultados"
+      ],
+      "correcta": 0,
+      "explicacion": "Security Misconfiguration ocurre cuando el sistema se despliega con configuraciones inseguras: credenciales por defecto sin cambiar, servicios expuestos innecesariamente, cabeceras de seguridad ausentes, buckets públicos, mensajes de error con stack traces, etc. No es un bug en la lógica de negocio — el código puede estar perfecto pero el entorno donde corre lo deja vulnerable. La prevención clave es 'Security by Default': cerrar todo por defecto y abrir solo lo necesario.",
+      "dificultad": 2,
+      "tags": ["security-misconfiguration", "security-by-default", "configuracion"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-011",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es un SBOM y por qué es valioso frente a la vulnerabilidad 'Vulnerable and Outdated Components'?",
+      "opciones": [
+        "Es un firewall de aplicaciones web que bloquea peticiones con patrones de CVE conocidos",
+        "Es un sistema de monitorización que detecta intrusiones en tiempo real",
+        "Es una herramienta para generar automáticamente tests unitarios de las dependencias",
+        "Es un inventario detallado de todos los componentes y versiones usados en un proyecto; permite identificar rápidamente qué está afectado cuando aparece un nuevo CVE"
+      ],
+      "correcta": 3,
+      "explicacion": "SBOM (Software Bill of Materials) es un listado exhaustivo de las dependencias del proyecto con sus versiones exactas. Cuando se publica un nuevo CVE (Common Vulnerabilities and Exposures), el equipo puede cruzarlo contra el SBOM para saber en minutos si algún componente propio está afectado. Sin este inventario, la respuesta a una vulnerabilidad publicada puede tardar días o semanas. Herramientas como Dependabot o Renovate ayudan a mantener el SBOM actualizado y generar PRs automáticos de actualización.",
+      "dificultad": 2,
+      "tags": ["vulnerable-components", "sbom", "dependencias"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-012",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la razón principal para exigir cookies con los flags 'HttpOnly' y 'Secure' en la gestión de sesiones?",
+      "opciones": [
+        "Aumentan el rendimiento del servidor al reducir el tamaño de los headers HTTP",
+        "Permiten que el servidor rote automáticamente el token de sesión cada hora",
+        "HttpOnly impide que JavaScript del cliente acceda a la cookie (mitigando robo por XSS); Secure fuerza que solo se envíe por HTTPS (evitando interceptación por canal no cifrado)",
+        "Son obligatorios por el estándar HTTP/2 y los navegadores las ignoran en HTTP/1.1"
+      ],
+      "correcta": 2,
+      "explicacion": "Los flags de cookies son defensas en capas. HttpOnly evita que un script del lado del cliente lea el valor de la cookie — si hay un XSS, el atacante no puede robar el token de sesión con document.cookie. Secure garantiza que la cookie solo viaja en conexiones HTTPS, protegiéndola de ataques de intermediario en redes no cifradas. Combinar ambos flags es una práctica básica para proteger tokens de sesión y JWT almacenados en cookies.",
+      "dificultad": 1,
+      "tags": ["authentication-failures", "cookies", "sesiones", "jwt"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-013",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un sistema de login genera el identificador de sesión como un número entero incremental (1, 2, 3...). ¿Qué riesgo específico introduce esta decisión?",
+      "opciones": [
+        "Degrada el rendimiento de la base de datos al indexar los tokens de sesión",
+        "Permite que un atacante deduzca o enumere identificadores de sesión válidos de otros usuarios, tomando el control de sus cuentas sin conocer sus contraseñas",
+        "Hace que las sesiones expiren antes de tiempo por colisión de IDs",
+        "Obliga al servidor a mantener estado, lo que impide el escalado horizontal"
+      ],
+      "correcta": 1,
+      "explicacion": "Los identificadores de sesión predecibles o secuenciales son un fallo clásico de Identification and Authentication Failures. Si un atacante conoce su propio ID de sesión (por ejemplo, 1042), puede iterar hacia arriba o abajo para encontrar IDs de otros usuarios activos. Los tokens de sesión deben ser criptográficamente aleatorios, suficientemente largos (128 bits mínimo) e impredecibles, de modo que no puedan adivinarse aunque el atacante conozca muchos valores válidos.",
+      "dificultad": 2,
+      "tags": ["authentication-failures", "sesiones", "session-hijacking"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-014",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué mecanismo de defensa mitiga directamente el riesgo de un ataque a la cadena de suministro de software (supply chain attack)?",
+      "opciones": [
+        "Verificar la integridad de los paquetes mediante firmas digitales o checksums antes de instalarlos, mantener lock files con versiones exactas y validar el origen y la reputación de cada dependencia",
+        "Aumentar la cobertura de tests unitarios al 100% en el código propio de la aplicación",
+        "Aplicar rate limiting en los endpoints públicos de la API para detectar inyecciones de dependencias",
+        "Habilitar HTTPS en el servidor de producción para cifrar las descargas de paquetes"
+      ],
+      "correcta": 0,
+      "explicacion": "Los ataques a la cadena de suministro comprometen dependencias legítimas para distribuir código malicioso (casos reales: SolarWinds, el paquete event-stream de npm). La defensa requiere: verificar firmas/checksums de paquetes, usar lock files que congelen versiones exactas (no 'latest'), mantener un SBOM actualizado, escanear dependencias en CI con herramientas como Snyk o OWASP Dependency-Check, y aplicar Zero Trust a los ecosistemas públicos — verificar antes de confiar.",
+      "dificultad": 2,
+      "tags": ["software-integrity", "supply-chain", "dependencias"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-015",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Cuál es la forma recomendada de almacenar un JWT (JSON Web Token) de autenticación en una aplicación web?",
+      "opciones": [
+        "En localStorage, porque es la opción más rápida y portable entre pestañas",
+        "En una variable global de JavaScript, para evitar accesos al DOM",
+        "En el código fuente de la aplicación como constante, firmado digitalmente",
+        "En una cookie con los flags HttpOnly y Secure activos, con un tiempo de expiración corto y capacidad de revocación en el servidor"
+      ],
+      "correcta": 3,
+      "explicacion": "localStorage es accesible por cualquier JavaScript de la página: si hay un XSS, el token queda expuesto. La práctica recomendada es guardar el JWT en una cookie HttpOnly (JavaScript no puede leerla) + Secure (solo viaja por HTTPS). Además, los tokens deben tener expiración corta y el servidor debe poder revocarlos — depender solo de la firma criptográfica sin lista de revocación deja tokens comprometidos activos hasta que expiren.",
+      "dificultad": 2,
+      "tags": ["authentication-failures", "jwt", "cookies"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-016",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Por qué 'Security Logging and Monitoring Failures' (A09 en OWASP 2021) se considera una vulnerabilidad crítica, aunque en sí misma no permite que un atacante entre al sistema?",
+      "opciones": [
+        "Porque los logs consumen demasiado disco y degradan el rendimiento en producción",
+        "Porque sin logs adecuados los atacantes pueden operar durante semanas sin ser detectados, impidiendo contener el incidente, entender el alcance y aprender del ataque",
+        "Porque los logs exponen información sensible que los atacantes pueden robar",
+        "Porque es obligatoria por GDPR y su ausencia genera multas regulatorias automáticas"
+      ],
+      "correcta": 1,
+      "explicacion": "El logging y monitoring no evita el ataque inicial, pero es esencial para detectarlo, contenerlo y aprender de él. Sin registros adecuados de eventos críticos (inicios de sesión, accesos a recursos sensibles, errores de autorización), un atacante puede moverse lateralmente durante semanas sin generar alertas. La ausencia de observabilidad convierte un incidente contenible en una brecha prolongada y de mayor impacto.",
+      "dificultad": 1,
+      "tags": ["logging-monitoring", "deteccion-incidentes", "owasp-2021"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-017",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es el SSRF (Server-Side Request Forgery) y cuál es su riesgo principal?",
+      "opciones": [
+        "Es un ataque donde el servidor envía spam en nombre del usuario; el riesgo es la reputación del dominio",
+        "Es una vulnerabilidad donde un atacante logra que el propio servidor haga peticiones a recursos internos o externos que no debería alcanzar, pudiendo acceder a servicios internos, metadatos de cloud o filtrar información de la red privada",
+        "Es una variante de XSS donde el script se ejecuta en el servidor en lugar de en el navegador",
+        "Es un fallo de configuración que permite sobrescribir archivos del servidor mediante multipart/form-data"
+      ],
+      "correcta": 1,
+      "explicacion": "SSRF explota el hecho de que el servidor tiene acceso a recursos internos que el atacante desde internet no puede alcanzar directamente. Al forzar al servidor a hacer peticiones a URLs controladas por el atacante (incluyendo 169.254.169.254 — el endpoint de metadatos de cloud), se puede descubrir la topología de red interna, robar credenciales de instancia o acceder a servicios internos no expuestos públicamente. La defensa principal es validar y restringir con allowlist las URLs que el servidor tiene permitido contactar.",
+      "dificultad": 2,
+      "tags": ["ssrf", "owasp-2021", "red-interna"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-018",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "El OWASP Top 10 2025 (publicado a comienzos de 2026) introduce 'Software Supply Chain Failures' como categoría independiente. ¿Qué tipo de riesgos agrupa esta nueva entrada que no estaban suficientemente diferenciados en la edición anterior?",
+      "opciones": [
+        "Riesgos asociados a dependencias comprometidas, paquetes con typosquatting, imágenes de contenedor no verificadas, pipelines de CI/CD con permisos excesivos y falta de validación de integridad en componentes de terceros",
+        "Fallos en la autenticación multifactor de los sistemas de control de versiones como Git",
+        "Vulnerabilidades específicas del lenguaje de programación utilizado en las dependencias",
+        "Errores de configuración en los servidores que alojan repositorios de paquetes públicos"
+      ],
+      "correcta": 0,
+      "explicacion": "Software Supply Chain Failures reconoce que las aplicaciones modernas dependen de miles de componentes externos y que comprometer uno de ellos puede afectar a miles de organizaciones simultáneamente (casos como SolarWinds o el paquete event-stream de npm). Los riesgos incluyen: confianza automática en ecosistemas públicos (NPM, PyPI), dependencias transitivas no auditadas, typosquatting, pipelines de CI/CD con secretos accesibles, y falta de firmas o checksums en artefactos. La defensa clave aplica Zero Trust a las dependencias: no confiar, verificar.",
+      "dificultad": 3,
+      "tags": ["supply-chain", "owasp-2025", "dependencias", "zero-trust"],
+      "bonus2026": true
+    },
+    {
+      "id": "seg-019",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un atacante manipula las instrucciones de un modelo de IA integrado en una aplicación para que revele información interna o actúe fuera de su propósito original. ¿Cómo se llama este tipo de ataque específico a sistemas de IA?",
+      "opciones": [
+        "Data poisoning: alterar los datos de entrenamiento para que el modelo tome decisiones equivocadas en el futuro",
+        "Adversarial patch: insertar perturbaciones visuales en imágenes para engañar a clasificadores de visión artificial",
+        "Model inversion: reconstruir datos de entrenamiento a partir de las predicciones del modelo",
+        "Prompt injection: manipular el prompt o las instrucciones del modelo para hacerlo actuar contra su propósito original o filtrar información sensible del sistema"
+      ],
+      "correcta": 3,
+      "explicacion": "El prompt injection es un ataque emergente que explota la naturaleza de los modelos de lenguaje: al mezclar instrucciones del sistema con entradas del usuario, un atacante puede insertar instrucciones que anulen o modifiquen el comportamiento previsto. Puede ocurrir directamente (el usuario escribe instrucciones maliciosas) o indirectamente (el modelo procesa contenido externo con instrucciones ocultas). Es distinto del data poisoning, que ataca el proceso de entrenamiento, no el de inferencia en producción.",
+      "dificultad": 3,
+      "tags": ["ia-amenazas", "prompt-injection", "llm-security"],
+      "bonus2026": true
+    },
+    {
+      "id": "seg-020",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué significa aplicar 'Shift-Left' en el contexto del desarrollo seguro?",
+      "opciones": [
+        "Delegar toda la responsabilidad de seguridad al equipo de operaciones antes del despliegue",
+        "Mover los controles y pruebas de seguridad lo más temprano posible en el ciclo de desarrollo — durante el diseño, la codificación y la revisión de código — en lugar de aplicarlos solo antes o después del despliegue",
+        "Migrar la infraestructura de servidores propios a servicios de nube pública para reducir la superficie de ataque",
+        "Realizar auditorías de seguridad anuales contratando equipos externos de pentesting"
+      ],
+      "correcta": 1,
+      "explicacion": "Shift-Left es un principio de DevSecOps que propone integrar la seguridad cuanto antes en el ciclo de vida del software — idealmente desde el análisis de requisitos y el diseño. Detectar una vulnerabilidad durante la codificación cuesta mucho menos que encontrarla en producción. En la práctica incluye: análisis estático (SAST) en el IDE, revisiones de código con foco en seguridad, threat modeling por feature y gates de seguridad en el pipeline de CI/CD.",
+      "dificultad": 2,
+      "tags": ["shift-left", "devsecops", "ssdlc"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-021",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué integra DevSecOps frente al DevOps tradicional?",
+      "opciones": [
+        "La integración de controles, pruebas y validaciones de seguridad de forma continua a lo largo de todo el pipeline de CI/CD, sin separar seguridad como una fase aparte al final",
+        "La sustitución completa del equipo de seguridad por herramientas automatizadas de análisis estático",
+        "La externalización de las auditorías de seguridad a proveedores certificados cada trimestre",
+        "La restricción del acceso al repositorio de código fuente a solo los desarrolladores senior"
+      ],
+      "correcta": 0,
+      "explicacion": "DevSecOps extiende DevOps integrando seguridad ('Sec') en cada etapa del pipeline — no como un control de última hora antes del despliegue, sino como parte del flujo habitual de desarrollo. Incluye: análisis estático de código (SAST), escaneo de dependencias (SCA), análisis dinámico (DAST), escaneo de imágenes de contenedor, gestión de secretos y validaciones automáticas en CI. El objetivo es que la seguridad sea responsabilidad compartida de todo el equipo, no un filtro externo.",
+      "dificultad": 1,
+      "tags": ["devsecops", "cicd", "ssdlc"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-022",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "Al validar entradas de usuario, ¿por qué se recomienda una estrategia de 'whitelist' (lista blanca) en lugar de 'blacklist' (lista negra)?",
+      "opciones": [
+        "Porque la whitelist es más fácil de mantener y requiere menos configuración inicial",
+        "Porque una whitelist define exactamente qué se acepta y rechaza todo lo demás, mientras que una blacklist intenta enumerar lo peligroso — siempre habrá variantes o casos no contemplados que la blacklist pasará por alto",
+        "Porque la blacklist consume más recursos de CPU al procesar expresiones regulares complejas",
+        "Porque la whitelist es el estándar obligatorio de OWASP y la blacklist está oficialmente desaconsejada en todos los contextos"
+      ],
+      "correcta": 1,
+      "explicacion": "La validación por whitelist sigue el principio de mínimo privilegio aplicado a datos: defines el conjunto exacto de valores o patrones aceptables y rechazas cualquier cosa que no encaje. La blacklist es inherentemente incompleta: los atacantes siempre pueden usar variantes de codificación, caracteres especiales o vectores no contemplados para evadir los filtros. Para un campo de fecha, por ejemplo, la whitelist es 'exactamente el formato YYYY-MM-DD con valores en rango válido', no 'todo excepto comillas simples y punto y coma'.",
+      "dificultad": 2,
+      "tags": ["validacion-entradas", "whitelist", "codificacion-segura"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-023",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "Un usuario autenticado intenta acceder a un recurso al que no tiene permiso. ¿Qué código de respuesta HTTP es el correcto y por qué importa la distinción?",
+      "opciones": [
+        "200 OK con un mensaje de error en el cuerpo, para no revelar información al atacante",
+        "404 Not Found, para ocultar la existencia del recurso al usuario no autorizado",
+        "401 Unauthorized, porque indica que el usuario no está autenticado y debe volver a identificarse",
+        "403 Forbidden, porque el usuario ya está autenticado pero no tiene autorización para acceder a ese recurso concreto — 401 significa 'no autenticado', 403 significa 'no autorizado'"
+      ],
+      "correcta": 3,
+      "explicacion": "La distinción 401 vs 403 es semánticamente importante. 401 (Unauthorized) significa que el sistema no sabe quién es el usuario: falta autenticación o el token es inválido. 403 (Forbidden) significa que el sistema sí sabe quién es, pero esa identidad no tiene permiso para ese recurso. Usar el código correcto ayuda al cliente a diagnosticar el problema (¿debo autenticarme? ¿o simplemente no tengo permisos?) y es parte de diseñar APIs claras y seguras.",
+      "dificultad": 1,
+      "tags": ["autenticacion", "autorizacion", "http-status", "codificacion-segura"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-024",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué protección específica aporta la cabecera HTTP 'Content-Security-Policy' (CSP)?",
+      "opciones": [
+        "Fuerza que la conexión use TLS 1.3 en lugar de versiones anteriores del protocolo",
+        "Cifra el contenido de la respuesta HTTP para evitar que sea interceptada en tránsito",
+        "Restringe qué orígenes y tipos de recursos puede cargar y ejecutar la página, reduciendo el impacto de un XSS al impedir la ejecución de scripts inyectados desde orígenes no autorizados",
+        "Autentica al servidor con un certificado de clave pública para prevenir ataques de intermediario"
+      ],
+      "correcta": 2,
+      "explicacion": "CSP es una defensa en profundidad contra XSS: aunque un atacante logre inyectar código en la página, el navegador solo ejecutará scripts de los orígenes declarados en la política. Una CSP bien configurada puede bloquear la ejecución de scripts inline y la carga de recursos desde dominios no autorizados, reduciendo drásticamente el impacto de una inyección exitosa. No sustituye a la validación y el escapado, sino que los complementa como capa adicional.",
+      "dificultad": 2,
+      "tags": ["csp", "xss", "cabeceras-seguridad", "injection"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-025",
+      "modulo": "12-seguridad",
+      "tipo": "multiple-choice",
+      "pregunta": "¿Qué es el 'data poisoning' en el contexto de los modelos de inteligencia artificial?",
+      "opciones": [
+        "Un ataque que altera los datos de entrenamiento del modelo para que aprenda patrones incorrectos y tome decisiones equivocadas en producción",
+        "La corrupción accidental de la base de datos de la aplicación por un fallo de integridad referencial",
+        "Un ataque de inyección SQL dirigido a la base de datos vectorial que usa el modelo de IA",
+        "La degradación gradual del rendimiento del modelo por acumulación de datos de baja calidad sin ataque intencionado"
+      ],
+      "correcta": 0,
+      "explicacion": "El data poisoning ataca el proceso de entrenamiento: un adversario manipula los datos con los que se entrena el modelo para que aprenda comportamientos incorrectos o inseguros. Por ejemplo, introducir ejemplos de código deliberadamente vulnerables en el conjunto de entrenamiento para que el modelo los replique. Es distinto del prompt injection (que ataca la inferencia en producción) y diferente de una corrupción accidental: es un ataque intencionado y difícil de detectar porque el modelo parece funcionar correctamente en la mayoría de casos.",
+      "dificultad": 3,
+      "tags": ["ia-amenazas", "data-poisoning", "ia-seguridad"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-026",
+      "modulo": "12-seguridad",
+      "tipo": "abierta",
+      "pregunta": "Vas a diseñar un endpoint `GET /documentos/{id}` que devuelve documentos privados de usuarios. Describe las medidas de seguridad que implementarías para prevenir Broken Access Control (IDOR), incluyendo qué validaciones hace el servidor en cada petición.",
+      "rubrica": "La respuesta debe mencionar al menos tres de los siguientes elementos: (1) autenticación obligatoria — verificar que el token/sesión es válido antes de procesar; (2) validación de autorización en el backend — comprobar que el documento con ese ID pertenece al usuario autenticado, consultando la relación en la base de datos, no fiándose del dato del cliente; (3) principio de mínimo privilegio — el usuario solo puede acceder a sus propios documentos salvo roles explícitamente autorizados; (4) no exponer IDs secuenciales o predecibles — usar UUIDs o identificadores opacos; (5) logging de accesos — registrar quién accede a qué documento y cuándo para detectar patrones anómalos.",
+      "fallbackId": "seg-005",
+      "dificultad": 2,
+      "tags": ["broken-access-control", "idor", "autorizacion", "backend"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-027",
+      "modulo": "12-seguridad",
+      "tipo": "abierta",
+      "pregunta": "Tu equipo descubre que una librería de terceros incluida en el proyecto fue comprometida y la versión instalada contiene código malicioso. Describe los pasos del plan de respuesta que seguirías, tanto los inmediatos para contener el incidente como los estructurales para evitar que vuelva a ocurrir.",
+      "rubrica": "La respuesta debe cubrir la fase de contención (mínimo dos acciones: p. ej. detener pipelines/despliegues, volver a la versión anterior verificada) y la fase de análisis (qué sistemas usaron esa versión, qué datos/secretos pudieron quedar expuestos). Debe mencionar la rotación de credenciales o tokens si hubo exposición. En la parte estructural debe incluir al menos dos medidas preventivas: p. ej. mantener un SBOM, usar lock files con versiones exactas, verificar firmas/checksums de paquetes, integrar escáner de dependencias en CI, aplicar Zero Trust a ecosistemas públicos.",
+      "fallbackId": "seg-014",
+      "dificultad": 3,
+      "tags": ["supply-chain", "software-integrity", "respuesta-incidentes"],
+      "bonus2026": false
+    },
+    {
+      "id": "seg-028",
+      "modulo": "12-seguridad",
+      "tipo": "abierta",
+      "pregunta": "Estás implementando el sistema de autenticación de una aplicación web con datos sensibles. Enumera al menos cinco decisiones técnicas concretas que tomarías para que sea robusto frente a los fallos de autenticación más comunes.",
+      "rubrica": "La respuesta debe mencionar al menos cinco de los siguientes elementos: (1) almacenar contraseñas con bcrypt, scrypt o Argon2 con sal aleatoria — nunca MD5/SHA1 ni texto plano; (2) implementar rate limiting o bloqueo progresivo para frenar fuerza bruta; (3) requerir MFA (especialmente en cuentas privilegiadas), preferiblemente TOTP o FIDO2; (4) cookies de sesión con flags HttpOnly + Secure y expiración razonable; (5) invalidar sesiones y tokens al hacer logout o cambiar contraseña; (6) proceso de recuperación seguro: token único con expiración corta, sin revelar si el usuario existe; (7) logging de intentos de autenticación para detección de anomalías.",
+      "fallbackId": "seg-012",
+      "dificultad": 2,
+      "tags": ["authentication-failures", "contrasenas", "sesiones", "mfa"],
+      "bonus2026": false
+    }
+  ]
+}
