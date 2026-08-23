@@ -20,7 +20,10 @@
       "correcta": 0,
       "explicacion": "Las capas del stack se acumulan, no se sustituyen. La IA se integra dentro de cada fase que ya existía, y el rol del developer evoluciona de escribir código a mano a orquestar copilotos y agentes.",
       "dificultad": 1,
-      "tags": ["stack", "evolucion"],
+      "tags": [
+        "stack",
+        "evolucion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -37,7 +40,11 @@
       "correcta": 0,
       "explicacion": "El copiloto autocompleta mientras escribís, el asistente es un chat de propósito general fuera del flujo, y el agente ejecuta tareas completas mediante flujos agénticos: bucles donde se hace prompts a sí mismo hasta alcanzar el objetivo.",
       "dificultad": 1,
-      "tags": ["agentes", "copilotos", "asistentes"],
+      "tags": [
+        "agentes",
+        "copilotos",
+        "asistentes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -54,7 +61,11 @@
       "correcta": 0,
       "explicacion": "Local edita tus ficheros en tiempo real (con riesgo de conflictos si trabajás a la vez), cloud trabaja sobre una copia y entrega un PR, y los worktrees permiten paralelizar en local: cada tarea en su propio directorio del mismo repo.",
       "dificultad": 2,
-      "tags": ["entornos", "worktrees", "paralelismo"],
+      "tags": [
+        "entornos",
+        "worktrees",
+        "paralelismo"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -71,7 +82,10 @@
       "correcta": 0,
       "explicacion": "La separación planificar, revisar y aprobar, construir asegura que no se toquen ficheros por error mientras se piensa. Claude Code, OpenCode y Codex siguen esta misma lógica, y el plan se puede exportar como markdown para iterarlo.",
       "dificultad": 1,
-      "tags": ["modo-plan", "agentes"],
+      "tags": [
+        "modo-plan",
+        "agentes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -88,7 +102,10 @@
       "correcta": 0,
       "explicacion": "Las decisiones de diseño son del desarrollador. Un agente que asume en silencio produce un plan que parece correcto pero resuelve otro problema; uno que pregunta alinea el plan antes de gastar tiempo de build.",
       "dificultad": 2,
-      "tags": ["modo-plan", "criterio"],
+      "tags": [
+        "modo-plan",
+        "criterio"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -105,7 +122,10 @@
       "correcta": 0,
       "explicacion": "La velocidad tiene contrapartidas: código que nadie del equipo entiende, prácticas desactualizadas del entrenamiento del modelo y deuda que crece invisible. La mitigación es revisar, entender y validar todo lo que se integra.",
       "dificultad": 2,
-      "tags": ["riesgos", "deuda-tecnica"],
+      "tags": [
+        "riesgos",
+        "deuda-tecnica"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -122,7 +142,10 @@
       "correcta": 0,
       "explicacion": "La IA amplía la cobertura de casos borde y acelera el testing, pero puede generar tests que ejercitan poco o afirman trivialidades. La regla transversal del módulo: supervisión humana en todas las fases, los tests en verde no garantizan que todo esté bien.",
       "dificultad": 2,
-      "tags": ["testing", "riesgos"],
+      "tags": [
+        "testing",
+        "riesgos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -139,7 +162,10 @@
       "correcta": 0,
       "explicacion": "Antes el prompt perfecto era clave; hoy importa más darle buen contexto al modelo (proyecto, reglas, documentación). Los flujos agénticos siguen basados en prompts por debajo, así que entender el prompting sigue sumando.",
       "dificultad": 2,
-      "tags": ["prompt-engineering", "contexto"],
+      "tags": [
+        "prompt-engineering",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -156,7 +182,10 @@
       "correcta": 0,
       "explicacion": "La IA funciona como una función: entrada procesada, salida devuelta. Un prompt bien estructurado (rol, tarea con especificaciones, restricciones y formato) produce resultados consistentes y repetibles, como la analogía del genio: si no sos específico, cumple lo pedido literalmente.",
       "dificultad": 1,
-      "tags": ["prompt-engineering", "principios"],
+      "tags": [
+        "prompt-engineering",
+        "principios"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -173,7 +202,9 @@
       "correcta": 0,
       "explicacion": "Es divide y vencerás aplicado a la IA: una tarea grande se descompone en prompts pequeños que se resuelven en secuencia. Frente al prompt monolítico, el encadenado da resultados más ordenados y casi siempre mejores.",
       "dificultad": 1,
-      "tags": ["prompt-chaining"],
+      "tags": [
+        "prompt-chaining"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -190,24 +221,31 @@
       "correcta": 0,
       "explicacion": "El rol ajusta tono y nivel de detalle, como contratar distintos perfiles del equipo: developer, tester, arquitecto, profesor o auditor. Los modelos modernos suelen detectar solos qué se necesita, pero explicitarlo sigue orientando la respuesta.",
       "dificultad": 3,
-      "tags": ["roles", "prompt-engineering"],
+      "tags": [
+        "roles",
+        "prompt-engineering"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "flu-012",
       "modulo": "09-flujo-desarrollo-ia",
       "tipo": "multiple-choice",
-      "pregunta": "En el taller con Codex, ¿qué parte del proyecto se decidió NO delegar al agente?",
+      "pregunta": "¿Qué tipo de tarea conviene NO delegar a un agente y hacer a mano, y por qué?",
       "opciones": [
-        "La configuración inicial: crear el proyecto base y la estructura de carpetas siguiendo la documentación oficial",
+        "El scaffolding inicial con documentación oficial: es determinista, bien especificado y un error ahí condiciona todo el proyecto",
         "La implementación de los componentes de la interfaz",
         "La escritura de los mensajes de commit",
         "La generación del archivo de estilos"
       ],
       "correcta": 0,
-      "explicacion": "Los pasos críticos y bien documentados como el scaffolding se hacen a mano: son deterministas y equivocarse ahí condiciona todo. El agente aporta valor en el desarrollo posterior, con el flujo repo, prompt, revisión del diff, pull request.",
+      "explicacion": "Los pasos con un resultado correcto único y bien documentado (crear la estructura de carpetas siguiendo la guía oficial, inicializar la configuración base) son deterministas: el agente puede equivocarse y ese error condiciona todo lo que viene. El agente aporta más valor en el desarrollo posterior, donde hay espacio para iterar sobre el diff.",
       "dificultad": 3,
-      "tags": ["codex", "criterio", "taller"],
+      "tags": [
+        "criterio",
+        "delegacion",
+        "scaffolding"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -224,7 +262,10 @@
       "correcta": 0,
       "explicacion": "Markdown para reglas y docs, OpenAPI para las APIs, YAML o JSON para configuraciones. El impacto: velocidad (menos contexto que repetir), precisión (menos alucinaciones), coherencia de estilo y onboarding instantáneo para gente nueva.",
       "dificultad": 2,
-      "tags": ["base-de-conocimiento", "contexto"],
+      "tags": [
+        "base-de-conocimiento",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -241,7 +282,10 @@
       "correcta": 0,
       "explicacion": "Con un database.sql en context, el agente genera queries correctas a la primera; sin él, alucina nombres de tablas y columnas. Es una carpeta inocua (borrarla no rompe nada) que los agentes leen al recorrer el proyecto.",
       "dificultad": 2,
-      "tags": ["context", "alucinaciones"],
+      "tags": [
+        "context",
+        "alucinaciones"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -258,7 +302,10 @@
       "correcta": 0,
       "explicacion": "Es un estándar colaborativo (OpenAI, Google, Cursor y más) soportado por casi cualquier herramienta; Claude tiene su CLAUDE.md equivalente. Es un documento vivo: debe crecer con el proyecto, y conviene iterarlo con el propio agente en vez de escribirlo desde cero.",
       "dificultad": 1,
-      "tags": ["agents-md", "estandares"],
+      "tags": [
+        "agents-md",
+        "estandares"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -268,14 +315,18 @@
       "pregunta": "¿Por qué no conviene meter el detalle de cada tarea concreta dentro de AGENTS.md, y qué se usa en su lugar?",
       "opciones": [
         "Crecería sin control y daría contexto innecesario; se usan skills que el agente consulta solo cuando la tarea lo requiere",
-        "Porque AGENTS.md tiene un límite técnico de mil líneas",
-        "Porque los agentes solo leen la primera mitad del archivo",
+        "Porque el agente relee el archivo entero en cada mensaje y encarece la sesión",
+        "Porque AGENTS.md solo puede contener instrucciones de seguridad, no de producto",
         "No hay alternativa: todo debe estar en AGENTS.md"
       ],
       "correcta": 0,
       "explicacion": "AGENTS.md funciona como índice: referencia las skills disponibles (nombre, dónde están, para qué sirven) y el agente va a buscar el detalle solo cuando lo necesita. Cada skill es una carpeta con SKILL.md y opcionalmente referencias y scripts.",
       "dificultad": 2,
-      "tags": ["skills", "agents-md", "contexto"],
+      "tags": [
+        "skills",
+        "agents-md",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -292,7 +343,11 @@
       "correcta": 0,
       "explicacion": "En vez de acumular todos los ficheros tocados en su propia ventana, el principal delega y consolida resúmenes; además varios subagentes pueden trabajar en paralelo. Codex incluso decide crear subagentes por iniciativa propia.",
       "dificultad": 2,
-      "tags": ["subagentes", "contexto", "paralelismo"],
+      "tags": [
+        "subagentes",
+        "contexto",
+        "paralelismo"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -309,24 +364,31 @@
       "correcta": 0,
       "explicacion": "La diferencia es pequeña pero real: la skill requiere el paso intermedio de búsqueda y decisión, mientras que un subagente definido (por ejemplo en la carpeta de agents de OpenCode) se invoca mencionándolo y ya conoce sus instrucciones.",
       "dificultad": 3,
-      "tags": ["skills", "subagentes"],
+      "tags": [
+        "skills",
+        "subagentes"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "flu-019",
       "modulo": "09-flujo-desarrollo-ia",
       "tipo": "multiple-choice",
-      "pregunta": "¿Qué es el MCP (Model Context Protocol) según este módulo?",
+      "pregunta": "¿En qué se diferencia integrar una herramienta externa vía MCP de hacerlo con una API REST ad-hoc?",
       "opciones": [
-        "Un protocolo abierto, como el HTTP, que da a los modelos acceso seguro y estructurado a recursos y herramientas externas",
-        "Un formato de compresión de prompts largos",
-        "La API REST oficial de un proveedor de modelos",
-        "Un plugin exclusivo de un solo asistente"
+        "MCP expone las tools con un esquema que el modelo descubre dinámicamente; una integración REST ad-hoc requiere instrucciones manuales en el prompt sobre qué endpoints existen y cómo llamarlos",
+        "MCP solo funciona con herramientas propietarias; REST es el estándar abierto para cualquier servicio",
+        "Una API REST ad-hoc es más rápida porque evita la capa de serialización de MCP",
+        "No hay diferencia real: MCP es simplemente un wrapper de nombre distinto sobre REST"
       ],
       "correcta": 0,
-      "explicacion": "Un servidor MCP no es una API tradicional: expone recursos (documentación, bases de datos, herramientas) que cualquier modelo compatible puede usar. Conectar el MCP de un framework da documentación en tiempo real en vez de depender del entrenamiento del modelo.",
+      "explicacion": "Con MCP, el cliente pregunta al servidor qué tools ofrece y recibe su esquema: el modelo sabe qué puede hacer sin que nadie se lo cuente en el prompt. Con una integración REST ad-hoc, alguien tiene que describir en el prompt qué endpoints existen, qué parámetros aceptan y qué devuelven, y esa descripción hay que mantenerla sincronizada a mano con la API real.",
       "dificultad": 2,
-      "tags": ["mcp", "estandares"],
+      "tags": [
+        "mcp",
+        "rest",
+        "integraciones"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -343,31 +405,39 @@
       "correcta": 0,
       "explicacion": "El MCP Server Trigger convierte un workflow en servidor MCP y expone Tools; el modelo elige usarlas según su descripción. En producción, además, el MCP necesita autenticación para que no lo dispare cualquiera.",
       "dificultad": 2,
-      "tags": ["mcp", "n8n", "tools"],
+      "tags": [
+        "mcp",
+        "n8n",
+        "tools"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "flu-021",
       "modulo": "09-flujo-desarrollo-ia",
       "tipo": "multiple-choice",
-      "pregunta": "En el taller de la mini pokedex, un prompt exhaustivo dio peor resultado que uno simple. ¿Por qué?",
+      "pregunta": "Un proyecto ya tiene AGENTS.md y carpeta de contexto. ¿Por qué un prompt sobredetallado puede empeorar el resultado del agente?",
       "opciones": [
-        "El proyecto ya tenía AGENTS.md y carpeta context: con buen contexto previo, el prompt simple deja que el agente use lo documentado",
+        "El contexto del proyecto ya define las reglas; sobre-especificar en el prompt compite con ese contexto y puede contradecirlo",
         "Los prompts largos superan el límite de tokens y se truncan",
         "El agente ignora los prompts con más de tres instrucciones",
         "Fue casualidad: el detalle siempre mejora el resultado"
       ],
       "correcta": 0,
-      "explicacion": "El prompt sobredetallado hasta generó código en el lenguaje equivocado. Con las reglas y referencias ya en el proyecto, sobre-especificar en el prompt compite con el contexto en vez de aprovecharlo: el contexto pesa más que el prompt.",
+      "explicacion": "Con AGENTS.md y carpeta de contexto ya cargados, el agente tiene las reglas del proyecto. Un prompt exhaustivo que repite o contradice ese contexto genera ambigüedad: el agente puede priorizar el prompt sobre las reglas del proyecto y producir código fuera de las convenciones, incluso en el lenguaje equivocado.",
       "dificultad": 3,
-      "tags": ["contexto", "prompt-engineering", "taller"],
+      "tags": [
+        "contexto",
+        "prompt-engineering",
+        "agents-md"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "flu-022",
       "modulo": "09-flujo-desarrollo-ia",
       "tipo": "multiple-choice",
-      "pregunta": "Del plan que genera el agente para un proyecto nuevo, ¿qué parte merece la revisión más minuciosa según el módulo?",
+      "pregunta": "Del plan que genera el agente para un proyecto nuevo, ¿qué parte es la más cara de corregir después y merece la revisión más minuciosa?",
       "opciones": [
         "El modelo de datos: es el núcleo del que depende todo y lo más caro de cambiar después",
         "Los colores y la tipografía de la interfaz",
@@ -377,7 +447,11 @@
       "correcta": 0,
       "explicacion": "Tablas y relaciones condicionan todo lo demás; el resto del plan es más fácil de corregir sobre la marcha. Buenas prácticas asociadas: reglas antes que lógica, y desarrollo por fases con commit al cerrar cada una.",
       "dificultad": 3,
-      "tags": ["modelo-de-datos", "criterio", "plan"],
+      "tags": [
+        "modelo-de-datos",
+        "criterio",
+        "plan"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -394,7 +468,11 @@
       "correcta": 0,
       "explicacion": "Al cerrar cada fase se revisan los cambios, se prueba en local y se commitea antes de seguir. También ayuda abrir sesiones separadas por tarea en vez de alargar una sola conversación con temas sin relación.",
       "dificultad": 2,
-      "tags": ["flujo", "git", "fases"],
+      "tags": [
+        "flujo",
+        "git",
+        "fases"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -411,7 +489,10 @@
       "correcta": 0,
       "explicacion": "Con el asistente conectado a la base de conocimiento, quien se incorpora pregunta sin miedo a parecer tonto y avanza más rápido. La misma documentación sirve a humanos y a agentes: doble retorno de la inversión.",
       "dificultad": 2,
-      "tags": ["onboarding", "base-de-conocimiento"],
+      "tags": [
+        "onboarding",
+        "base-de-conocimiento"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -428,7 +509,10 @@
       "correcta": 0,
       "explicacion": "El valor está en el flujo humano más IA: pensar cómo se quiere el código, dejarla escribir y validar. Un gran poder conlleva una gran responsabilidad: la responsabilidad del resultado sigue siendo del desarrollador.",
       "dificultad": 1,
-      "tags": ["rol", "orquestacion"],
+      "tags": [
+        "rol",
+        "orquestacion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -439,7 +523,10 @@
       "rubrica": "El prompt propuesto debe incluir al menos tres de estos cuatro elementos: especificidad sobre la tarea (analizar el error concreto, no un genérico arreglalo), contexto (código o descripción del entorno, tecnología, qué se esperaba vs qué pasa), formato de salida pedido (por ejemplo: señalar el error principal, explicar la causa brevemente y proponer solución con snippet), y opcionalmente un rol. Debe pedir pasos o estructura de análisis, no solo la solución. No se acepta un prompt vago tipo encontrá el error en mi código sin contexto ni formato.",
       "fallbackId": "flu-009",
       "dificultad": 2,
-      "tags": ["prompt-engineering", "depuracion"],
+      "tags": [
+        "prompt-engineering",
+        "depuracion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -450,7 +537,10 @@
       "rubrica": "Debe mencionar al menos tres de estas secciones con su justificación: comandos del proyecto (testear, ejecutar, construir), reglas de estilo y convenciones de código (por ejemplo convención de nombres), estructura o rutas del proyecto, formato de PRs o commits, consideraciones de seguridad, o referencias a skills disponibles. Debe reflejar que el fichero da contexto persistente para no repetirlo en cada prompt y que es un documento vivo que evoluciona con el proyecto. No se acepta describirlo como documentación para humanos ni como archivo de log.",
       "fallbackId": "flu-015",
       "dificultad": 2,
-      "tags": ["agents-md", "base-de-conocimiento"],
+      "tags": [
+        "agents-md",
+        "base-de-conocimiento"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -467,7 +557,10 @@
       "correcta": 0,
       "explicacion": "Es la generalización de lo que el módulo enseña con AGENTS.md, la carpeta context y las skills: el resultado del agente depende menos de la frase del prompt y más de qué contexto tiene disponible y cuándo. Gestionar ese presupuesto de contexto es la habilidad clave.",
       "dificultad": 2,
-      "tags": ["context-engineering", "bonus"],
+      "tags": [
+        "context-engineering",
+        "bonus"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -484,7 +577,11 @@
       "correcta": 0,
       "explicacion": "Las herramientas convergieron en gestionar múltiples tareas agénticas simultáneas (worktrees locales, entornos cloud que devuelven PRs). El cuello de botella pasó a ser la capacidad humana de revisar: por eso los gates de aprobación siguen siendo el centro del flujo.",
       "dificultad": 3,
-      "tags": ["agentes", "paralelismo", "bonus"],
+      "tags": [
+        "agentes",
+        "paralelismo",
+        "bonus"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -501,7 +598,11 @@
       "correcta": 0,
       "explicacion": "Un MCP es código de terceros con acceso a tus herramientas: puede exfiltrar datos o inyectar instrucciones. Surgieron registros oficiales y firmas de servidores; la práctica sana es la del módulo, revisar qué expone cada Tool y aplicar mínimo privilegio.",
       "dificultad": 3,
-      "tags": ["mcp", "seguridad", "bonus"],
+      "tags": [
+        "mcp",
+        "seguridad",
+        "bonus"
+      ],
       "estadoDelArte2026": true
     }
   ]

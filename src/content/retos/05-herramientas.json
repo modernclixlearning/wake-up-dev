@@ -20,7 +20,10 @@
       "correcta": 0,
       "explicacion": "La IA es como un junior que nunca se cansa: gestiona lo repetitivo pero se equivoca y necesita supervisión. Aceptar cambios sin revisarlos, el vibe coding de siguiente siguiente siguiente, es donde se pierde la calidad del software.",
       "dificultad": 1,
-      "tags": ["filosofia", "criterio"],
+      "tags": [
+        "filosofia",
+        "criterio"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -37,7 +40,10 @@
       "correcta": 0,
       "explicacion": "Tener la IA fuera del flujo obliga a copiar y pegar y rompe la concentración; integrada, entiende el fichero activo e incluso todo el workspace, lo que mejora directamente la calidad de las respuestas.",
       "dificultad": 1,
-      "tags": ["ides", "contexto"],
+      "tags": [
+        "ides",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -54,7 +60,10 @@
       "correcta": 0,
       "explicacion": "El inline sugiere código en el momento y se acepta con Tab; el chat conversa con contexto de archivos o del workspace y tiene comandos como fix, test o doc. El modo agente del chat puede además modificar ficheros, siempre mostrando los cambios para aprobar.",
       "dificultad": 1,
-      "tags": ["copilot", "vscode"],
+      "tags": [
+        "copilot",
+        "vscode"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -71,7 +80,10 @@
       "correcta": 0,
       "explicacion": "Error Lens resalta errores en el código sin pasar el ratón, Checkstyle valida las convenciones configuradas del equipo y SonarLint detecta bugs, code smells y vulnerabilidades. La idea: la IA acelera, los guardrails aseguran que no se desvíe de los estándares.",
       "dificultad": 2,
-      "tags": ["guardrails", "calidad"],
+      "tags": [
+        "guardrails",
+        "calidad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -88,7 +100,11 @@
       "correcta": 0,
       "explicacion": "El asistente trabaja contigo de forma síncrona; el agente autónomo recibe una tarea (incluso desde un comentario TODO), la ejecuta de forma asíncrona y muestra los cambios para aceptar o rechazar. La revisión del diff sigue siendo obligatoria en ambos casos.",
       "dificultad": 2,
-      "tags": ["agentes", "codex", "copilot"],
+      "tags": [
+        "agentes",
+        "codex",
+        "copilot"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -105,7 +121,10 @@
       "correcta": 0,
       "explicacion": "En modo Ask, Cursor responde sin tocar nada; en modo Agente crea y modifica ficheros directamente. Es un error habitual cambiar de modo sin darse cuenta, así que conviene mirar cuál está activo antes de cada prompt.",
       "dificultad": 2,
-      "tags": ["cursor", "modos"],
+      "tags": [
+        "cursor",
+        "modos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -122,7 +141,11 @@
       "correcta": 0,
       "explicacion": "La vista previa fichero a fichero permite aceptar o rechazar antes de escribir al disco, y git es la red de seguridad para volver a cualquier estado. Cursor suma además el Timeline, que registra cada guardado y permite restaurar sin commits explícitos.",
       "dificultad": 2,
-      "tags": ["cursor", "refactor", "git"],
+      "tags": [
+        "cursor",
+        "refactor",
+        "git"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -139,7 +162,11 @@
       "correcta": 0,
       "explicacion": "Para desarrollos de alcance, el agente analiza y propone antes de tocar código, y vos aprobás el plan. La vista agéntica permite además varios agentes en paralelo, cada uno en su tarea, revisables de forma asíncrona.",
       "dificultad": 2,
-      "tags": ["cursor", "agentes", "plan"],
+      "tags": [
+        "cursor",
+        "agentes",
+        "plan"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -149,14 +176,17 @@
       "pregunta": "¿Qué hace el plugin Key Promoter X de JetBrains?",
       "opciones": [
         "Avisa cada vez que usás el ratón para una acción que tiene atajo de teclado, forzando su aprendizaje",
-        "Promociona tu perfil de desarrollador en la comunidad JetBrains",
-        "Genera atajos nuevos automáticamente según tu uso",
-        "Bloquea el ratón para obligarte a usar solo el teclado"
+        "Muestra en tiempo real las métricas de velocidad de escritura y los atajos más usados",
+        "Sugiere refactorizaciones de código basadas en los patrones de uso recientes",
+        "Integra la búsqueda de documentación oficial directamente en el editor sin salir del IDE"
       ],
       "correcta": 0,
       "explicacion": "Es el plugin de ergonomía por excelencia: cada aviso te enseña el atajo que existía para lo que hiciste con el ratón, y con el tiempo el uso del teclado se vuelve natural y más rápido.",
       "dificultad": 1,
-      "tags": ["jetbrains", "productividad"],
+      "tags": [
+        "jetbrains",
+        "productividad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -173,14 +203,17 @@
       "correcta": 0,
       "explicacion": "Los refactors nativos son deterministas: renombrar actualiza todas las referencias sin alucinar. La IA queda para los casos creativos que el IDE no cubre, como migraciones complejas o renombrados masivos con cambio de idioma.",
       "dificultad": 2,
-      "tags": ["jetbrains", "refactor"],
+      "tags": [
+        "jetbrains",
+        "refactor"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "her-011",
       "modulo": "05-herramientas",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cuál es el riesgo típico de darle libertad a un asistente de IA en modo agente, según se vio con JetBrains AI Assistant?",
+      "pregunta": "¿Cuál es el riesgo típico de darle libertad a un asistente de IA en modo agente?",
       "opciones": [
         "Sobreingeniería: implementa funcionalidades que nadie pidió",
         "Borra el historial de git del proyecto",
@@ -190,7 +223,10 @@
       "correcta": 0,
       "explicacion": "Los agentes tienden a agregar extras no solicitados cuando el prompt deja margen. Por eso conviene acotar la tarea, revisar el diff completo y recordar el principio YAGNI también para el código generado por IA.",
       "dificultad": 2,
-      "tags": ["agentes", "riesgos"],
+      "tags": [
+        "agentes",
+        "riesgos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -207,41 +243,52 @@
       "correcta": 0,
       "explicacion": "En vez de un editor con IA añadida, es un mission control: varios agentes trabajan tareas distintas, generan artefactos verificables en markdown que podés editar para guiarlos, y piden permiso cuando salen de su allow list.",
       "dificultad": 2,
-      "tags": ["antigravity", "agentes"],
+      "tags": [
+        "antigravity",
+        "agentes"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "her-013",
       "modulo": "05-herramientas",
       "tipo": "multiple-choice",
-      "pregunta": "En Air, el ADE de JetBrains, cada tarea de agente puede ejecutarse en distintos targets. ¿Cuáles?",
+      "pregunta": "¿Por qué aislar cada agente en su propia rama de git o contenedor evita problemas cuando varios agentes trabajan en paralelo?",
       "opciones": [
-        "Local, una rama de git específica, o un contenedor Docker aislado",
-        "Solo en la nube de JetBrains",
-        "En el navegador, en el móvil o en el escritorio",
-        "En cualquier IDE de la suite JetBrains simultáneamente"
+        "Porque cada agente opera en su propio sistema de ficheros: los cambios no se solapan ni se pisan entre sí hasta que se integran explícitamente",
+        "Porque solo puede haber un agente activo por repositorio a la vez",
+        "Porque los agentes en paralelo comparten un buffer de escritura que se corrompe sin aislamiento",
+        "Porque el modelo de lenguaje pierde coherencia si lee ficheros modificados por otro agente"
       ],
       "correcta": 0,
-      "explicacion": "Esos targets permiten paralelismo sin conflictos de ficheros: varios agentes trabajando a la vez, cada uno en su contexto. ADE, Agent Development Environment, es el término emergente para estos entornos que ponen los agentes al frente.",
+      "explicacion": "Cuando dos agentes editan los mismos ficheros a la vez, sus cambios se mezclan y generan conflictos difíciles de rastrear. Con un contexto de ficheros propio por agente (rama, worktree o contenedor), cada uno trabaja de forma determinista y la integración ocurre una sola vez, en un punto controlado.",
       "dificultad": 3,
-      "tags": ["air", "ade", "agentes"],
+      "tags": [
+        "agentes",
+        "paralelismo",
+        "aislamiemto"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "her-014",
       "modulo": "05-herramientas",
       "tipo": "multiple-choice",
-      "pregunta": "¿Qué es el MCP (Model Context Protocol)?",
+      "pregunta": "¿Qué contiene la clave `mcpServers` en el JSON de configuración de un cliente MCP, y qué ventaja da que ese formato sea portable?",
       "opciones": [
-        "Un protocolo que le explica a la IA qué herramientas externas existen y cómo usarlas, con una configuración JSON igual en todos los IDEs",
-        "Un modelo de lenguaje especializado en programación",
-        "El formato de compresión que usan los IDEs para el contexto",
-        "Una integración nativa que cada IDE implementa de forma incompatible"
+        "La lista de servidores MCP disponibles con su comando de arranque y variables de entorno: al ser el mismo formato en distintos IDEs, la configuración se reutiliza sin reescribirla",
+        "Las credenciales de autenticación del usuario para cada herramienta externa conectada",
+        "El historial de mensajes entre el modelo y cada herramienta para no repetir llamadas",
+        "Los permisos de sistema operativo que se conceden al modelo al conectarse a cada servidor"
       ],
       "correcta": 0,
-      "explicacion": "Es como un mapa: describe la herramienta (Supabase, Firebase, un navegador) y qué se puede hacer con ella. El JSON de mcpServers es intercambiable: lo que funciona en Cursor sirve en Air, Antigravity o Windsurf.",
+      "explicacion": "Cada entrada de mcpServers define un servidor MCP: nombre, comando de arranque (o URL remota) y variables de entorno necesarias. Que ese formato sea portable significa que el mismo bloque JSON funciona en Cursor, Air, Windsurf o Claude Code sin adaptaciones: configurás una vez y el servidor queda disponible en cualquier cliente compatible.",
       "dificultad": 2,
-      "tags": ["mcp", "integraciones"],
+      "tags": [
+        "mcp",
+        "configuracion",
+        "portabilidad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -258,7 +305,11 @@
       "correcta": 0,
       "explicacion": "Sin ese contexto inicial la herramienta pierde gran parte de su valor: el fichero de proyecto le dice a la IA cómo está organizado todo y qué convenciones seguir. Gemini CLI tiene su equivalente GEMINI.md.",
       "dificultad": 1,
-      "tags": ["cli", "claude-code", "contexto"],
+      "tags": [
+        "cli",
+        "claude-code",
+        "contexto"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -275,7 +326,11 @@
       "correcta": 0,
       "explicacion": "gh copilot explain aclara qué hace un comando y gh copilot suggest propone el comando para una tarea descrita en lenguaje natural (git, gh o shell). Ojo con el nombre: la extensión `gh copilot` no edita ficheros, pero el producto que hoy se llama GitHub Copilot CLI es otra cosa — un agente de terminal que sí lee y modifica el proyecto, en la misma liga que Claude Code o Gemini CLI.",
       "dificultad": 2,
-      "tags": ["cli", "copilot", "github"],
+      "tags": [
+        "cli",
+        "copilot",
+        "github"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -292,7 +347,11 @@
       "correcta": 0,
       "explicacion": "El review automático acelera y detecta problemas comunes, y con el fichero de copilot-instructions se le dan reglas del repo; pero las decisiones de arquitectura, negocio y ética siguen siendo humanas.",
       "dificultad": 2,
-      "tags": ["github", "code-review", "copilot"],
+      "tags": [
+        "github",
+        "code-review",
+        "copilot"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -309,7 +368,11 @@
       "correcta": 0,
       "explicacion": "CodeQL detecta patrones como inyecciones SQL o XSS; Dependabot vigila versiones vulnerables o desactualizadas. Ojo: ninguna sustituye una auditoría de seguridad real ni la validación humana.",
       "dificultad": 2,
-      "tags": ["github", "seguridad", "dependabot"],
+      "tags": [
+        "github",
+        "seguridad",
+        "dependabot"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -326,7 +389,10 @@
       "correcta": 0,
       "explicacion": "Un brief de una o dos páginas más bocetos sin color permiten validar jerarquía, flujos y estados (error, vacío, carga) antes de invertir en desarrollo. Fallar rápido y fracasar barato.",
       "dificultad": 1,
-      "tags": ["diseno", "wireframes"],
+      "tags": [
+        "diseno",
+        "wireframes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -343,14 +409,17 @@
       "correcta": 0,
       "explicacion": "Si el diseño define sus valores como tokens con nombre, el código los replica una sola vez y de forma consistente, en vez de esparcir colores y tamaños mágicos por toda la interfaz.",
       "dificultad": 2,
-      "tags": ["diseno", "design-tokens"],
+      "tags": [
+        "diseno",
+        "design-tokens"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "her-021",
       "modulo": "05-herramientas",
       "tipo": "multiple-choice",
-      "pregunta": "Para accesibilidad, ¿qué contraste mínimo debe haber entre texto y fondo?",
+      "pregunta": "Para accesibilidad, ¿qué contraste mínimo debe haber entre texto y fondo para texto normal?",
       "opciones": [
         "4.5 a 1",
         "2 a 1",
@@ -360,7 +429,10 @@
       "correcta": 0,
       "explicacion": "Es el umbral estándar para texto normal. La accesibilidad del módulo suma además estados vacíos con acción, labels claros y foco visible: detalles que separan un prototipo de un producto usable.",
       "dificultad": 2,
-      "tags": ["accesibilidad", "diseno"],
+      "tags": [
+        "accesibilidad",
+        "diseno"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -377,7 +449,10 @@
       "correcta": 0,
       "explicacion": "El MVP se centra en el core del negocio para validar con usuarios reales si hay mercado antes de invertir meses. Menos es más: nada de features secundarias, y ojo, un MVP exitoso tampoco garantiza el éxito del producto.",
       "dificultad": 2,
-      "tags": ["mvp", "validacion"],
+      "tags": [
+        "mvp",
+        "validacion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -394,7 +469,11 @@
       "correcta": 0,
       "explicacion": "La edición por selección de componente da control fino sobre la iteración. Lovable suma integración directa con Supabase para la base de datos y un security scan antes de publicar; v0 destaca por el despliegue en Vercel con un clic.",
       "dificultad": 3,
-      "tags": ["mvp", "lovable", "v0"],
+      "tags": [
+        "mvp",
+        "lovable",
+        "v0"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -411,7 +490,10 @@
       "correcta": 0,
       "explicacion": "Cada nodo hace una cosa (recibir datos, procesarlos, enviarlos) y encadena su output al input del siguiente. El trigger arranca el flujo: un formulario, un webhook, un cron o un evento de GitHub.",
       "dificultad": 1,
-      "tags": ["n8n", "automatizacion"],
+      "tags": [
+        "n8n",
+        "automatizacion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -428,7 +510,11 @@
       "correcta": 0,
       "explicacion": "n8n genera dos URLs: la de test solo escucha en modo manual; la de producción funciona con el workflow activo. Y sin header auth, cualquiera que conozca la URL puede disparar tu flujo.",
       "dificultad": 2,
-      "tags": ["n8n", "webhooks", "seguridad"],
+      "tags": [
+        "n8n",
+        "webhooks",
+        "seguridad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -438,14 +524,18 @@
       "pregunta": "¿Cuáles son las tres ventajas principales de ejecutar modelos de IA en local con Ollama o LM Studio?",
       "opciones": [
         "Privacidad (los datos no salen del equipo), disponibilidad offline y coste cero por uso",
-        "Mayor velocidad, más inteligencia y mejor soporte técnico",
-        "Actualizaciones automáticas, escalado infinito y cifrado cuántico",
-        "No tienen ventajas: solo se usan para aprender"
+        "Mejor calidad de respuesta que los modelos frontera para tareas complejas de razonamiento",
+        "Sin límite de ventana de contexto gracias al hardware local",
+        "Actualizaciones automáticas con las últimas mejoras sin intervención del usuario"
       ],
       "correcta": 0,
       "explicacion": "El coste es el consumo de recursos propios. LM Studio suma RAG local para consultar tus PDFs sin subirlos a la nube y una API compatible con el formato de OpenAI, que permite conectar el modelo local a otras apps.",
       "dificultad": 1,
-      "tags": ["modelos-locales", "ollama", "lm-studio"],
+      "tags": [
+        "modelos-locales",
+        "ollama",
+        "lm-studio"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -462,24 +552,31 @@
       "correcta": 0,
       "explicacion": "Los workflows guardan comandos con partes variables y valores por defecto, y Warp Drive los sincroniza entre dispositivos. Suma los bloques (cada comando es seleccionable y adjuntable como contexto para la IA) y la terminal se vuelve programable.",
       "dificultad": 2,
-      "tags": ["warp", "terminal", "productividad"],
+      "tags": [
+        "warp",
+        "terminal",
+        "productividad"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "her-028",
       "modulo": "05-herramientas",
       "tipo": "multiple-choice",
-      "pregunta": "Según la experiencia del módulo, ¿dónde brilla realmente CodeRabbit?",
+      "pregunta": "¿En qué punto del flujo de un PR aporta más valor un revisor automático con IA como CodeRabbit, y por qué?",
       "opciones": [
-        "En la revisión automática de pull requests de proyectos grandes",
-        "En el autocompletado de código dentro del IDE",
-        "En proyectos pequeños, donde el retorno justifica el coste",
-        "En el despliegue continuo a producción"
+        "Al abrir la PR: genera walkthrough, comentarios línea a línea y diagrama del flujo antes de que ningún revisor humano haya mirado el código",
+        "Antes de escribir el código, analizando el backlog para priorizar tareas",
+        "Al hacer el merge, verificando que el pipeline de CI pasó correctamente",
+        "Durante el desarrollo, detectando bugs en tiempo real dentro del editor"
       ],
       "correcta": 0,
-      "explicacion": "Al abrir una PR genera walkthrough, comentarios línea a línea, diagrama del flujo y hasta commits con la sugerencia aplicada. El plugin de IDE y la CLI son un pre-check limitado, y en proyectos chicos el coste no compensa.",
+      "explicacion": "Al abrir la PR, CodeRabbit genera un walkthrough del cambio, comentarios línea a línea, un diagrama del flujo modificado y puede proponer commits con sugerencias aplicadas. Ese momento es el más valioso porque agiliza la revisión humana posterior y atrapa problemas antes de que alguien los lea. El plugin de IDE y la CLI son útiles pero ofrecen mucho menos contexto del diff completo.",
       "dificultad": 2,
-      "tags": ["coderabbit", "code-review"],
+      "tags": [
+        "coderabbit",
+        "code-review"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -496,7 +593,11 @@
       "correcta": 0,
       "explicacion": "Una skill mínima es un fichero skill.md con nombre, descripción (lo que la IA lee para decidir activarla) e instrucciones en lenguaje natural. Los plugins conectan proveedores y canales a nivel de sistema.",
       "dificultad": 2,
-      "tags": ["openclaw", "skills", "agentes"],
+      "tags": [
+        "openclaw",
+        "skills",
+        "agentes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -513,7 +614,11 @@
       "correcta": 0,
       "explicacion": "Cada agente tiene su perfil de acceso a herramientas (mínimo, coding, message, full o a medida). Ante el riesgo de prompt injection, la defensa es sentido común y mínimo privilegio: no dar acceso ni credenciales innecesarias.",
       "dificultad": 2,
-      "tags": ["openclaw", "seguridad", "permisos"],
+      "tags": [
+        "openclaw",
+        "seguridad",
+        "permisos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -524,7 +629,11 @@
       "rubrica": "Debe explicar que el asistente trabaja de forma síncrona junto al desarrollador (autocompletado, chat, cambios pequeños guiados) y que el agente autónomo recibe una tarea y la ejecuta de forma asíncrona en segundo plano, presentando los cambios en diff al terminar. Debe dar un ejemplo razonable para cada uno (asistente: completar una función, explicar un error, un cambio puntual; agente: implementar una tarea completa, resolver un TODO, una migración acotada). Debe mencionar que en ambos casos la revisión humana de los cambios es obligatoria. No se acepta decir que el agente no necesita revisión.",
       "fallbackId": "her-005",
       "dificultad": 2,
-      "tags": ["agentes", "copilot", "criterio"],
+      "tags": [
+        "agentes",
+        "copilot",
+        "criterio"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -535,7 +644,11 @@
       "rubrica": "Debe proponer al menos tres medidas concretas de entre estas familias: revisión humana obligatoria de todo cambio generado (no aceptar a ciegas), herramientas de análisis estático o linting (Error Lens, Checkstyle, SonarLint o equivalentes), tests automatizados como red de seguridad, git como mecanismo de reversibilidad, reglas o instrucciones de proyecto para la IA (copilot-instructions, CLAUDE.md o equivalente), o limitar permisos del agente. Cada medida debe tener una justificación de qué riesgo mitiga. No se acepta como respuesta prohibir la IA ni medidas vagas tipo tener cuidado.",
       "fallbackId": "her-004",
       "dificultad": 3,
-      "tags": ["guardrails", "calidad", "criterio"],
+      "tags": [
+        "guardrails",
+        "calidad",
+        "criterio"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -552,7 +665,11 @@
       "correcta": 0,
       "explicacion": "Anthropic lo publicó como estándar abierto y OpenAI, Google, Microsoft y los IDEs agénticos lo fueron adoptando: hoy el mismo servidor MCP sirve para Cursor, Antigravity, Air o Claude Code, tal como anticipaba el módulo con su JSON portable.",
       "dificultad": 2,
-      "tags": ["mcp", "estandares", "bonus"],
+      "tags": [
+        "mcp",
+        "estandares",
+        "bonus"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -569,7 +686,11 @@
       "correcta": 0,
       "explicacion": "El patrón que el módulo enseñó (instrucciones en markdown con nombre y descripción que la IA lee para decidir si activarla) se consolidó como formato portable: las skills se comparten entre agentes y marketplaces igual que los MCP servers.",
       "dificultad": 2,
-      "tags": ["skills", "agentes", "bonus"],
+      "tags": [
+        "skills",
+        "agentes",
+        "bonus"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -586,7 +707,11 @@
       "correcta": 0,
       "explicacion": "Si un agente lee contenido externo (una web, un email), tiene datos sensibles y puede exfiltrarlos (enviar mensajes, hacer requests), una prompt injection puede robarlos. La mitigación es la del módulo: mínimo privilegio y quitar al menos una de las tres patas.",
       "dificultad": 3,
-      "tags": ["seguridad", "agentes", "bonus"],
+      "tags": [
+        "seguridad",
+        "agentes",
+        "bonus"
+      ],
       "estadoDelArte2026": true
     }
   ]

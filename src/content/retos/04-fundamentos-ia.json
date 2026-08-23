@@ -20,7 +20,10 @@
       "correcta": 0,
       "explicacion": "No solo genera texto: también lo analiza y comprende. Los modelos fundacionales (ChatGPT, Claude, Gemini) son LLMs generalistas reutilizables en múltiples aplicaciones.",
       "dificultad": 1,
-      "tags": ["llm", "conceptos"],
+      "tags": [
+        "llm",
+        "conceptos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -37,7 +40,10 @@
       "correcta": 0,
       "explicacion": "Antes se leía palabra a palabra; el Transformer codifica todo como vectores y procesa en paralelo, y su mecanismo de atención (self-attention) identifica qué partes del contexto importan para cada respuesta.",
       "dificultad": 2,
-      "tags": ["transformers", "atencion"],
+      "tags": [
+        "transformers",
+        "atencion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -54,7 +60,9 @@
       "correcta": 0,
       "explicacion": "Cada palabra/fragmento se traduce a coordenadas en un espacio multidimensional. La cercanía entre vectores refleja similitud de significado; una métrica típica es la similitud del coseno.",
       "dificultad": 2,
-      "tags": ["embeddings"],
+      "tags": [
+        "embeddings"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -71,7 +79,9 @@
       "correcta": 0,
       "explicacion": "El texto se trocea en unidades (tokens) antes de procesarse; la relación token/palabra varía según el idioma y el contexto. Por eso el costo y los límites de los modelos se miden en tokens.",
       "dificultad": 1,
-      "tags": ["tokenizacion"],
+      "tags": [
+        "tokenizacion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -88,7 +98,10 @@
       "correcta": 0,
       "explicacion": "Suele deberse a falta de datos, sobreentrenamiento en modelos pequeños o datos de baja calidad. Mitigaciones típicas: dar más contexto, RAG con fuentes citadas, y verificación humana.",
       "dificultad": 1,
-      "tags": ["alucinaciones", "llm"],
+      "tags": [
+        "alucinaciones",
+        "llm"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -105,7 +118,9 @@
       "correcta": 0,
       "explicacion": "Todos los tipos de dato se codifican al mismo espacio de embeddings, lo que permite al modelo trabajar con texto, imágenes, audio y vídeo de forma unificada.",
       "dificultad": 1,
-      "tags": ["multimodalidad"],
+      "tags": [
+        "multimodalidad"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -122,24 +137,29 @@
       "correcta": 0,
       "explicacion": "Los LLMs no acceden por sí solos a información privada ni reciente. RAG conecta el modelo con una base de conocimiento propia y las respuestas citan el origen — sin tocar los pesos del modelo (eso sería fine-tuning).",
       "dificultad": 2,
-      "tags": ["rag"],
+      "tags": [
+        "rag"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "ia-008",
       "modulo": "04-fundamentos-ia",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cuál es el orden correcto del pipeline RAG?",
+      "pregunta": "En la fase de consulta de RAG, ¿cuál es el orden correcto del pipeline?",
       "opciones": [
-        "Consulta → embeddings → búsqueda en vector DB → re-ranking → contexto al LLM → respuesta con fuentes",
+        "Retrieve (buscar chunks relevantes) → Augment (inyectar el contexto recuperado en el prompt) → Generate (el LLM produce la respuesta)",
         "Consulta → fine-tuning → respuesta",
         "Chunking → respuesta → embeddings → consulta",
         "Vector DB → consulta → chunking → respuesta"
       ],
       "correcta": 0,
-      "explicacion": "R-A-G: Retrieve (busca los chunks más similares), Augmented (re-rankea y arma el contexto, típicamente 3-5 chunks) y Generate (el LLM responde citando las fuentes).",
+      "explicacion": "R-A-G: Retrieve recupera los chunks más similares a la pregunta desde la vector DB; Augment inyecta ese contexto directamente en el prompt del LLM (el re-ranking, si existe, es un paso optativo dentro del Retrieve); Generate produce la respuesta fundamentada en ese contexto. La fase de indexación (chunking, embeddings, carga en vector DB) es previa y ocurre una sola vez.",
       "dificultad": 2,
-      "tags": ["rag", "pipeline"],
+      "tags": [
+        "rag",
+        "pipeline"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -149,14 +169,17 @@
       "pregunta": "En un proyecto RAG, ¿qué parte suele consumir más horas de ingeniería?",
       "opciones": [
         "El chunking: decidir cómo trocear los documentos según las preguntas que se harán",
-        "Elegir el color del dashboard",
-        "Comprar las GPUs",
-        "Escribir el system prompt"
+        "Elegir el modelo de embeddings",
+        "Afinar el número de chunks del contexto",
+        "Montar la evaluación del retrieval"
       ],
       "correcta": 0,
       "explicacion": "El tamaño y tipo de los fragmentos condiciona todo el sistema; documentos con ruido (tablas, doble columna, formatos complejos) pierden información al trocear. El chunking es la parte artesanal de RAG.",
       "dificultad": 3,
-      "tags": ["rag", "chunking"],
+      "tags": [
+        "rag",
+        "chunking"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -173,7 +196,10 @@
       "correcta": 0,
       "explicacion": "Almacena los vectores de los chunks y permite recuperar los más cercanos semánticamente a la consulta — el corazón del Retrieve en RAG.",
       "dificultad": 2,
-      "tags": ["rag", "vector-db"],
+      "tags": [
+        "rag",
+        "vector-db"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -190,7 +216,10 @@
       "correcta": 0,
       "explicacion": "RAG: conocimiento actualizable al instante, citable, sin entrenar. Fine-tuning: ajusta los pesos para especializar comportamiento o estilo — más costoso y estático. A menudo se combinan.",
       "dificultad": 2,
-      "tags": ["rag", "fine-tuning"],
+      "tags": [
+        "rag",
+        "fine-tuning"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -200,14 +229,16 @@
       "pregunta": "¿Qué distingue a un AI agent de un chatbot convencional?",
       "opciones": [
         "Es autónomo: planifica, descompone tareas, mantiene estado, usa herramientas externas y busca alternativas si algo falla",
-        "Responde más rápido",
-        "Tiene una interfaz más bonita",
-        "Usa un modelo más pequeño"
+        "Usa RAG sobre la documentación del producto",
+        "Recuerda la conversación entre sesiones",
+        "Responde más rápido gracias a un modelo más pequeño"
       ],
       "correcta": 0,
-      "explicacion": "Un chatbot solo responde dentro de su interfaz. Un agente ejecuta acciones reales: se conecta a email, archivos, APIs... y gestiona flujos complejos de forma proactiva. Un chatbot sobre documentación NO es un agente.",
+      "explicacion": "Un chatbot solo responde dentro de su interfaz; puede incluso usar RAG o recordar conversaciones sin ser un agente. Lo que hace agente a un sistema es la autonomía: planifica pasos, ejecuta acciones reales (APIs, archivos, email), gestiona errores y persiste estado entre tareas.",
       "dificultad": 2,
-      "tags": ["agentes"],
+      "tags": [
+        "agentes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -215,11 +246,19 @@
       "modulo": "04-fundamentos-ia",
       "tipo": "multiple-choice",
       "pregunta": "En la arquitectura de un agente, ¿qué módulo descompone la tarea principal en subtareas y orquesta el plan?",
-      "opciones": ["El planner", "El executor", "El monitoring", "La memoria"],
+      "opciones": [
+        "El planner",
+        "El executor",
+        "El monitoring",
+        "La memoria"
+      ],
       "correcta": 0,
       "explicacion": "Planner descompone y orquesta; executor ejecuta cada subtarea; monitoring hace introspección (sabe en qué punto está el plan y detecta cuándo buscar alternativas); la memoria conserva contexto entre sesiones.",
       "dificultad": 2,
-      "tags": ["agentes", "arquitectura"],
+      "tags": [
+        "agentes",
+        "arquitectura"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -236,7 +275,10 @@
       "correcta": 0,
       "explicacion": "El agente ejecuta de forma autónoma y el humano valida el resultado — el mismo principio del developer-arquitecto que valida lo que la IA construye.",
       "dificultad": 1,
-      "tags": ["agentes", "rol-usuario"],
+      "tags": [
+        "agentes",
+        "rol-usuario"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -253,7 +295,10 @@
       "correcta": 0,
       "explicacion": "Publicado por Anthropic, MCP es a los agentes lo que las APIs REST fueron a las aplicaciones web: un contrato estándar para conectarse a herramientas y datos. A2A (Google) apunta a la comunicación agente-a-agente.",
       "dificultad": 2,
-      "tags": ["agentes", "mcp"],
+      "tags": [
+        "agentes",
+        "mcp"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -270,7 +315,9 @@
       "correcta": 0,
       "explicacion": "Los modelos razonadores generan cadenas de razonamiento internas antes de la respuesta final, mejorando en matemática, código y planificación — a cambio de más latencia y costo por respuesta.",
       "dificultad": 2,
-      "tags": ["razonadores", "estado-del-arte"],
+      "tags": [
+        "razonadores"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -281,7 +328,9 @@
       "rubrica": "Debe incluir: (1) idea central — conectar el LLM a una base de conocimiento propia y pasarle los fragmentos relevantes como contexto, (2) que NO modifica los parámetros/pesos del modelo, (3) al menos un motivo empresarial válido: información privada o actualizada, respuestas con fuentes citadas/verificables, costo menor que reentrenar, actualización inmediata del conocimiento.",
       "fallbackId": "ia-007",
       "dificultad": 2,
-      "tags": ["rag"],
+      "tags": [
+        "rag"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -292,7 +341,9 @@
       "rubrica": "Debe incluir: (1) el chatbot solo responde dentro de la conversación mientras el agente actúa de forma autónoma, y (2) al menos dos capacidades de agente: planificar/descomponer tareas, mantener estado, usar herramientas externas (email, APIs, archivos), buscar alternativas ante fallos (workaround), proactividad.",
       "fallbackId": "ia-012",
       "dificultad": 2,
-      "tags": ["agentes"],
+      "tags": [
+        "agentes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -309,7 +360,10 @@
       "correcta": 0,
       "explicacion": "La tendencia 2026: thinking adaptativo — el modelo calibra su esfuerzo de razonamiento por tarea (los presupuestos fijos de 'thinking tokens' quedaron obsoletos), con niveles de esfuerzo configurables por el desarrollador.",
       "dificultad": 3,
-      "tags": ["razonadores", "estado-del-arte"],
+      "tags": [
+        "razonadores",
+        "estado-del-arte"
+      ],
       "estadoDelArte2026": true
     },
     {
@@ -326,7 +380,10 @@
       "correcta": 0,
       "explicacion": "El patrón director → orquestador → ejecutores se volvió estándar: agentes headless que trabajan en paralelo, un coordinador que integra, y gates humanos en los puntos irreversibles (merge, deploy).",
       "dificultad": 3,
-      "tags": ["agentes", "orquestacion"],
+      "tags": [
+        "agentes",
+        "orquestacion"
+      ],
       "estadoDelArte2026": true
     }
   ]

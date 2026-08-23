@@ -20,7 +20,9 @@
       "correcta": 0,
       "explicacion": "La descomposición ('divide y vencerás') es uno de los 4 pilares del pensamiento computacional, junto con el reconocimiento de patrones, la abstracción y el diseño de algoritmos.",
       "dificultad": 1,
-      "tags": ["pensamiento-computacional"],
+      "tags": [
+        "pensamiento-computacional"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -28,11 +30,19 @@
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
       "pregunta": "¿Cuál de estas estructuras de control repite un bloque de código mientras se cumpla una condición?",
-      "opciones": ["if / else", "switch", "while", "try / catch"],
+      "opciones": [
+        "if / else",
+        "switch",
+        "while",
+        "try / catch"
+      ],
       "correcta": 2,
       "explicacion": "El bucle `while` repite su bloque mientras la condición sea verdadera. `if/else` y `switch` son condicionales; `try/catch` maneja errores.",
       "dificultad": 1,
-      "tags": ["programacion", "estructuras-de-control"],
+      "tags": [
+        "programacion",
+        "estructuras-de-control"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -40,11 +50,19 @@
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
       "pregunta": "En el modelo cliente-servidor de la web, ¿qué protocolo se usa para pedir y recibir páginas?",
-      "opciones": ["FTP", "HTTP/HTTPS", "SSH", "SMTP"],
+      "opciones": [
+        "FTP",
+        "HTTP/HTTPS",
+        "SSH",
+        "SMTP"
+      ],
       "correcta": 1,
       "explicacion": "HTTP (y su versión cifrada HTTPS) es el protocolo de la web, y también el vehículo de las APIs modernas. FTP transfiere archivos, SSH da acceso remoto seguro y SMTP envía correo.",
       "dificultad": 1,
-      "tags": ["redes", "http"],
+      "tags": [
+        "redes",
+        "http"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -54,14 +72,16 @@
       "pregunta": "¿Qué diferencia principal hay entre un lenguaje compilado y uno interpretado?",
       "opciones": [
         "El compilado traduce todo el código a binario antes de ejecutar; el interpretado se traduce línea a línea en ejecución",
-        "El compilado solo funciona en Windows",
-        "El interpretado no puede tener errores",
-        "No hay diferencia, son sinónimos"
+        "El compilado se traduce en cada ejecución; el interpretado una sola vez",
+        "El interpretado produce ejecutables más rápidos porque evita la compilación",
+        "Ambos generan código máquina idéntico; solo difieren en la sintaxis del lenguaje"
       ],
       "correcta": 0,
       "explicacion": "Un compilador traduce el programa completo antes de ejecutarlo (C, Rust, Go); un intérprete lo traduce mientras se ejecuta (Python, JavaScript clásico). Hay enfoques híbridos como el JIT.",
       "dificultad": 2,
-      "tags": ["lenguajes"],
+      "tags": [
+        "lenguajes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -78,7 +98,10 @@
       "correcta": 1,
       "explicacion": "Git es el motor local de control de versiones (el motor del coche). GitHub es la plataforma en la nube que aloja repositorios Git (el garaje y las carreteras) — alternativas: GitLab, Bitbucket.",
       "dificultad": 1,
-      "tags": ["ecosistema", "git"],
+      "tags": [
+        "ecosistema",
+        "git"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -86,11 +109,18 @@
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
       "pregunta": "¿Qué estructura de datos funciona como una cola del supermercado (el primero que entra es el primero que sale)?",
-      "opciones": ["Pila (stack)", "Cola (queue)", "Árbol binario", "Diccionario / mapa"],
+      "opciones": [
+        "Pila (stack)",
+        "Cola (queue)",
+        "Árbol binario",
+        "Diccionario / mapa"
+      ],
       "correcta": 1,
       "explicacion": "La cola es FIFO (first in, first out). La pila es LIFO: lo último que entra sale primero, como una pila de platos.",
       "dificultad": 2,
-      "tags": ["estructuras-de-datos"],
+      "tags": [
+        "estructuras-de-datos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -107,24 +137,29 @@
       "correcta": 0,
       "explicacion": "La IP identifica a un dispositivo en la red. El DNS traduce nombres de dominio legibles (ej. google.com) a direcciones IP.",
       "dificultad": 1,
-      "tags": ["redes"],
+      "tags": [
+        "redes"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "fun-008",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cuál es el orden correcto de un algoritmo?",
+      "pregunta": "¿Qué secuencia describe el modelo básico de un algoritmo?",
       "opciones": [
         "Entrada → Proceso → Salida",
         "Salida → Entrada → Proceso",
         "Proceso → Salida → Entrada",
-        "Los algoritmos no tienen orden"
+        "Proceso → Entrada → Salida"
       ],
       "correcta": 0,
       "explicacion": "Un algoritmo es una secuencia finita y ordenada de pasos: recibe datos de entrada, los procesa y produce una salida. Sus claves: secuencia, precisión y sin ambigüedades.",
       "dificultad": 1,
-      "tags": ["algoritmos", "pensamiento-computacional"],
+      "tags": [
+        "algoritmos",
+        "pensamiento-computacional"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -135,7 +170,10 @@
       "rubrica": "Debe mencionar: (1) ocultar/filtrar detalles irrelevantes y quedarse con lo esencial, (2) un ejemplo concreto válido (ej. plano del metro, microondas, conducir sin saber mecánica, usar una función sin leer su código). No exige terminología exacta.",
       "fallbackId": "fun-001",
       "dificultad": 2,
-      "tags": ["pensamiento-computacional", "abstraccion"],
+      "tags": [
+        "pensamiento-computacional",
+        "abstraccion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -152,19 +190,29 @@
       "correcta": 1,
       "explicacion": "El rol evoluciona de 'constructor que coloca ladrillos' a 'arquitecto que orquesta': el developer da los planos (especificación), la IA construye, y el developer valida — siempre tiene la última palabra.",
       "dificultad": 2,
-      "tags": ["ia", "flujo-desarrollo"],
+      "tags": [
+        "ia",
+        "flujo-desarrollo"
+      ],
       "estadoDelArte2026": true
     },
     {
       "id": "fun-011",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cuál de estos NO es un pilar del pensamiento computacional?",
-      "opciones": ["Descomposición", "Reconocimiento de patrones", "Compilación", "Abstracción"],
-      "correcta": 2,
-      "explicacion": "Los 4 pilares son: descomposición, reconocimiento de patrones, abstracción y diseño de algoritmos. La compilación es una fase de traducción de código, no un pilar del pensamiento computacional.",
-      "dificultad": 1,
-      "tags": ["pensamiento-computacional"],
+      "pregunta": "Un equipo detecta que varios módulos repiten la misma lógica de validación de emails. Deciden extraerla en una función reutilizable. ¿Qué pilar del pensamiento computacional están aplicando principalmente?",
+      "opciones": [
+        "Reconocimiento de patrones",
+        "Descomposición",
+        "Diseño de algoritmos",
+        "Abstracción"
+      ],
+      "correcta": 0,
+      "explicacion": "Identificar que la validación de emails se repite es reconocer un patrón. La abstracción se aplica cuando se ocultan los detalles; la descomposición cuando se parte un problema grande; el diseño de algoritmos cuando se define la secuencia de pasos. Aquí el punto de partida es detectar la repetición.",
+      "dificultad": 2,
+      "tags": [
+        "pensamiento-computacional"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -181,7 +229,10 @@
       "correcta": 1,
       "explicacion": "El pseudocódigo describe un algoritmo de manera informal, sin la sintaxis de ningún lenguaje. Su complemento visual es el diagrama de flujo (óvalos, rectángulos, rombos y flechas).",
       "dificultad": 1,
-      "tags": ["algoritmos", "pseudocodigo"],
+      "tags": [
+        "algoritmos",
+        "pseudocodigo"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -198,7 +249,10 @@
       "correcta": 0,
       "explicacion": "Editás en el Working Directory, preparás el próximo cambio en la Staging Area (git add) y lo registrás permanentemente en el Repository (git commit).",
       "dificultad": 2,
-      "tags": ["git", "ecosistema"],
+      "tags": [
+        "git",
+        "ecosistema"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -206,11 +260,19 @@
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
       "pregunta": "¿Qué comando mueve un archivo al área de preparación (staging) de Git?",
-      "opciones": ["git commit", "git add", "git push", "git status"],
+      "opciones": [
+        "git commit",
+        "git add",
+        "git push",
+        "git status"
+      ],
       "correcta": 1,
       "explicacion": "`git add` prepara los cambios (staging); `git commit -m` crea la instantánea; `git push` la sube al remoto; `git status` muestra el estado actual.",
       "dificultad": 1,
-      "tags": ["git", "comandos"],
+      "tags": [
+        "git",
+        "comandos"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -227,7 +289,11 @@
       "correcta": 1,
       "explicacion": "El PR es una propuesta de cambio y una conversación: permite revisar la calidad del código antes de fusionarlo. Es la base del GitHub Flow (feature branches + PRs).",
       "dificultad": 1,
-      "tags": ["git", "github", "colaboracion"],
+      "tags": [
+        "git",
+        "github",
+        "colaboracion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -244,7 +310,10 @@
       "correcta": 0,
       "explicacion": "Si dos ramas tocan la misma línea del mismo archivo, Git no puede decidir automáticamente y pide una resolución manual del conflicto.",
       "dificultad": 2,
-      "tags": ["git", "merge"],
+      "tags": [
+        "git",
+        "merge"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -261,7 +330,10 @@
       "correcta": 0,
       "explicacion": "REST se centra en recursos identificados por URLs (endpoints): /productos es la colección y /productos/5 el recurso individual. GET es la operación de lectura.",
       "dificultad": 1,
-      "tags": ["apis", "rest"],
+      "tags": [
+        "apis",
+        "rest"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -269,11 +341,20 @@
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
       "pregunta": "En el mapeo CRUD ↔ HTTP, ¿qué método se usa para CREAR un recurso?",
-      "opciones": ["GET", "POST", "DELETE", "PATCH"],
+      "opciones": [
+        "GET",
+        "POST",
+        "DELETE",
+        "PATCH"
+      ],
       "correcta": 1,
       "explicacion": "Create → POST, Read → GET, Update → PUT/PATCH, Delete → DELETE. Los datos del nuevo recurso viajan en el cuerpo (body) de la solicitud.",
       "dificultad": 1,
-      "tags": ["apis", "rest", "crud"],
+      "tags": [
+        "apis",
+        "rest",
+        "crud"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -290,7 +371,11 @@
       "correcta": 0,
       "explicacion": "Sin estado = el servidor no recuerda solicitudes anteriores; cada request es autocontenida. Por eso la autenticación (API key o token) viaja en cada solicitud.",
       "dificultad": 2,
-      "tags": ["apis", "http", "rest"],
+      "tags": [
+        "apis",
+        "http",
+        "rest"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -307,24 +392,31 @@
       "correcta": 0,
       "explicacion": "Primero te identificás (autenticación: login, API key, token) y después el sistema decide a qué tenés acceso (autorización: permisos, roles).",
       "dificultad": 2,
-      "tags": ["apis", "seguridad"],
+      "tags": [
+        "apis",
+        "seguridad"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "fun-021",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "CORS es...",
+      "pregunta": "¿Qué papel cumple CORS en la comunicación entre dominios distintos?",
       "opciones": [
-        "Un mecanismo de seguridad del navegador que restringe solicitudes entre dominios distintos",
+        "Es el mecanismo de cabeceras HTTP con el que un servidor autoriza explícitamente solicitudes de otros orígenes",
         "Un formato de intercambio de datos",
         "Un método HTTP para crear recursos",
         "Un tipo de base de datos"
       ],
       "correcta": 0,
-      "explicacion": "CORS (Cross-Origin Resource Sharing) impide que una página haga solicitudes a otro dominio salvo que el servidor lo permita explícitamente mediante cabeceras.",
+      "explicacion": "Quien restringe por defecto las solicitudes entre distintos orígenes es la same-origin policy del navegador. CORS no es esa restricción: es el conjunto de cabeceras (Access-Control-Allow-Origin, etc.) con el que un servidor indica a qué orígenes sí les permite acceder. Sin esas cabeceras, el navegador bloquea la respuesta aunque el servidor la haya enviado.",
       "dificultad": 3,
-      "tags": ["apis", "seguridad", "cors"],
+      "tags": [
+        "apis",
+        "seguridad",
+        "cors"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -341,7 +433,10 @@
       "correcta": 0,
       "explicacion": "JSON (JavaScript Object Notation) es el formato universal de intercambio entre sistemas: objetos entre llaves con pares clave-valor, y listas entre corchetes.",
       "dificultad": 1,
-      "tags": ["apis", "json"],
+      "tags": [
+        "apis",
+        "json"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -358,7 +453,10 @@
       "correcta": 0,
       "explicacion": "Un objeto sabe cosas (estado/atributos — un libro sabe su título) y puede hacer cosas (comportamiento/métodos — un libro puede prestarse). La clase es la plantilla desde la que se crean objetos.",
       "dificultad": 1,
-      "tags": ["poo", "lenguajes"],
+      "tags": [
+        "poo",
+        "lenguajes"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -375,7 +473,10 @@
       "correcta": 0,
       "explicacion": "La herencia crea clases hijas que reutilizan lo definido en la clase padre y establece relaciones 'es un' (un Ebook ES UN Libro). Promueve la reutilización de código.",
       "dificultad": 2,
-      "tags": ["poo", "herencia"],
+      "tags": [
+        "poo",
+        "herencia"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -392,7 +493,10 @@
       "correcta": 0,
       "explicacion": "Polimorfismo: el mismo método (ej. describir()) se comporta distinto según el objeto que lo recibe — típicamente sobrescribiendo (override) el método de la clase padre.",
       "dificultad": 2,
-      "tags": ["poo", "polimorfismo"],
+      "tags": [
+        "poo",
+        "polimorfismo"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -409,7 +513,10 @@
       "correcta": 0,
       "explicacion": "Encapsular = el objeto gestiona su propio estado y el exterior solo interactúa por su interfaz pública. En Python, el guion bajo `_atributo` señala que algo es interno.",
       "dificultad": 2,
-      "tags": ["poo", "encapsulacion"],
+      "tags": [
+        "poo",
+        "encapsulacion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -426,7 +533,10 @@
       "correcta": 0,
       "explicacion": "Es la diferencia implícita entre la solución ideal y la fácil/rápida. Causas típicas: presión de fechas, falta de contexto, mala calidad, falta de tests, tecnología obsoleta.",
       "dificultad": 1,
-      "tags": ["buenas-practicas", "deuda-tecnica"],
+      "tags": [
+        "buenas-practicas",
+        "deuda-tecnica"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -443,7 +553,11 @@
       "correcta": 0,
       "explicacion": "Los tests son la red de seguridad: garantizan que al mejorar la estructura interna no rompés funcionalidad. La refactorización es un proceso disciplinado y continuo, no un evento puntual.",
       "dificultad": 2,
-      "tags": ["buenas-practicas", "refactorizacion", "testing"],
+      "tags": [
+        "buenas-practicas",
+        "refactorizacion",
+        "testing"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -460,7 +574,10 @@
       "correcta": 0,
       "explicacion": "Como ordenar la cocina de un restaurante abierto: los clientes no notan nada, pero los chefs trabajan mucho mejor. El comportamiento externo queda intacto.",
       "dificultad": 1,
-      "tags": ["buenas-practicas", "refactorizacion"],
+      "tags": [
+        "buenas-practicas",
+        "refactorizacion"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -471,7 +588,11 @@
       "rubrica": "Debe distinguir: (1) Git como herramienta/motor local de control de versiones, (2) GitHub como plataforma en la nube que aloja repositorios y facilita colaboración. Suma (no obligatorio): analogía tipo motor/garaje, mencionar alternativas (GitLab, Bitbucket) o que se interactúa con GitHub a través de Git.",
       "fallbackId": "fun-005",
       "dificultad": 2,
-      "tags": ["git", "github", "ecosistema"],
+      "tags": [
+        "git",
+        "github",
+        "ecosistema"
+      ],
       "estadoDelArte2026": false
     },
     {
@@ -482,25 +603,32 @@
       "rubrica": "Debe incluir: (1) definición razonable (costo futuro de tomar atajos / diferencia entre solución ideal y rápida), (2) una causa válida (presión de fechas, falta de contexto, mala calidad, falta de tests, tecnología obsoleta), (3) una consecuencia válida (desarrollo más lento, más bugs, baja moral, onboarding difícil, riesgo de negocio).",
       "fallbackId": "fun-027",
       "dificultad": 2,
-      "tags": ["buenas-practicas", "deuda-tecnica"],
+      "tags": [
+        "buenas-practicas",
+        "deuda-tecnica"
+      ],
       "estadoDelArte2026": false
     },
     {
       "id": "fun-032",
       "modulo": "01-fundamentos",
       "tipo": "multiple-choice",
-      "pregunta": "ESTADO DEL ARTE 2026 — ¿Qué protocolo abierto se consolidó como estándar para conectar asistentes de IA con herramientas y datos externos?",
+      "pregunta": "¿Qué es el contrato de una API y por qué permite que cliente y servidor evolucionen de forma independiente?",
       "opciones": [
-        "MCP (Model Context Protocol)",
-        "SOAP",
-        "FTP",
-        "WebSocket"
+        "Un acuerdo formal (endpoints, métodos, formatos de datos y errores) que ambas partes respetan: mientras no cambie el contrato, cada lado puede cambiar su implementación interna sin romper al otro",
+        "Un documento legal que impide modificar la API una vez publicada",
+        "El código fuente compartido entre cliente y servidor para sincronizar cambios",
+        "La base de datos que almacena los logs de cada llamada a la API"
       ],
       "correcta": 0,
-      "explicacion": "MCP estandariza cómo un modelo de IA descubre y usa herramientas externas (repos, bases de datos, APIs). Es al ecosistema de agentes lo que REST fue a las APIs web.",
+      "explicacion": "Un contrato de API define qué se puede pedir (endpoints, métodos HTTP), con qué datos (parámetros, cuerpo JSON) y qué se recibirá a cambio (estructura de respuesta, códigos de error). Ese acuerdo desacopla: el servidor puede refactorizar internamente y el cliente puede cambiar su interfaz, siempre que los dos respeten el contrato definido.",
       "dificultad": 3,
-      "tags": ["ia", "mcp", "apis"],
-      "estadoDelArte2026": true
+      "tags": [
+        "apis",
+        "contratos",
+        "desacoplamiento"
+      ],
+      "estadoDelArte2026": false
     },
     {
       "id": "fun-033",
@@ -516,7 +644,11 @@
       "correcta": 0,
       "explicacion": "El modo headless (ej. `claude -p`) permite integrar agentes en pipelines y orquestarlos: un proceso les pasa el prompt, captura su salida (a menudo en streaming) y decide el paso siguiente. Este juego usa ese patrón en su modo 'píldora roja'.",
       "dificultad": 3,
-      "tags": ["ia", "flujo-desarrollo", "headless"],
+      "tags": [
+        "ia",
+        "flujo-desarrollo",
+        "headless"
+      ],
       "estadoDelArte2026": true
     }
   ]
