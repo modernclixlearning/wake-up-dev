@@ -58,7 +58,7 @@ export function registrarTitle(k: KAPLAYCtx): void {
     ]);
     const actualizarMute = () => {
       const silenciado = estaMuteado();
-      avisoMute.text = silenciado ? "M = musica: SILENCIADA" : "M = musica: ACTIVADA";
+      avisoMute.text = silenciado ? "M = música: SILENCIADA" : "M = música: ACTIVADA";
       avisoMute.color = silenciado ? k.rgb(...ROJO) : k.rgb(...VERDE);
     };
     actualizarMute();
