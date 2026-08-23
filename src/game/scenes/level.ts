@@ -180,6 +180,21 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const player = crearNeo(k, 60, ALTO / 2);
     acotarAlCamino(player, ANCHO_NEO, ALTO_NEO);
 
+    // Perspectiva del beat-em-up (F14): en una banda caminable la profundidad
+    // la da la Y de los PIES — quien está más abajo está más cerca de cámara y
+    // se dibuja delante. Los z fijos por tipo de actor producían superposiciones
+    // "mutantes" (el Oráculo tapando a Neo según desde dónde llegara, leído
+    // como bug en el playtest). El rango queda en 1.234..1.47 (pies/1000):
+    // por encima del portal (1) y por debajo de balas (3), señal (4) y HUD (5).
+    const zPorPies = (pies: number) => 1 + pies / 1000;
+    oraculo.z = zPorPies(Y_ORACULO + ALTO_ORACULO);
+    k.onUpdate(() => {
+      player.z = zPorPies(player.pos.y + ALTO_NEO);
+      for (const [agente, combate] of combates) {
+        agente.z = zPorPies(agente.pos.y + combate.alto);
+      }
+    });
+
     // Aviso neutro en pantalla (instrucciones, anuncios): sin el prefijo
     // CORRECTO/FALLASTE de mostrarFeedback y un poco más arriba para no pisarlo.
     /** Respaldo oscuro detrás de un texto de aviso: desde F14 v3 el suelo
@@ -1043,19 +1058,16 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       if (bloqueado()) return;
       enEncuentro = true;
       // El Oráculo "habla" mientras el chat está abierto y saluda al cerrarlo.
-      // Con el zoom de conversación (POSES_ORACULO) el sprite crece hacia Neo:
-      // se sube su z por encima del jugador para que el agrandado se lea entero.
+      // El zoom de conversación (POSES_ORACULO) crece DETRÁS de Neo: antes se
+      // le subía el z por encima del jugador y el manto lo tapaba entero —
+      // leído como bug en el playtest. El jugador nunca pierde el primer plano.
       fijarPose(oraculo, "habla");
-      oraculo.z = 3;
       const contexto = [banco.modulo.nombre, banco.modulo.descripcion, banco.modulo.resumen ?? ""].join("\n");
       abrirOraculo(st.ai, contexto, () => {
         enEncuentro = false;
         fijarPose(oraculo, "bye");
         k.wait(1.2, () => {
-          if (oraculo.exists()) {
-            fijarPose(oraculo, null);
-            oraculo.z = 0;
-          }
+          if (oraculo.exists()) fijarPose(oraculo, null);
         });
         // Alejar a Neo para no reabrir el chat al instante: siempre por debajo
         // del área del Oráculo (con sprites 3x, un offset fijo quedaba adentro).
