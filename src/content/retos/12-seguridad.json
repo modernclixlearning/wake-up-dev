@@ -60,7 +60,7 @@
         "La IA solo beneficia a los defensores, nunca a los atacantes"
       ],
       "correcta": 1,
-      "explicacion": "La IA amplifica capacidades ofensivas: permite generar phishing personalizado con análisis de lenguaje, crear malware polimórfico que muta para evadir antivirus, clonar voces o rostros (suplantación biométrica) y automatizar el descubrimiento de credenciales expuestas. Estudios como el de IBM X-Force indican que más del 30% de campañas de phishing destacadas incorporan componentes de IA generativa. La barrera de entrada baja porque atacar ya no requiere ser un experto técnico.",
+      "explicacion": "La IA amplifica capacidades ofensivas: permite generar phishing personalizado con análisis de lenguaje, crear malware polimórfico que muta para evadir antivirus, clonar voces o rostros (suplantación biométrica) y automatizar el descubrimiento de credenciales expuestas. La IA generativa abarató y masificó el phishing dirigido: crear un correo convincente ya no requiere conocimiento técnico ni dominar el idioma de la víctima. La barrera de entrada baja porque atacar ya no requiere ser un experto técnico.",
       "dificultad": 2,
       "tags": [
         "ia-amenazas",
@@ -243,21 +243,21 @@
       "id": "seg-012",
       "modulo": "12-seguridad",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cuál es la razón principal para exigir cookies con los flags 'HttpOnly' y 'Secure' en la gestión de sesiones?",
+      "pregunta": "Las cookies de sesión ya tienen los flags HttpOnly y Secure. ¿Qué protección adicional aporta añadir SameSite (Lax o Strict)?",
       "opciones": [
-        "Aumentan el rendimiento del servidor al reducir el tamaño de los headers HTTP",
-        "Permiten que el servidor rote automáticamente el token de sesión cada hora",
-        "HttpOnly impide que JavaScript del cliente acceda a la cookie (mitigando robo por XSS); Secure fuerza que solo se envíe por HTTPS (evitando interceptación por canal no cifrado)",
-        "Son obligatorios por el estándar HTTP/2 y los navegadores las ignoran en HTTP/1.1"
+        "Cifra el valor de la cookie con AES-256 antes de que salga del navegador, protegiéndola en tránsito",
+        "Permite que el servidor rote automáticamente el valor de la cookie en cada respuesta HTTP para dificultar su predicción",
+        "Protege contra CSRF al restringir cuándo el navegador adjunta la cookie en peticiones cross-site: Strict nunca la envía desde un sitio externo; Lax la permite solo en navegaciones top-level tipo GET",
+        "Amplía la vida útil de la sesión sincronizando la expiración de la cookie con la del JWT almacenado en memoria"
       ],
       "correcta": 2,
-      "explicacion": "Los flags de cookies son defensas en capas. HttpOnly evita que un script del lado del cliente lea el valor de la cookie — si hay un XSS, el atacante no puede robar el token de sesión con document.cookie. Secure garantiza que la cookie solo viaja en conexiones HTTPS, protegiéndola de ataques de intermediario en redes no cifradas. Combinar ambos flags es una práctica básica para proteger tokens de sesión y JWT almacenados en cookies.",
+      "explicacion": "HttpOnly e Secure protegen contra XSS y transmisión en claro. SameSite añade protección contra CSRF: con Strict, el navegador nunca adjunta la cookie en peticiones que originan desde otro sitio (incluso las GET); con Lax, la cookie se envía solo en navegaciones top-level (usuario hace clic en un enlace externo hacia tu site) pero no en peticiones cross-site de assets, iframes o formularios. Combinar los tres flags es la práctica recomendada para cookies de sesión.",
       "dificultad": 1,
       "tags": [
         "authentication-failures",
         "cookies",
-        "sesiones",
-        "jwt"
+        "csrf",
+        "samesite"
       ],
       "estadoDelArte2026": false
     },
@@ -286,20 +286,21 @@
       "id": "seg-014",
       "modulo": "12-seguridad",
       "tipo": "multiple-choice",
-      "pregunta": "¿Qué mecanismo de defensa mitiga directamente el riesgo de un ataque a la cadena de suministro de software (supply chain attack)?",
+      "pregunta": "Un atacante publica en npm un paquete llamado 'recat' (con 'a' al final). ¿Qué técnica aplica y cómo se defiende el equipo?",
       "opciones": [
-        "Verificar la integridad de los paquetes mediante firmas digitales o checksums antes de instalarlos, mantener lock files con versiones exactas y validar el origen y la reputación de cada dependencia",
-        "Aumentar la cobertura de tests unitarios al 100% en el código propio de la aplicación",
-        "Aplicar rate limiting en los endpoints públicos de la API para detectar inyecciones de dependencias",
-        "Habilitar HTTPS en el servidor de producción para cifrar las descargas de paquetes"
+        "Man-in-the-middle sobre el registro npm; se mitiga forzando HTTPS en las llamadas de npm install",
+        "Typosquatting: aprovecha un error tipográfico para instalar el paquete malicioso; se mitiga verificando nombre y publisher antes de instalar, usando lockfile y npm ci para que solo se instalen las versiones registradas",
+        "SQL injection sobre la base de datos del registry de npm; se mitiga con queries parametrizadas en el servidor de npm",
+        "Buffer overflow en el runtime de Node.js al parsear el package.json malicioso; se mitiga actualizando Node a la versión LTS"
       ],
-      "correcta": 0,
-      "explicacion": "Los ataques a la cadena de suministro comprometen dependencias legítimas para distribuir código malicioso (casos reales: SolarWinds, el paquete event-stream de npm). La defensa requiere: verificar firmas/checksums de paquetes, usar lock files que congelen versiones exactas (no 'latest'), mantener un SBOM actualizado, escanear dependencias en CI con herramientas como Snyk o OWASP Dependency-Check, y aplicar Zero Trust a los ecosistemas públicos — verificar antes de confiar.",
+      "correcta": 1,
+      "explicacion": "El typosquatting aprovecha errores tipográficos: un paquete con nombre casi idéntico al legítimo espera ser instalado por descuido. La defensa directa es revisar el nombre exacto y el publisher antes de instalar una dependencia nueva. Para dependencias ya existentes, el lockfile (package-lock.json o yarn.lock) con npm ci garantiza que solo se instalan las versiones exactas registradas, sin resoluciones automáticas que puedan traer una versión comprometida.",
       "dificultad": 2,
       "tags": [
         "software-integrity",
         "supply-chain",
-        "dependencias"
+        "typosquatting",
+        "npm"
       ],
       "estadoDelArte2026": false
     },
@@ -394,7 +395,7 @@
       "tipo": "multiple-choice",
       "pregunta": "ESTADO DEL ARTE 2026 — Un atacante manipula las instrucciones de un modelo de IA integrado en una aplicación para que revele información interna o actúe fuera de su propósito original. ¿Cómo se llama este tipo de ataque específico a sistemas de IA?",
       "opciones": [
-        "Data poisoning: alterar los datos de entrenamiento para que el modelo tome decisiones equivocadas en el futuro",
+        "Jailbreak: forzar al modelo a saltarse sus políticas de contenido mediante prompts adversarios diseñados para que ignore sus instrucciones de seguridad",
         "Adversarial patch: insertar perturbaciones visuales en imágenes para engañar a clasificadores de visión artificial",
         "Model inversion: reconstruir datos de entrenamiento a partir de las predicciones del modelo",
         "Prompt injection: manipular el prompt o las instrucciones del modelo para hacerlo actuar contra su propósito original o filtrar información sensible del sistema"

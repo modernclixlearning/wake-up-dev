@@ -58,7 +58,7 @@
         "Rojo, verde, refactor y deploy"
       ],
       "correcta": 2,
-      "explicacion": "Coverage se mide por funciones, líneas, branches (caminos condicionales) y statements (declaraciones) ejecutados. Una estrategia razonable es 100% de funciones y ~80% del resto.",
+      "explicacion": "Coverage se mide por funciones, líneas, branches (caminos condicionales) y statements (declaraciones) ejecutados.",
       "dificultad": 1,
       "tags": [
         "testing",
@@ -70,7 +70,7 @@
       "id": "cal-004",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "En el sistema de coverage honesto 100/80/0, ¿qué nivel se le exige al código CORE (el que maneja dinero o seguridad)?",
+      "pregunta": "Una estrategia de coverage organiza el esfuerzo en tres tramos: 100% para lógica de negocio crítica (pagos, validaciones de seguridad), 80% para código relevante (UI, servicios, utilidades) y 0% para infraestructura y boilerplate que ya valida el compilador. Dado ese esquema, ¿qué nivel aplica al código que maneja dinero o seguridad?",
       "opciones": [
         "0%",
         "80%",
@@ -150,15 +150,15 @@
       "id": "cal-008",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "TDD hace 'emerger' funciones puras. ¿Qué caracteriza a una función pura?",
+      "pregunta": "¿Por qué el ciclo de TDD (escribir el test primero) tiende a hacer emerger funciones puras en el código resultante?",
       "opciones": [
-        "Además de calcular, actualiza el localStorage",
-        "Modifica variables globales para optimizar",
-        "Siempre devuelve un valor distinto",
-        "Devuelve el mismo output ante el mismo input y no tiene efectos secundarios"
+        "Porque el framework de tests prohíbe el uso de efectos secundarios dentro del bloque it()/test()",
+        "Porque al diseñar el test antes que el código, se fuerza a definir entradas y salidas precisas; los efectos secundarios quedan fuera del alcance del test, empujando a separar la lógica pura de sus efectos",
+        "Porque las funciones puras no necesitan mocks, lo que simplifica la configuración del test",
+        "Porque TypeScript infiere automáticamente la pureza de una función y la optimiza en tiempo de compilación"
       ],
-      "correcta": 3,
-      "explicacion": "Una función pura no muta nada de afuera ni produce efectos secundarios: mismo input → mismo output. Mezclar el cálculo con un efecto (ej. escribir en localStorage) rompe esa pureza; ese efecto va aparte.",
+      "correcta": 1,
+      "explicacion": "Cuando escribís el test antes que el código, necesitás que la unidad sea predecible: dado X, devuelve Y. Para lograrlo, movés los efectos secundarios (escritura en BD, llamadas HTTP, logging) a capas externas y dejás la lógica como una función pura. No es una regla del framework: es una consecuencia natural de diseñar desde el test.",
       "dificultad": 2,
       "tags": [
         "tdd",
@@ -369,15 +369,15 @@
       "id": "cal-019",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "Según Martin Fowler, refactorizar es...",
+      "pregunta": "¿Cuándo es el momento correcto para refactorizar?",
       "opciones": [
-        "Agregar funcionalidades nuevas al sistema",
-        "Reestructurar el código sin cambiar su comportamiento externo",
-        "Reescribir el proyecto desde cero",
-        "Optimizar únicamente la performance"
+        "Solo durante una iteración dedicada exclusivamente a deuda técnica, sin añadir features",
+        "Antes de añadir una feature sobre código confuso, cuando la complejidad crece, o al dejar el código mejor de como estaba al pasar (Boy Scout Rule)",
+        "Únicamente cuando el rendimiento de la app cae por debajo de umbrales medibles",
+        "Al final del sprint, si sobra tiempo tras entregar las tareas planificadas"
       ],
       "correcta": 1,
-      "explicacion": "Refactor = mejorar la estructura interna sin alterar el comportamiento observable: todo sigue funcionando idéntico. Los tests en verde antes y después son la red de seguridad que lo garantiza.",
+      "explicacion": "Refactorizar no necesita una iteración propia: ocurre de forma continua. La Boy Scout Rule dice 'deja el código mejor de como lo encontraste'. También es el momento correcto antes de añadir una feature sobre código confuso (refactorizar primero reduce el riesgo de la feature) o cuando la complejidad crece y el código se vuelve difícil de leer. Siempre con tests en verde antes y después.",
       "dificultad": 1,
       "tags": [
         "refactor"
@@ -565,7 +565,7 @@
       "id": "cal-029",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "Un error rate en producción por encima del 2% se considera...",
+      "pregunta": "Tu equipo fija 0–1% como rango normal de error rate y >1% como señal de investigar. ¿Qué implica sostenerse por encima del 2%?",
       "opciones": [
         "Aceptable",
         "Ideal",
@@ -573,7 +573,7 @@
         "Irrelevante hasta fin de mes"
       ],
       "correcta": 2,
-      "explicacion": "0-1% está bien, más de 1% hay que investigar, y más de 2% es emergencia. Los umbrales binarios claros permiten reaccionar antes de que el problema escale (junto a MTTR bajo).",
+      "explicacion": "Si el equipo fijó 0-1% como normal y >1% como señal de investigar, superar el 2% es ya una emergencia que requiere atención inmediata. Los umbrales explícitos evitan la parálisis de 'cuánto es demasiado': activan el proceso de respuesta antes de que el problema escale y afecte a más usuarios.",
       "dificultad": 2,
       "tags": [
         "metricas",
@@ -647,7 +647,7 @@
       "id": "cal-033",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "Según la matriz por etapa, en un MVP (producto mínimo viable) el balance recomendado es...",
+      "pregunta": "En un producto cuyo valor todavía no está validado, ¿dónde conviene concentrar el esfuerzo de testing?",
       "opciones": [
         "Todo testing exhaustivo desde el día uno",
         "Nada de observabilidad, solo E2E",
@@ -655,7 +655,7 @@
         "Solo métricas de líneas de código"
       ],
       "correcta": 2,
-      "explicacion": "En MVP hay mucha incertidumbre de valor: pesa la observabilidad (errores, recorrido, adopción) y el testing se limita a smoke tests del happy path más lo crítico. En Growth el balance es 50/50 y en Scale pesa más el testing.",
+      "explicacion": "Cuando el valor del producto aún no está validado, la prioridad es aprender rápido. La observabilidad (errores, recorrido, adopción) permite iterar con datos reales; los smoke tests del happy path y lo crítico (pagos, onboarding) son la red de seguridad mínima. Un testing exhaustivo en esta fase retrasa el aprendizaje sin reducir el riesgo más importante: que nadie quiera el producto.",
       "dificultad": 3,
       "tags": [
         "observabilidad",
@@ -669,9 +669,9 @@
       "tipo": "multiple-choice",
       "pregunta": "¿Qué problema resuelve principalmente Sentry?",
       "opciones": [
-        "Compila el TypeScript más rápido",
-        "Genera los tests unitarios del proyecto",
-        "Reemplaza a Git como control de versiones",
+        "Ejecuta los tests E2E en producción automáticamente tras cada deploy",
+        "Genera los tests unitarios del proyecto a partir de los cambios de código detectados",
+        "Agrupa los logs de la aplicación por servicio y nivel de severidad",
         "Captura automáticamente los errores de producción con contexto (navegador, usuario, sesión), sin depender de que el usuario los reporte"
       ],
       "correcta": 3,
@@ -743,19 +743,21 @@
       "id": "cal-038",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cómo se previene la inyección SQL?",
+      "pregunta": "Tu equipo decide validar toda entrada del usuario con Zod en la capa más externa posible de la API antes de procesarla. ¿Qué principio guía esa decisión?",
       "opciones": [
-        "Concatenando el input del usuario directamente en la query",
-        "Mostrando el error de SQL completo al usuario",
-        "Usando queries parametrizadas o un ORM, en vez de armar el SQL concatenando strings",
-        "Guardando la query en localStorage"
+        "Fail fast: detectar y rechazar datos inválidos lo antes posible, antes de que corrompan el estado interno o generen errores difíciles de rastrear",
+        "Garantizar que TypeScript infiera los tipos correctamente en tiempo de compilación, eliminando la necesidad de validaciones en runtime",
+        "Evitar que el bundler incluya código de validación en el bundle del cliente, manteniendo el tamaño mínimo",
+        "Mejorar el rendimiento al reducir las operaciones de lectura en la base de datos, ya que los datos inválidos no llegan a las queries"
       ],
-      "correcta": 2,
-      "explicacion": "El bug aparece al concatenar input en la query. Con parámetros (email = $1) o un ORM, el valor se pasa aparte y se escapa de forma segura durante la ejecución, sin quedar embebido en el string.",
+      "correcta": 0,
+      "explicacion": "Validar en el borde más externo es 'fail fast': si el dato no cumple el schema de Zod, se rechaza de inmediato con un error claro antes de que el dato malformado o malicioso llegue a la lógica de negocio, a la base de datos o a otros servicios. Además, Zod infiere los tipos TypeScript del schema, con lo que la validación en runtime y el tipado estático quedan sincronizados sin duplicar código.",
       "dificultad": 2,
       "tags": [
         "seguridad",
-        "sql-injection"
+        "validacion",
+        "zod",
+        "fail-fast"
       ],
       "estadoDelArte2026": false
     },
@@ -763,19 +765,21 @@
       "id": "cal-039",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "Autenticación (AuthN) vs autorización (AuthZ):",
+      "pregunta": "Un usuario logueado puede borrar recursos de otros usuarios aunque no sea admin. El token es válido y el rol correcto. ¿Qué chequeo falta?",
       "opciones": [
-        "Autenticación = qué podés hacer; autorización = quién sos",
-        "Ambas verifican únicamente el email",
-        "Son sinónimos",
-        "Autenticación = quién sos; autorización = qué podés hacer"
+        "Verificar que el token no esté expirado: aunque válido, un token antiguo puede no tener permisos actualizados",
+        "Verificar la propiedad (ownership): que el recurso que se intenta borrar pertenezca efectivamente al usuario que hace la petición",
+        "Cifrar el id del recurso con la clave pública del usuario antes de recibirlo en el endpoint",
+        "Aplicar rate limiting en ese endpoint para evitar que un usuario borre demasiados recursos seguidos"
       ],
-      "correcta": 3,
-      "explicacion": "AuthN prueba la identidad (quién sos) y entrega un token; AuthZ verifica permisos (qué podés hacer): rol, recursos accesibles y operaciones permitidas. Se confunden pero son fases distintas.",
+      "correcta": 1,
+      "explicacion": "Tener un token válido y el rol correcto no es suficiente: falta la verificación de propiedad. El backend debe comprobar que el recurso que se quiere modificar o borrar pertenece al usuario autenticado. Sin ese chequeo, cualquier usuario puede actuar sobre recursos ajenos — es la vulnerabilidad IDOR (Insecure Direct Object Reference), incluida en OWASP A01 Broken Access Control.",
       "dificultad": 1,
       "tags": [
         "seguridad",
-        "authn-authz"
+        "idor",
+        "authz",
+        "access-control"
       ],
       "estadoDelArte2026": false
     },
@@ -783,20 +787,21 @@
       "id": "cal-040",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "¿Dónde NO conviene guardar el token de sesión?",
+      "pregunta": "¿Por qué React auto-escapa el contenido dinámico por defecto y qué añade una Content Security Policy (CSP) a esa protección?",
       "opciones": [
-        "En localStorage o sessionStorage",
-        "En una cookie HttpOnly",
-        "En una cookie con SameSite=Strict",
-        "En una cookie Secure (solo HTTPS)"
+        "React auto-escapa para mejorar el rendimiento del virtual DOM; la CSP limita el número de re-renders por segundo",
+        "React auto-escapa porque el servidor lo exige antes de servir el HTML; la CSP bloquea scripts no firmados digitalmente",
+        "React auto-escapa el contenido para que el HTML sea válido según W3C; la CSP añade cabeceras de caché que el navegador usa para recursos estáticos",
+        "React auto-escapa para evitar que un string malicioso se interprete como etiqueta o script (XSS); la CSP añade una capa declarando qué orígenes de scripts son permitidos, reduciendo el impacto si un escape falla o se usa dangerouslySetInnerHTML"
       ],
-      "correcta": 0,
-      "explicacion": "localStorage y sessionStorage son accesibles desde JavaScript, así que un ataque XSS puede robar el token. La cookie HttpOnly no es accesible por JS; combinada con Secure y SameSite es la opción segura.",
+      "correcta": 3,
+      "explicacion": "React convierte caracteres especiales (<, >, &, etc.) en entidades HTML antes de insertarlos en el DOM, lo que previene que un string como '<script>alert(1)</script>' se ejecute. Es la defensa primaria contra XSS. La CSP es la segunda capa: una cabecera HTTP que dice al navegador qué orígenes de scripts están permitidos; si un script se cuela (por dangerouslySetInnerHTML, una dependencia comprometida o un fallo de escape), la CSP lo bloquea antes de que ejecute.",
       "dificultad": 2,
       "tags": [
         "seguridad",
-        "jwt",
-        "xss"
+        "xss",
+        "csp",
+        "react"
       ],
       "estadoDelArte2026": false
     },
@@ -804,20 +809,21 @@
       "id": "cal-041",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "El usuario está autenticado pero intenta borrar un recurso sin tener el rol necesario. ¿Qué código HTTP corresponde?",
+      "pregunta": "Una API devuelve 403 Forbidden cuando un usuario autenticado accede a un recurso que existe pero al que no tiene permiso. ¿Por qué en ciertos contextos se prefiere devolver 404 en su lugar?",
       "opciones": [
-        "401 Unauthorized",
-        "403 Forbidden",
-        "404 Not Found",
-        "200 OK"
+        "Porque 403 no es compatible con todos los clientes HTTP y puede causar errores de parsing en algunos SDKs",
+        "Para no revelar que el recurso existe: un 403 confirma que el objeto existe pero está prohibido; un 404 niega su existencia, evitando filtrar información sensible a quien no debería conocerla",
+        "Porque devolver 404 mejora el SEO: los buscadores no penalizan páginas con ese código como sí hacen con el 403",
+        "Para ahorrar ancho de banda: la respuesta 404 es más pequeña que la 403 en la mayoría de frameworks"
       ],
       "correcta": 1,
-      "explicacion": "401 = no autenticado (no probó quién es). 403 = autenticado pero sin permiso para esa acción. La diferencia importa para no filtrar información y para responder correctamente.",
+      "explicacion": "Un 403 confirma implícitamente que el recurso existe (existe pero está prohibido). En recursos sensibles — cuentas de otros usuarios, facturas, contratos — esa confirmación ya es una fuga de información. Devolver 404 niega la existencia del recurso para quien no tiene acceso, ocultando si hay algo ahí. La elección entre 403 y 404 depende del nivel de privacidad requerido: APIs internas suelen preferir 403 por claridad; APIs públicas con datos sensibles prefieren 404.",
       "dificultad": 2,
       "tags": [
         "seguridad",
+        "http",
         "authz",
-        "http"
+        "information-disclosure"
       ],
       "estadoDelArte2026": false
     },
@@ -827,8 +833,8 @@
       "tipo": "multiple-choice",
       "pregunta": "OWASP A01 (Broken Access Control): ¿por qué deshabilitar un botón de admin SOLO en el frontend es inseguro?",
       "opciones": [
-        "Porque el botón se ve feo",
-        "Porque consume demasiada memoria",
+        "Porque el atributo disabled no viaja en el formulario HTML y el servidor nunca lo recibe como parte de los datos",
+        "Porque React re-renderiza el botón al cambiar el estado y puede quedar habilitado momentáneamente durante la transición",
         "Porque se puede saltar quitando el atributo 'disabled' con el inspector; el rol hay que validarlo en el backend",
         "Porque rompe el coverage de tests"
       ],
@@ -846,20 +852,20 @@
       "id": "cal-043",
       "modulo": "10-calidad",
       "tipo": "multiple-choice",
-      "pregunta": "ESTADO DEL ARTE 2026 — La edición 2025 del OWASP Top 10 sumó como categoría propia, por su crecimiento, las fallas en...",
+      "pregunta": "ESTADO DEL ARTE 2026 — En 2024, Google reemplazó FID (First Input Delay) por INP (Interaction to Next Paint) como métrica Core Web Vital. ¿Qué mejora INP respecto a FID?",
       "opciones": [
-        "La cantidad de comentarios en el código",
-        "El diseño de logos",
-        "La velocidad de compilación",
-        "La cadena de suministro de software (software supply chain)"
+        "Mide el tiempo hasta que el primer byte de la respuesta llega al navegador, en lugar del tiempo hasta el primer pintado visual",
+        "Reemplaza la medición de la carga de recursos estáticos por la detección de scripts bloqueantes en el hilo principal",
+        "Mide todas las interacciones del usuario a lo largo de la sesión (no solo la primera), ofreciendo una imagen más completa de la capacidad de respuesta de la página",
+        "Sustituye a LCP como métrica principal de rendimiento de carga para páginas con contenido interactivo"
       ],
-      "correcta": 3,
-      "explicacion": "La lista se actualiza cada 3-4 años sobre datos reales. La edición 2025 destaca las fallas de la cadena de suministro (dependencias/artefactos comprometidos) como categoría propia — de ahí la importancia de auditar dependencias (npm audit, Snyk, Dependabot).",
+      "correcta": 2,
+      "explicacion": "FID solo medía el retraso en la primera interacción del usuario (normalmente al cargar). INP observa todas las interacciones de la sesión (clics, taps, pulsaciones de tecla) y reporta el percentil 75 del tiempo desde la interacción hasta el siguiente frame pintado. Esto da una imagen más fiel de la capacidad de respuesta real: una app puede tener un buen FID pero un INP pésimo si las interacciones posteriores son lentas. Desde marzo de 2024, INP es la métrica oficial en el conjunto Core Web Vitals.",
       "dificultad": 3,
       "tags": [
-        "seguridad",
-        "owasp",
-        "supply-chain",
+        "rendimiento",
+        "core-web-vitals",
+        "inp",
         "bonus"
       ],
       "estadoDelArte2026": true

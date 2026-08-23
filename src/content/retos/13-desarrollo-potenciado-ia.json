@@ -53,15 +53,15 @@
       "id": "dpi-003",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "Según la práctica de TDD aplicada en el proyecto front, ¿cuál es el orden correcto de los pasos al añadir una nueva funcionalidad?",
+      "pregunta": "Al trabajar con un agente de IA en TDD, el agente encuentra que un test falla repetidamente y propone modificar el test para que pase. ¿Qué debes hacer?",
       "opciones": [
-        "Escribir el test que falla → implementar el mínimo código para que pase → refactorizar",
-        "Implementar el código → escribir el test para validarlo → refactorizar si queda tiempo",
-        "Diseñar la interfaz visual → escribir el código → añadir el test como documentación",
-        "Escribir el test → refactorizar el código existente → verificar que el test pasa"
+        "Aceptar el cambio si el agente justifica que los assertions originales eran demasiado estrictos para el caso de uso real",
+        "Pedirle al agente que regenere el test desde cero con un enfoque diferente, sin modificar la implementación",
+        "Rechazarlo: el test define el contrato esperado; es la implementación la que debe adaptarse al test, no al revés",
+        "Eliminar temporalmente el test y añadirlo de nuevo cuando la implementación esté estabilizada"
       ],
-      "correcta": 0,
-      "explicacion": "TDD sigue siempre el ciclo rojo-verde-refactor: primero el test que falla (rojo), luego el mínimo código que lo hace pasar (verde), y finalmente la refactorización. Un principio que se reitera en el módulo: el test nunca se adapta al código para que pase; es el código el que se adapta al test, nunca al revés.",
+      "correcta": 2,
+      "explicacion": "En TDD el test es el contrato: expresa el comportamiento esperado. Si falla, el problema está en la implementación, no en el test. Un agente que modifica el test para que pase está rompiendo el contrato a escondidas: el código 'pasa' pero ya no cumple el requisito original. Debés rechazarlo y guiar al agente a corregir la implementación. Este principio —el test no se toca para que pase; se toca la implementación— es la regla más importante al usar TDD con agentes.",
       "dificultad": 1,
       "tags": [
         "front",
@@ -96,15 +96,15 @@
       "id": "dpi-005",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "En el proyecto front, la lógica de descuentos se implementó con el patrón Strategy. ¿Cuál es la ventaja principal de este enfoque frente a un único bloque de condicionales?",
+      "pregunta": "El equipo implementó la lógica de descuentos con el patrón Strategy (interfaz con isApplicable y calculate). ¿Cómo se estructura la suite de tests en Vitest para validarla correctamente?",
       "opciones": [
-        "Permite calcular los descuentos sin tests unitarios, ya que cada estrategia es autónoma y verificable visualmente",
-        "Cada regla de negocio queda encapsulada en su propia clase, facilitando añadir, quitar o modificar reglas sin tocar el resto",
-        "Reduce el número de archivos del proyecto al centralizar toda la lógica en un único módulo de descuentos",
-        "Obliga a usar programación funcional pura, eliminando efectos secundarios en el estado del carrito"
+        "Un único test que instancia todas las estrategias en secuencia y verifica que la suma total de descuentos cuadra con el resultado esperado del carrito",
+        "Una suite por estrategia concreta, cada una verificando isApplicable y calculate contra la misma interfaz, sin tocar el motor que las compone",
+        "Tests de integración que arrancan el servidor completo y validan el precio final en la respuesta HTTP, para garantizar que el motor de composición funciona de extremo a extremo",
+        "Mocks globales de todas las estrategias para aislar el motor y evitar que la lógica de una estrategia interfiera con la de otra en paralelo"
       ],
       "correcta": 1,
-      "explicacion": "El patrón Strategy define una interfaz común (en este caso DiscountStrategy con isApplicable y calculate) y cada regla de negocio la implementa de forma independiente. Añadir una nueva regla no rompe las existentes; quitarla no afecta al resto. Los bloques de condicionales crecen y se vuelven difíciles de mantener cuando las reglas de negocio se multiplican.",
+      "explicacion": "El patrón Strategy define una interfaz común (isApplicable + calculate). Testearla bien significa una suite por cada implementación concreta: se verifica que isApplicable devuelve true o false en los casos límite y que calculate produce el descuento correcto. Al testear cada estrategia por separado contra la misma interfaz, los tests son independientes entre sí: añadir una estrategia nueva no rompe los tests existentes, y quitar una no afecta al motor.",
       "dificultad": 2,
       "tags": [
         "front",
@@ -118,15 +118,15 @@
       "id": "dpi-006",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "En el proyecto front, el botón 'Añadir al carrito' sigue un ciclo de estados visuales (Optimistic UI / microcopy). ¿Cuál es la secuencia correcta?",
+      "pregunta": "Mientras una acción asíncrona está en curso (por ejemplo, añadir un producto al carrito), ¿qué debe comunicar la UI y qué debe mostrar al completarse?",
       "opciones": [
-        "idle → loading → success/error → idle",
-        "idle → success → loading → error → idle",
-        "pending → active → resolved → idle",
-        "loading → idle → success/error"
+        "No debe cambiar durante la acción para evitar re-renders innecesarios; el resultado se muestra al recibir la respuesta del servidor",
+        "Debe deshabilitar el elemento que disparó la acción y mostrar feedback de progreso (spinner o texto); al completarse, muestra un estado de éxito o un error accionable",
+        "Debe mostrar un modal de confirmación antes de enviar la petición, para reducir el número de llamadas al servidor",
+        "Puede mantener el elemento activo siempre que el servidor responda en menos de 200 ms, dado que el usuario no percibe la espera"
       ],
-      "correcta": 0,
-      "explicacion": "El patrón Optimistic UI usa el ciclo idle → loading → success/error → idle. Mientras la acción se procesa, el botón muestra 'Adding...'; si tiene éxito, 'Added'; si falla, ofrece la opción de reintentar. Tras 1,5–3 segundos, vuelve a idle. Este microcopy claro reduce la incertidumbre del usuario y mejora la percepción de respuesta del sistema.",
+      "correcta": 1,
+      "explicacion": "Deshabilitar el elemento evita envíos duplicados y señala que el sistema está procesando. El feedback de progreso (un spinner, cambiar el texto del botón a 'Añadiendo...') elimina la incertidumbre: el usuario sabe que su acción fue recibida. Al completarse, el estado de éxito confirma el resultado; si algo falla, el error debe ser accionable (qué pasó, qué puede hacer). Este ciclo —acción bloqueada con feedback → resultado claro— es el estándar de UX para operaciones asíncronas.",
       "dificultad": 2,
       "tags": [
         "front",
@@ -140,15 +140,15 @@
       "id": "dpi-007",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "¿Qué problema resuelve el patrón Page Object en los tests E2E de Playwright del proyecto front?",
+      "pregunta": "Al escribir tests E2E con Playwright, ¿cuál es el orden de preferencia para seleccionar elementos?",
       "opciones": [
-        "Permite ejecutar los tests en paralelo en múltiples navegadores sin cambiar el código de test",
-        "Elimina la necesidad de usar selectores de DOM, reemplazándolos por descripciones en lenguaje natural",
-        "Centraliza los selectores y acciones de cada pantalla en métodos reutilizables, de modo que un cambio de UI solo requiere actualizarlo en un lugar",
-        "Genera automáticamente capturas de pantalla en cada paso del test para facilitar el debugging"
+        "Siempre usar selectores CSS por clase, ya que son los más estables ante cambios de contenido textual o de atributos semánticos",
+        "Primero el id del DOM, después la clase CSS, y data-testid solo cuando ninguno de los anteriores está disponible",
+        "Primero getByRole o getByText (semántica accesible), y solo cuando no existe una alternativa semántica adecuada, data-testid",
+        "Usar exclusivamente XPath, ya que permite seleccionar cualquier elemento sin depender de la estructura del componente"
       ],
       "correcta": 2,
-      "explicacion": "El Page Object encapsula en una clase los selectores y las acciones (navegar, hacer clic, rellenar formularios) de una pantalla concreta. Si un selector cambia en la UI, solo hay que actualizarlo en ese Page Object, no en todos los tests que usan esa pantalla. En el proyecto se usan selectores accesibles (getByRole, getByText) y data-testid solo cuando no hay alternativa más semántica.",
+      "explicacion": "Playwright recomienda seleccionar por rol semántico o texto visible primero (getByRole, getByLabel, getByText) porque esos selectores validan accesibilidad además de funcionalidad: si el rol desaparece, el test te avisa de un problema real. Los selectores CSS por clase o id cambian con refactors de UI y producen falsos negativos. El data-testid es el último recurso: útil para elementos sin rol semántico claro, pero añade atributos solo para tests. Seleccionar bien reduce el mantenimiento del suite.",
       "dificultad": 2,
       "tags": [
         "front",
@@ -193,7 +193,7 @@
         "Android serializa la variable como estado de configuración y puede causar un crash al rotar la pantalla"
       ],
       "correcta": 0,
-      "explicacion": "En Compose, cada cambio de estado provoca que el bloque composable se reejecutie (recomposición). Si el texto está en una variable local, la recomposición la reinicializa y el valor teclado se pierde en un bucle continuo. La solución es remember { mutableStateOf(\"\") }: remember conserva el valor entre recomposiciones y mutableStateOf lo convierte en un estado observable que Compose sabe cuándo repintar.",
+      "explicacion": "En Compose, cada cambio de estado provoca que el bloque composable se reejecute (recomposición). Si el texto está en una variable local, la recomposición la reinicializa y el valor teclado se pierde en un bucle continuo. La solución es remember { mutableStateOf(\"\") }: remember conserva el valor entre recomposiciones y mutableStateOf lo convierte en un estado observable que Compose sabe cuándo repintar.",
       "dificultad": 2,
       "tags": [
         "mobile",
@@ -230,15 +230,15 @@
       "id": "dpi-011",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "Al implementar scroll infinito en la app Android, el primer intento manual de paginación tenía un bug: cada página nueva sobreescribía la lista anterior. ¿Cuál fue la solución adoptada y cuál es el aprendizaje general del módulo sobre este tipo de problema?",
+      "pregunta": "Cuando un agente de IA se atasca en un problema técnico complejo y sus sucesivos intentos no mejoran, ¿qué estrategia suele ser más efectiva?",
       "opciones": [
-        "Se aumentó el tamaño de página para reducir la frecuencia de las llamadas y así minimizar el conflicto de estados",
-        "Se implementó un mutex para serializar las llamadas al repositorio y evitar condiciones de carrera",
-        "Se migró a Paging 3, la librería oficial de Android para paginación; el aprendizaje es que cuando la IA no resuelve algo complejo, conviene guiarla con el nombre técnico correcto",
-        "Se cachearon los resultados en Room y se cargaron desde la base de datos local en vez de acumularlos en el ViewModel"
+        "Pedirle al agente que relea el código completo desde el principio para localizar el error sin guías adicionales",
+        "Dividir el problema en subtareas más pequeñas y dejar que el agente explore cada una de forma independiente",
+        "Proporcionar al agente el nombre técnico preciso del patrón, librería o concepto que resuelve el problema",
+        "Reiniciar la conversación con el agente para que parta de un contexto limpio, sin el sesgo de los intentos previos"
       ],
       "correcta": 2,
-      "explicacion": "La paginación manual reemplazaba la lista en vez de acumularla. Cuando insistir en que la IA 'lo arregle' no funcionó, la solución fue indicarle directamente la librería correcta: Paging 3. El aprendizaje generalizable: cuando la IA no acierta con algo complejo, guiarla con el nombre de la librería o el patrón adecuado es más eficaz que pedirle que corrija el código sin más contexto.",
+      "explicacion": "Cuando la IA no resuelve algo complejo a pesar de varios intentos, el problema suele ser de vocabulario: describe síntomas pero no sabe qué buscar. Nombrándole el concepto exacto —el patrón de diseño, la librería correcta, el término técnico del dominio— se le da el ancla que le faltaba y puede buscar y aplicar la solución. Es más eficaz que pedir 'inténtalo de otra forma' o reiniciar el contexto. El dominio técnico del desarrollador sigue siendo indispensable para guiar al agente cuando se atasca.",
       "dificultad": 3,
       "tags": [
         "mobile",
@@ -322,13 +322,13 @@
       "tipo": "multiple-choice",
       "pregunta": "¿Qué diferencia práctica aportan los ficheros .prompt (dot prompt) respecto a definir los prompts en el código fuente con definePrompt()?",
       "opciones": [
-        "Los ficheros .prompt permiten usar modelos de distintos proveedores en el mismo proyecto, algo que definePrompt() no admite",
+        "Convierten automáticamente el historial de prompts en un dataset de fine-tuning compatible con Vertex AI",
         "Eliminan la necesidad de usar Zod para definir schemas, porque el sistema infiere los tipos automáticamente del contenido del fichero",
-        "Permiten que los prompts vivan en un repositorio separado del código con ciclos de despliegue independientes, de modo que cambiar un prompt no implica desplegar la aplicación",
-        "Convierten los prompts en endpoints HTTP, exponiendo cada fichero .prompt como una ruta de la API de la aplicación"
+        "Separan el texto del prompt del código fuente: el front-matter declara el modelo, los parámetros y el schema de salida; el cuerpo usa plantillas Handlebars, lo que permite editar y versionar prompts sin recompilar ni redesplegar la aplicación",
+        "Convierten los prompts en endpoints HTTP, exponiendo cada fichero .prompt como una ruta de la API automáticamente"
       ],
       "correcta": 2,
-      "explicacion": "Los ficheros .prompt (proyecto open source de Google) usan Handlebars como lenguaje de plantillas y separan el texto del prompt del código fuente. Esto permite que el equipo de contenido o de producto gestione los prompts en otro repositorio con su propio ciclo de vida: actualizar un prompt es una operación de configuración, no un despliegue de código. definePrompt() también es reutilizable, pero el prompt vive acoplado al código.",
+      "explicacion": "Los ficheros .prompt (formato open source de Google) encapsulan un prompt completo: el front-matter YAML define el modelo, temperatura, schema de entrada/salida y otros parámetros; el cuerpo usa plantillas Handlebars para la lógica de plantilla. Al vivir fuera del código fuente, los prompts se pueden editar, revisar y versionar de forma independiente, sin pasar por el ciclo de compilación y despliegue de la aplicación. definePrompt() también reutiliza prompts, pero los mantiene acoplados al código.",
       "dificultad": 3,
       "tags": [
         "genkit",
@@ -430,15 +430,15 @@
       "id": "dpi-020",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "Al delegar una tarea en un subagente, ¿cuál es la ventaja principal para el orquestador?",
+      "pregunta": "Al delegar una tarea en un subagente, ¿qué se pierde respecto a procesarla directamente en el orquestador?",
       "opciones": [
-        "El subagente puede acceder directamente a toda la memoria del orquestador, evitando repetir información en el prompt de delegación",
-        "El orquestador se libera del coste de tokens de la tarea delegada porque la facturación pasa a nombre del subagente",
-        "El subagente puede ejecutar acciones que el orquestador tiene prohibidas por sus permisos de seguridad",
-        "Toda la información que el subagente recopila durante su tarea carga en su propio contexto, no en el del orquestador; el orquestador solo recibe el informe final"
+        "El subagente no puede usar herramientas de lectura de archivos, solo herramientas de escritura y ejecución de comandos",
+        "La delegación siempre duplica el coste en tokens porque el subagente recibe y reprocesa todo el historial del orquestador",
+        "El contexto explorado por el subagente —archivos leídos, comandos ejecutados, documentación consultada— no viaja al orquestador; solo llega el informe final, que hay que verificar antes de actuar sobre él",
+        "El subagente no puede ejecutar más de una herramienta por turno, lo que lo hace más lento para tareas con múltiples pasos"
       ],
-      "correcta": 3,
-      "explicacion": "Un subagente arranca con un contexto completamente limpio y recibe del orquestador únicamente el prompt con la tarea específica. Al explorar archivos, ejecutar comandos o leer documentación, toda esa información carga en su propio contexto. Cuando termina, entrega al orquestador un informe resumido. Así el orquestador mantiene su contexto libre de ruido y solo acumula las conclusiones de cada delegación.",
+      "correcta": 2,
+      "explicacion": "Un subagente arranca con contexto limpio: recibe solo el prompt con la tarea específica. Todo lo que explora (archivos, comandos, documentación) carga en su propio contexto, no en el del orquestador. Al terminar, entrega un informe resumido. Eso significa que el orquestador no tiene acceso directo a lo que el subagente descubrió: solo ve las conclusiones. Por eso hay que verificar el informe antes de actuar — si el subagente omitió algo o malinterpretó un resultado, el orquestador no puede detectarlo mirando el historial.",
       "dificultad": 2,
       "tags": [
         "subagentes",
@@ -540,21 +540,21 @@
       "id": "dpi-025",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "ESTADO DEL ARTE 2026 — ¿Qué framework de IA generativa utilizan internamente por defecto herramientas de Google como Firebase Studio y Antigravity para las llamadas a LLMs cuando generan código?",
+      "pregunta": "ESTADO DEL ARTE 2026 — ¿Cuáles de estas características son contrastables del framework Genkit, creado por el equipo de Firebase/Google para aplicaciones con IA generativa?",
       "opciones": [
-        "Genkit, el framework open source creado por el equipo de Firebase/Google",
-        "LangChain, que Google adoptó como estándar para sus productos de IA generativa en 2025",
-        "Vertex AI SDK directo, sin framework intermedio de alto nivel",
-        "Vercel AI SDK, integrado vía acuerdo entre Google y Vercel para sus herramientas de desarrollo"
+        "Es software propietario, solo disponible para proyectos con Firebase Blaze Plan activo; no existe repositorio público",
+        "Requiere Vertex AI como único proveedor de modelos y no admite modelos de terceros ni locales",
+        "Es open source (repositorio público en GitHub), incluye una Developer UI local para probar y depurar flujos, emite trazas compatibles con OpenTelemetry y soporta múltiples proveedores de modelos",
+        "Reemplaza completamente a Firebase Authentication y Firestore en proyectos que usen IA generativa"
       ],
-      "correcta": 0,
-      "explicacion": "Según lo mencionado en el módulo, Firebase Studio y Antigravity usan Genkit internamente por defecto para las llamadas a LLMs cuando generan código. Genkit es el framework open source creado por el equipo de Firebase, pensado para aplicaciones backend con IA generativa. Su uso en productos propios de Google confirma la apuesta del ecosistema Google por este framework en 2026.",
+      "correcta": 2,
+      "explicacion": "Genkit es el framework open source del equipo de Firebase/Google para construir aplicaciones con IA generativa en el backend (Node.js, Go). Sus características contrastables incluyen: repositorio público en GitHub (firebase/genkit), una Developer UI local que permite inspeccionar y probar flujos y prompts, soporte nativo para múltiples proveedores de modelos (Google AI, Vertex AI, Ollama, OpenAI, etc.) y trazas de observabilidad compatibles con OpenTelemetry. Es independiente del plan de Firebase y no reemplaza otros servicios de Firebase.",
       "dificultad": 3,
       "tags": [
         "genkit",
         "firebase",
         "ecosistema",
-        "estadoDelArte2026"
+        "bonus"
       ],
       "estadoDelArte2026": true
     },
@@ -597,7 +597,7 @@
         "rol-desarrollador",
         "gentleman-cli",
         "ecosistema",
-        "estadoDelArte2026"
+        "bonus"
       ],
       "estadoDelArte2026": true
     },
@@ -622,7 +622,7 @@
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "abierta",
       "pregunta": "Explicá el flujo de fases del Spec Driven Development (SDD) con OpenSpec: ¿cuáles son las fases, en qué consiste cada una y qué rol tienen los subagentes a lo largo del proceso?",
-      "rubrica": "Debe mencionar las siguientes fases en orden aproximado: (1) explorar el estado actual del proyecto; (2) propuesta (entender qué se quiere construir y por qué, problema de negocio); (3) definir specs y diseño (requerimientos, arquitectura, planos); (4) crear tareas concretas derivadas de las specs; (5) aplicar con TDD (ciclo rojo-verde-refactor generando tests a partir de los requerimientos antes que el código); (6) verificar contra las specs con clasificación crítico/warning/sugerencia; (7) archivar lo aprendido en Engram u OpenSpec. Debe mencionar también que cada fase se delega en un subagente con contexto limpio y acotado, y que el orquestador coordina y se comunica con el humano manteniendo la trazabilidad.",
+      "rubrica": "Debe mencionar que en el enfoque Spec Driven Development se especifica antes de implementar (la spec define qué se va a construir y por qué), se derivan tareas concretas de esa spec, el resultado se verifica contra la spec y cada fase se delega en un agente con contexto limpio y acotado para evitar la contaminación entre fases. No es necesario recitar las fases en orden literal ni usar nombres específicos del framework.",
       "fallbackId": "dpi-023",
       "dificultad": 3,
       "tags": [
@@ -639,7 +639,7 @@
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "abierta",
       "pregunta": "Explicá qué es Engram, qué tipo de información guarda y cómo se integra con un agente de IA para persistir información entre sesiones y entre subagentes.",
-      "rubrica": "Debe mencionar: (1) Engram es una herramienta de memoria basada en SQLite con búsqueda de texto FTS5 (no vectores), deliberadamente simple frente a soluciones más complejas; (2) guarda señales (decisiones de arquitectura, patrones adoptados, bugs corregidos), no el historial completo de prompts ni respuestas; (3) se expone como servidor MCP (Model Context Protocol) con herramientas invocables por el agente, como mem_context o mem_get_observation; (4) permite que la información persista entre sesiones (incluso en distintas máquinas) y sea compartida entre subagentes y el orquestador, evitando repetir los mismos errores en sesiones futuras.",
+      "rubrica": "Debe mencionar: (1) Engram es una herramienta de memoria deliberadamente simple basada en SQLite con búsqueda de texto; (2) guarda señales (decisiones de arquitectura, patrones adoptados, bugs corregidos), no el historial completo de prompts ni respuestas; (3) se expone como servidor MCP con herramientas que el agente invoca para leer y escribir memoria persistente; (4) permite que la información persista entre sesiones y sea compartida entre subagentes y el orquestador. No es necesario mencionar nombres exactos de herramientas MCP.",
       "fallbackId": "dpi-021",
       "dificultad": 3,
       "tags": [
