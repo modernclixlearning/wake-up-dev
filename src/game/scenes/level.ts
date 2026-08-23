@@ -151,7 +151,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     k.add([
       k.text("Oráculo", { size: 12 }),
       k.pos(70, CARRIL_SUPERIOR + 20 + ALTO_AGENTE + 6),
-      k.color(...VERDE_OSCURO),
+      k.color(...VERDE),
       k.z(1),
     ]);
 
@@ -521,11 +521,33 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     k.onKeyDown("right", () => !bloqueado() && player.move(VELOCIDAD, 0));
     k.onKeyDown("up", () => !bloqueado() && player.move(0, -VELOCIDAD));
     k.onKeyDown("down", () => !bloqueado() && player.move(0, VELOCIDAD));
+    const RADIO_ORACULO = 80;
+    let textoProximidad: GameObj | null = null;
+
     player.onUpdate(() => {
       player.pos.x = k.clamp(player.pos.x, 0, anchoNivel - ANCHO_NEO);
       player.pos.y = k.clamp(player.pos.y, CARRIL_SUPERIOR, CARRIL_INFERIOR - ALTO_NEO);
       const camX = k.clamp(player.pos.x, ANCHO / 2, Math.max(ANCHO / 2, anchoNivel - ANCHO / 2));
       k.setCamPos(camX, ALTO / 2);
+
+      // Señal de proximidad del Oráculo (wud#10): texto flotante cuando Neo está cerca.
+      // Sin k.fixed(): coordenadas de mundo, sigue al NPC (que es estático en x≈70).
+      // Sin corchetes en k.text(): Kaplay los parsea como tags y lanza error por frame.
+      if (player.pos.dist(oraculo.pos) < RADIO_ORACULO && !hayOverlayAbierto() && !bloqueado()) {
+        if (!textoProximidad) {
+          textoProximidad = k.add([
+            k.text("Preguntame tus dudas", { size: 11 }),
+            k.pos(oraculo.pos.x - 40, oraculo.pos.y - ALTO_AGENTE - 10),
+            k.color(...VERDE),
+            k.z(4),
+          ]);
+        }
+      } else {
+        if (textoProximidad) {
+          k.destroy(textoProximidad);
+          textoProximidad = null;
+        }
+      }
     });
 
     // ---- Ataque de Neo (F12): ESPACIO = piña contra Smiths / disparo contra el Jefe ----
