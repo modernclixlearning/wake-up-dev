@@ -69,6 +69,7 @@ Documentado en [tools/pipeline-contenido.md](tools/pipeline-contenido.md) (promp
 
 - **No tragarse los `keyup`**: el overlay corta `keydown`/`keypress` (para que el juego no reciba lo tipeado) pero debe dejar pasar los `keyup`. Si se los traga, Kaplay queda con la tecla "pisada" (la flecha con la que llegaste al NPC), y al cerrar el overlay el jugador camina solo de vuelta → loop de reapertura.
 - Aún dejando pasar los `keyup`, un evento que burbujea desde un input **no pasa por el canvas** (es un nodo hermano): por eso `cerrarOverlay()` además emite `keyup` sintéticos de las 4 flechas a todos los targets. No quitar esa liberación.
+- **El listener de teclado del overlay tiene que cubrir el foco PERDIDO**: escuchar solo en el root del overlay parece suficiente hasta que el jugador *clickea* un div no focusable del panel (el log del chat, un párrafo) — ahí el foco cae en `<body>` y sus `keydown` ya no atraviesan el root, así que el ESC deja de cerrar (el botón con el mouse sigue andando, lo que despista el diagnóstico). Bug real: aparecía justo tras el cartel "conectá una API key", porque sin IA el jugador *lee* el cartel y leer invita a clickear. Arreglo: además del listener del root, uno a nivel `document` mientras haya overlay, que actúe solo sobre teclas cuyo `target` esté FUERA del overlay (cerrar con ESC, cortar el resto, y devolver el foco al primer campo del panel) y se remueva al cerrar.
 - Al cerrar un overlay de NPC, **alejar al jugador** del NPC para no re-disparar el `onCollide` al instante.
 
 ### Capa IA
