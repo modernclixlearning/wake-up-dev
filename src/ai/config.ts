@@ -2,6 +2,7 @@
 
 export type ProviderId =
   | "ninguno"
+  | "proxy"
   | "anthropic"
   | "openai"
   | "gemini"
@@ -15,6 +16,8 @@ export interface AIConfig {
 }
 
 export const MODELOS_DEFAULT: Record<Exclude<ProviderId, "ninguno">, string> = {
+  // El proxy no usa modelo del lado del cliente.
+  proxy: "",
   anthropic: "claude-opus-4-8",
   openai: "gpt-4o-mini",
   gemini: "gemini-2.0-flash",
@@ -49,6 +52,8 @@ export function guardarConfig(config: AIConfig, storage: Storage = localStorage)
 
 export function configCompleta(config: AIConfig): boolean {
   if (config.provider === "ninguno") return false;
+  // El proxy no lleva API key del lado del cliente.
+  if (config.provider === "proxy") return true;
   // Los bridges headless usan la sesión local del CLI: no necesitan API key.
   if (config.provider === "claude-headless" || config.provider === "copilot-headless") return true;
   return config.apiKey.trim() !== "";

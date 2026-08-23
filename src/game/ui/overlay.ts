@@ -223,6 +223,7 @@ export function abrirAjustes(onGuardado: (config: AIConfig) => void): void {
   select.style.cssText =
     "width:100%;background:#000;color:#dcffdc;border:1px solid #007a28;padding:8px;font-family:inherit";
   for (const [valor, texto] of [
+    ["proxy", "🔮 Oráculo del TFM (sin API key — usa el servidor del sitio, tiene límite de uso)"],
     ["ninguno", "Sin IA (fallback estático)"],
     ["anthropic", "Anthropic (Claude)"],
     ["openai", "OpenAI (GPT)"],
@@ -242,15 +243,20 @@ export function abrirAjustes(onGuardado: (config: AIConfig) => void): void {
   const inputKey = campo(panel, "API key");
   inputKey.type = "password";
   inputKey.value = config.apiKey;
+  // El campo de API key no aplica para el proxy ni los bridges headless.
+  const sinKey = (p: string) => p === "proxy" || p === "claude-headless" || p === "copilot-headless" || p === "ninguno";
 
   const inputModel = campo(panel, "Modelo (vacío = default del proveedor)");
   inputModel.value = config.model;
-  const actualizarPlaceholder = () => {
+  const actualizarCampos = () => {
     const p = select.value as ProviderId;
     inputModel.placeholder = p !== "ninguno" ? MODELOS_DEFAULT[p as keyof typeof MODELOS_DEFAULT] : "";
+    const ocultarKey = sinKey(p);
+    (inputKey.previousElementSibling as HTMLElement | null)?.style.setProperty("display", ocultarKey ? "none" : "");
+    inputKey.style.display = ocultarKey ? "none" : "";
   };
-  select.onchange = actualizarPlaceholder;
-  actualizarPlaceholder();
+  select.onchange = actualizarCampos;
+  actualizarCampos();
 
   panel.appendChild(
     boton("GUARDAR", () => {

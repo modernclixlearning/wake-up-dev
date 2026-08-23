@@ -5,6 +5,7 @@ import { AIConfig, cargarConfig, configCompleta, guardarConfig } from "../src/ai
 import { crearProvider, hayIA } from "../src/ai/factory";
 import { GeminiAdapter } from "../src/ai/gemini-adapter";
 import { OpenAIAdapter } from "../src/ai/openai-adapter";
+import { ProxyAdapter } from "../src/ai/proxy-adapter";
 import { parsearEvaluacion, systemOraculo } from "../src/ai/prompts";
 import { StaticFallback } from "../src/ai/static-fallback";
 import { RetoAbierta } from "../src/domain/reto";
@@ -69,6 +70,10 @@ describe("config BYOK", () => {
     expect(configCompleta({ provider: "claude-headless", apiKey: "", model: "" })).toBe(true);
     expect(configCompleta({ provider: "copilot-headless", apiKey: "", model: "" })).toBe(true);
   });
+
+  it("el proxy no necesita key", () => {
+    expect(configCompleta({ provider: "proxy", apiKey: "", model: "" })).toBe(true);
+  });
 });
 
 describe("factory", () => {
@@ -79,6 +84,7 @@ describe("factory", () => {
   });
 
   const casos: Array<[AIConfig["provider"], string]> = [
+    ["proxy", "proxy"],
     ["anthropic", "anthropic"],
     ["openai", "openai"],
     ["gemini", "gemini"],
@@ -305,5 +311,92 @@ describe("AnthropicAdapter (fetch inyectado)", () => {
     );
     const r = await adapter.evaluarAbierta(retoAbierta, "buena respuesta");
     expect(r.aprobado).toBe(true);
+  });
+});
+
+const retoMCProxy = {
+  id: "p-0",
+  modulo: "p",
+  tipo: "multiple-choice" as const,
+  pregunta: "¿Qué es un transformer?",
+  opciones: ["una red neuronal", "una red convolucional"],
+  correcta: 0,
+  explicacion: "",
+  dificultad: 1 as const,
+  tags: [],
+  estadoDelArte2026: false,
+};
+
+describe("ProxyAdapter (fetch mockeado)", () => {
+  it("preguntarOraculo hace POST con tipo='oraculo' y devuelve el texto", async () => {
+    let bodyEnviado: unknown = null;
+    const fetchEspia = (async (_url: unknown, init?: RequestInit) => {
+      bodyEnviado = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ texto: "sigue el conejo blanco" }), { status: 200 });
+    }) as unknown as typeof fetch;
+    const adapter = new ProxyAdapter(fetchEspia);
+    const resultado = await adapter.preguntarOraculo("ctx del módulo", "¿qué es un LLM?");
+    expect(resultado).toBe("sigue el conejo blanco");
+    expect((bodyEnviado as { tipo: string; contexto: string; pregunta: string }).tipo).toBe("oraculo");
+    expect((bodyEnviado as { contexto: string }).contexto).toBe("ctx del módulo");
+    expect((bodyEnviado as { pregunta: string }).pregunta).toBe("¿qué es un LLM?");
+  });
+
+  it("generarPista hace POST con tipo='pista' y devuelve el texto", async () => {
+    let bodyEnviado: unknown = null;
+    const fetchEspia = (async (_url: unknown, init?: RequestInit) => {
+      bodyEnviado = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ texto: "pensá en atención" }), { status: 200 });
+    }) as unknown as typeof fetch;
+    const adapter = new ProxyAdapter(fetchEspia);
+    const pista = await adapter.generarPista(retoMCProxy);
+    expect(pista).toBe("pensá en atención");
+    expect((bodyEnviado as { tipo: string; opciones: string[] }).tipo).toBe("pista");
+    expect((bodyEnviado as { opciones: string[] }).opciones).toEqual(retoMCProxy.opciones);
+  });
+
+  it("evaluarAbierta hace POST con tipo='evaluar' y devuelve la evaluación", async () => {
+    let bodyEnviado: unknown = null;
+    const fetchEspia = (async (_url: unknown, init?: RequestInit) => {
+      bodyEnviado = JSON.parse(String(init?.body));
+      return new Response(JSON.stringify({ aprobado: true, feedback: "muy bien" }), { status: 200 });
+    }) as unknown as typeof fetch;
+    const adapter = new ProxyAdapter(fetchEspia);
+    const ev = await adapter.evaluarAbierta(retoAbierta, "mi respuesta");
+    expect(ev.aprobado).toBe(true);
+    expect(ev.feedback).toBe("muy bien");
+    expect((bodyEnviado as { tipo: string; rubrica: string }).tipo).toBe("evaluar");
+    expect((bodyEnviado as { rubrica: string }).rubrica).toBe(retoAbierta.rubrica);
+  });
+
+  it("disponible() devuelve true cuando GET responde { disponible: true }", async () => {
+    const adapter = new ProxyAdapter(fetchFalso({ disponible: true }));
+    expect(await adapter.disponible()).toBe(true);
+  });
+
+  it("disponible() devuelve false ante error de red", async () => {
+    const adapter = new ProxyAdapter(fetchRedCaida("ECONNREFUSED"));
+    expect(await adapter.disponible()).toBe(false);
+  });
+
+  it("disponible() devuelve false ante respuesta inesperada (sin campo disponible)", async () => {
+    const adapter = new ProxyAdapter(fetchFalso({ ok: true }));
+    expect(await adapter.disponible()).toBe(false);
+  });
+
+  it("un 429 da un mensaje legible al jugador", async () => {
+    const adapter = new ProxyAdapter(fetchFalso({ error: "rate limit" }, 429));
+    await expect(adapter.preguntarOraculo("ctx", "?")).rejects.toThrow("saturado");
+  });
+
+  it("evaluarAbierta propaga el error ante fallo técnico (no penaliza)", async () => {
+    const adapter = new ProxyAdapter(fetchRedCaida("Failed to fetch"));
+    await expect(adapter.evaluarAbierta(retoAbierta, "mi respuesta")).rejects.toThrow();
+  });
+
+  it("crearProvider({id:'proxy'}) devuelve ProxyAdapter y hayIA lo da por IA", () => {
+    const p = crearProvider({ provider: "proxy", apiKey: "", model: "" });
+    expect(p).toBeInstanceOf(ProxyAdapter);
+    expect(hayIA(p)).toBe(true);
   });
 });

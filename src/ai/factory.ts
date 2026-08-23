@@ -3,6 +3,7 @@ import { BridgeAdapter } from "./bridge-adapter";
 import { AIConfig, MODELOS_DEFAULT, configCompleta } from "./config";
 import { GeminiAdapter } from "./gemini-adapter";
 import { OpenAIAdapter } from "./openai-adapter";
+import { ProxyAdapter } from "./proxy-adapter";
 import { AIProvider } from "./provider";
 import { StaticFallback } from "./static-fallback";
 
@@ -11,6 +12,8 @@ export function crearProvider(config: AIConfig): AIProvider {
   if (!configCompleta(config)) return new StaticFallback();
   const model = config.model.trim() || MODELOS_DEFAULT[config.provider as keyof typeof MODELOS_DEFAULT];
   switch (config.provider) {
+    case "proxy":
+      return new ProxyAdapter();
     case "anthropic":
       return new AnthropicAdapter(config.apiKey, model);
     case "openai":
