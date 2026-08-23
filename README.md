@@ -106,3 +106,14 @@ Este juego se construyó con el flujo que enseña el propio máster — el devel
 ## 7. Créditos
 
 Proyecto final del Máster en Desarrollo con IA de MoureDev Pro. Contenido de los retos reformulado con palabras propias a partir de apuntes personales del curso.
+
+### Música
+
+- **Pistas generadas con [Suno](https://suno.com)** por el autor del proyecto: el tema del menú, el de nivel genérico y los de los módulos 02 (pasillo de oficina), 03 (tejado bajo la lluvia), 04 (sala de pantallas) y 05 (sala de entrenamiento).
+- **Música de [Fesliyan Studios](https://www.fesliyanstudios.com/royalty-free-music/downloads-c/8-bit-music/6)** — 8-bit royalty free: los temas de los módulos 09 (desierto de las máquinas), 10 (nave subterránea), 11 (cabina telefónica), 12 (corredor del hotel) y 13 (apartamento rojo), y el de la pantalla de derrota.
+
+Los efectos de sonido no son archivos: se sintetizan en tiempo real con WebAudio (`src/game/audio.ts`). El detalle de qué pista suena en cada pantalla está en [public/audio/README.md](public/audio/README.md).
+
+### Arte
+
+Fondos de escenario y sprites de personajes en pixel-art, generados con IA y postprocesados por el autor. Las texturas de suelo se generan por script ([tools/generar-pisos.py](tools/generar-pisos.py)).

@@ -1,5 +1,5 @@
 import { KAPLAYCtx } from "kaplay";
-import { detenerMusica, sfx } from "../audio";
+import { reproducirMusica, sfx } from "../audio";
 import { GameState } from "../state";
 import { ANCHO, ALTO, ROJO, BLANCO, VERDE } from "../theme";
 
@@ -10,8 +10,10 @@ export function registrarGameover(
 ): void {
   k.scene("gameover", () => {
     const st = estado();
-    // Silencio dramático: se corta la música de combate y suena la caída.
-    detenerMusica();
+    // Tema propio de derrota (reemplaza al silencio): corta la música de
+    // combate y deja sonar la caída por encima. Si el archivo falta, el juego
+    // sigue en silencio sin romperse (ver reproducirMusica).
+    reproducirMusica("musica-gameover.mp3", 0.4);
     sfx.fallo();
 
     k.add([

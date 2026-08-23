@@ -137,6 +137,28 @@ export const sfx = {
  * respeta el `base: "./"` de Vite (funciona igual en local y GitHub Pages).
  * Si ya está sonando esa misma pista, no la reinicia.
  */
+/**
+ * Pista de cada módulo: un tema por escenario. Si un módulo no está acá (o su
+ * archivo falta en public/audio/), cae a la genérica — misma invariante que la
+ * capa IA: un recurso opcional que falta degrada, nunca rompe.
+ */
+const MUSICA_POR_MODULO: Record<string, string> = {
+  "02-ingenieria": "musica-02-pasillo-oficina.mp3",
+  "03-arquitectura": "musica-03-tejado-lluvia.mp3",
+  "04-fundamentos-ia": "musica-04-sala-pantallas.mp3",
+  "05-herramientas": "musica-05-sala-entrenamiento.mp3",
+  "09-flujo-desarrollo-ia": "musica-06-desierto-maquinas.mp3",
+  "10-calidad": "musica-07-nave-subterranea.mp3",
+  "11-infraestructura-cloud": "musica-08-cabina-telefonica.mp3",
+  "12-seguridad": "musica-09-corredor-hotel.mp3",
+  "13-desarrollo-potenciado-ia": "musica-10-apartamento-rojo.mp3",
+};
+
+/** Nombre del archivo de música que le toca a un módulo. */
+export function musicaDeModulo(moduloId: string): string {
+  return MUSICA_POR_MODULO[moduloId] ?? "musica-nivel.mp3";
+}
+
 export function reproducirMusica(archivo: string, volumen = 0.5): void {
   if (pista?.dataset.archivo === archivo) return;
   detenerMusica();

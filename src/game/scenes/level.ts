@@ -36,7 +36,7 @@ import {
   flashGolpe,
   orientarHacia,
 } from "../actores";
-import { reproducirMusica, sfx } from "../audio";
+import { musicaDeModulo, reproducirMusica, sfx } from "../audio";
 import { dibujarEscenario } from "../escenario";
 import { guardarPartida } from "../persistencia";
 import { GameState } from "../state";
@@ -107,7 +107,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       return;
     }
     // Más baja que la del menú: en el nivel compite con los SFX del combate.
-    reproducirMusica("musica-nivel.mp3", 0.35);
+    reproducirMusica(musicaDeModulo(moduloId), 0.35);
     const quiz = new QuizEngine(banco);
     const respondidos = new Set<string>();
     const combates = new Map<GameObj, Combate>();
