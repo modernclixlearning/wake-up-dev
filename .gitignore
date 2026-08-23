@@ -6,3 +6,12 @@ dist/
 .DS_Store
 
 .vercel
+
+# Artefactos de trabajo interno — no son entregables del TFM
+docs/guion-video.md
+docs/informe-qa-preentrega.md
+docs/informe-slides-deploy.md
+docs/informe-documentacion.md
+docs/slides-outline.md
+docs/capturas/
+docs/character-refs/
