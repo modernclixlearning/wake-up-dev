@@ -303,17 +303,48 @@ export function crearOraculo(k: KAPLAYCtx, x: number, y: number): GameObj {
   return oraculo;
 }
 
-/** Flash breve de golpe: superpone un rect semitransparente sobre el actor. */
+/**
+ * Flash breve de golpe con la silueta exacta del personaje.
+ * En vez de un rectángulo opaco, crea una copia del mismo sprite (mismo
+ * frame, escala y flip que el skin actual) teñida con el color del golpe.
+ * Al terminar la duración se destruye sola; si el actor muere antes, también.
+ */
 export function flashGolpe(
   k: KAPLAYCtx,
   actor: GameObj,
-  ancho: number,
-  alto: number,
+  _ancho: number,
+  _alto: number,
   color: [number, number, number],
   duracion = 0.12
 ): void {
-  const flash = actor.add([k.rect(ancho, alto), k.color(...color), k.opacity(0.55), k.z(5)]);
-  k.wait(duracion, () => k.destroy(flash));
+  const estado = estadosSprite.get(actor);
+  if (!estado) {
+    // Fallback para actores sin sprite montado (no debería ocurrir en la práctica).
+    const rect = actor.add([k.rect(_ancho, _alto), k.color(...color), k.opacity(0.55), k.z(5)]);
+    k.wait(duracion, () => { if (rect.exists()) k.destroy(rect); });
+    return;
+  }
+  const skin = estado.skin;
+  // Copia del sprite en el mismo frame/escala/flip/posición que el skin actual.
+  // k.color(...color) tiñe toda la textura → el resultado tiene la silueta exacta.
+  const flash = actor.add([
+    k.sprite(skin.sprite as string, { frame: skin.frame }),
+    k.pos(skin.pos.x, skin.pos.y),
+    k.scale(skin.scale.x, skin.scale.y),
+    k.color(...color),
+    k.opacity(0.6),
+    k.z(5),
+  ]);
+  flash.flipX = skin.flipX;
+
+  const timer = k.wait(duracion, () => {
+    if (flash.exists()) k.destroy(flash);
+  });
+  // Si el actor muere durante el flash, limpiar la copia para no dejar objetos huérfanos.
+  actor.onDestroy(() => {
+    timer.cancel();
+    if (flash.exists()) k.destroy(flash);
+  });
 }
 
 /** Explosión simple al derrotar a un Agente: partículas = rects que se dispersan y desaparecen. */
