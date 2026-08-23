@@ -112,6 +112,14 @@ export const sfx = {
   aturdido(): void {
     for (let i = 0; i < 3; i++) tono(880, 0.06, { demora: i * 0.08, volumen: 0.1 });
   },
+  /** Cuenta atrás del reto: pitido corto en 3, 2 y 1 (un solo tono). */
+  cuentaAtras(): void {
+    tono(880, 0.09, { volumen: 0.14 });
+  },
+  /** Se acabó el tiempo: el mismo tono, largo y grave — Smith despierta. */
+  tiempoAgotado(): void {
+    tono(440, 0.7, { volumen: 0.16 });
+  },
   /** Respuesta correcta: arpegio ascendente (do-mi-sol). */
   acierto(): void {
     [523, 659, 784].forEach((f, i) => tono(f, 0.1, { demora: i * 0.09 }));

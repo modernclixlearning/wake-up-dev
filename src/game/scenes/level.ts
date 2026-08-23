@@ -15,6 +15,8 @@ import {
   HP_JEFE,
   recibirGolpe,
 } from "../../domain/combate";
+import { calcularCuentaAtras } from "../../domain/cuenta-atras";
+import { dificultadPara } from "../../domain/dificultad";
 import { calcularDuracionFeedback } from "../../domain/feedback";
 import { QuizEngine } from "../../domain/quiz-engine";
 import { Reto, RetoAbierta, RetoMultipleChoice } from "../../domain/reto";
@@ -44,7 +46,6 @@ import { ANCHO, ALTO, CARRIL_INFERIOR, CARRIL_SUPERIOR, VERDE, VERDE_OSCURO, ROJ
 import { abrirOraculo, abrirRetoAbierto, hayOverlayAbierto } from "../ui/overlay";
 
 const VELOCIDAD = 220;
-const VELOCIDAD_AGENTE = 100;
 const VELOCIDAD_JEFE = 55;
 const MAX_AGENTES = 4;
 
@@ -64,7 +65,6 @@ const ALCANCE_PINA = 34;
 const TOLERANCIA_CARRIL = 70;
 const RANGO_FRENO_SMITH = 16;
 const TELEGRAFIA_ATAQUE = 0.55;
-const COOLDOWN_ATAQUE_SMITH = 2;
 const RECUPERACION_STAGGER = 0.9;
 const GRACIA_TRAS_PREGUNTA = 1.2;
 const INVULNERABLE_TRAS_GOLPE = 1.2;
@@ -106,6 +106,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       k.go("zion");
       return;
     }
+    // Dificultad progresiva (F16): NO depende del módulo —se entran en el orden
+    // que el jugador quiera desde Zion— sino de cuántos lleva liberados.
+    const modulosLiberados = [...st.session.progreso.values()].filter((p) => p.completado).length;
+    const dif = dificultadPara(modulosLiberados);
     // Más baja que la del menú: en el nivel compite con los SFX del combate.
     reproducirMusica(musicaDeModulo(moduloId), 0.35);
     const quiz = new QuizEngine(banco);
@@ -393,10 +397,15 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       }
     };
 
-    // Al caer el Agente activo, le pasa el turno al siguiente de la cola que siga con vida.
+    // Al caer un Agente activo, entran los que hagan falta para mantener el
+    // cupo de simultáneos de la dificultad (F16), no siempre uno solo.
     const activarSiguienteEnCola = () => {
-      const siguiente = colaAgentes.find((a) => combates.get(a) && !combates.get(a)!.activo);
-      if (siguiente) marcarActivo(siguiente);
+      const vivos = colaAgentes.filter((a) => combates.has(a));
+      const activos = vivos.filter((a) => combates.get(a)!.activo).length;
+      vivos
+        .filter((a) => !combates.get(a)!.activo)
+        .slice(0, Math.max(0, dif.agentesSimultaneos - activos))
+        .forEach(marcarActivo);
     };
 
     // ---- Golpes del enemigo hacia Neo ----
@@ -435,7 +444,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         combate.telegrafia = null;
         if (!agente.exists() || muriendo.has(agente)) return;
         fijarPose(agente, null);
-        combate.proximoAtaque = k.time() + COOLDOWN_ATAQUE_SMITH;
+        combate.proximoAtaque = k.time() + dif.cadenciaAtaque;
         if (bloqueado()) return;
         if (enRangoPina(agente, combate)) golpearANeo(agente, combate, "pina");
       });
@@ -528,7 +537,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
           ? gap <= DISTANCIA_DISPARO_JEFE
           : gap <= RANGO_FRENO_SMITH && alineadosEnY(agente, combate);
         if (!frenado && distancia > 4) {
-          const velocidad = esJefe ? VELOCIDAD_JEFE : VELOCIDAD_AGENTE;
+          const velocidad = esJefe ? VELOCIDAD_JEFE : dif.velocidadAgente;
           const paso = Math.min(1, (velocidad * k.dt()) / distancia);
           agente.pos = agente.pos.add(hacia.scale(paso));
         }
@@ -592,7 +601,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       registrarCombate(info, HP_AGENTE_NORMAL);
       colaAgentes.push(info.root);
     }
-    if (colaAgentes.length > 0) marcarActivo(colaAgentes[0]);
+    // Simultaneidad: en los primeros niveles pelea uno; más adelante vienen
+    // de a dos o tres a la vez (el salto que más se NOTA de las cuatro perillas).
+    colaAgentes.slice(0, dif.agentesSimultaneos).forEach(marcarActivo);
     actualizarHud();
 
     // Movimiento: Neo avanza libre dentro del carril; la cámara lo sigue en el eje X.
@@ -944,6 +955,59 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         );
       });
 
+      // Cuenta atrás (F15): el Agente está aturdido, no dormido. Si el reloj
+      // llega a cero se despierta y conecta el golpe — es lo que impide
+      // congelar el combate y buscar la respuesta con calma en otra pestaña.
+      const limite = dif.segundosParaResponder;
+      const arranque = k.time();
+      const reloj = k.add([
+        k.text("", { size: 20 }),
+        k.pos(ANCHO - 60, 80),
+        k.anchor("right"),
+        k.color(...VERDE),
+        k.z(12),
+        k.fixed(),
+      ]);
+      overlay.push(reloj);
+      // Barra que se vacía: comunica la urgencia de un vistazo, sin leer números.
+      const ANCHO_BARRA = ANCHO - 120;
+      overlay.push(
+        k.add([
+          k.rect(ANCHO_BARRA, 4),
+          k.pos(60, 104),
+          k.color(...VERDE_OSCURO),
+          k.opacity(0.35),
+          k.z(11),
+          k.fixed(),
+        ])
+      );
+      const barra = k.add([
+        k.rect(ANCHO_BARRA, 4),
+        k.pos(60, 104),
+        k.color(...VERDE),
+        k.z(12),
+        k.fixed(),
+      ]);
+      overlay.push(barra);
+      let ultimoPitido = -1;
+      const tic = k.onUpdate(() => {
+        if (!enEncuentro) return;
+        const estado = calcularCuentaAtras(limite - (k.time() - arranque), limite);
+        reloj.text = estado.texto;
+        reloj.color = k.rgb(...(estado.urgente ? ROJO : VERDE));
+        barra.width = ANCHO_BARRA * estado.fraccion;
+        barra.color = k.rgb(...(estado.urgente ? ROJO : VERDE));
+        // Tres pitidos cortos (3, 2, 1) y uno largo al agotarse: el aviso se
+        // oye sin mirar la pantalla. Un solo tono, sin melodía — la alarma no
+        // compite con la música del nivel.
+        if (!estado.agotado && estado.segundos <= 3 && estado.segundos !== ultimoPitido) {
+          ultimoPitido = estado.segundos;
+          sfx.cuentaAtras();
+        }
+        if (estado.agotado) seAcabaElTiempo();
+      });
+      teclas.push(tic);
+
       // Indicación explícita de las teclas para responder (sin corchetes — Kaplay
       // los parsea como tags). Dos correcciones de legibilidad sobre la versión
       // anterior, que era ilegible (reportado jugando):
@@ -1007,6 +1071,22 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         cerrar();
         registrarResultado(agente, resultado.correcta, resultado.explicacion, reto.estadoDelArte2026);
       };
+
+      /** Se acabó el tiempo: cuenta como fallo — Smith despierta y pega. No
+       * pasa por `quiz.responderMultipleChoice`: ese método exige un índice
+       * válido y lanza RangeError con -1. El reto ya quedó marcado al lanzarlo,
+       * así que basta con registrar el fallo. */
+      function seAcabaElTiempo(): void {
+        if (!enEncuentro) return;
+        cerrar();
+        sfx.tiempoAgotado();
+        registrarResultado(
+          agente,
+          false,
+          `Se te acabó el tiempo y el Agente despertó. ${reto.explicacion}`,
+          reto.estadoDelArte2026
+        );
+      }
 
       for (let i = 0; i < reto.opciones.length; i++) {
         teclas.push(k.onKeyPress(String(i + 1) as never, () => responder(i)));
