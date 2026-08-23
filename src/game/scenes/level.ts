@@ -22,6 +22,7 @@ import {
   ActorAgente,
   ALTO_AGENTE,
   ALTO_NEO,
+  ANCHO_AGENTE,
   ANCHO_NEO,
   BarraHP,
   crearAgente,
@@ -127,7 +128,21 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const nAgentes = Math.min(MAX_AGENTES, quiz.restantes);
     const anchoNivel = MARGEN_INICIO + Math.max(1, nAgentes) * SEPARACION_AGENTE + MARGEN_JEFE + MARGEN_PORTAL;
 
-    dibujarEscenario(k, moduloId, anchoNivel);
+    // El camino (F14) sale del propio escenario: la banda que se ve dibujada es
+    // exactamente la que acota a los personajes. Calcularlo por separado acá
+    // abriría la puerta a que el clamp y el dibujo se desincronicen.
+    const camino = dibujarEscenario(k, moduloId, anchoNivel);
+
+    /**
+     * Acota a un actor al camino. Trabaja sobre los PIES (`pos.y + alto`), que
+     * es lo que "pisa" el suelo y lo único comparable entre actores de distinta
+     * altura. El segundo clamp es red de seguridad: el Jefe mide 240 y no entra
+     * en la parte más al fondo de la banda sin meter la cabeza en el HUD.
+     */
+    const acotarAlCamino = (obj: GameObj, ancho: number, alto: number) => {
+      const pies = camino.acotarPies(obj.pos.x + ancho / 2, obj.pos.y + alto);
+      obj.pos.y = k.clamp(pies - alto, CARRIL_SUPERIOR, CARRIL_INFERIOR - alto);
+    };
 
     // HUD: fijo a la pantalla (k.fixed) — sin esto, al mover la cámara con el
     // scroll del pasillo el texto se iría del cuadro junto con el mundo.
@@ -145,12 +160,18 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
 
     // Jugador (Neo)
     const player = crearNeo(k, 60, ALTO / 2);
+    acotarAlCamino(player, ANCHO_NEO, ALTO_NEO);
 
-    // El Oráculo (NPC): cerca del inicio del pasillo.
-    const oraculo = crearOraculo(k, 70, CARRIL_SUPERIOR + 20);
+    // El Oráculo (NPC): al principio del camino y pegado a su borde de fondo,
+    // donde la entrada del nivel está abierta a todo lo ancho (ver el perfil
+    // del camino en domain/camino.ts). Derivar la Y de la banda en vez de
+    // fijarla a mano garantiza que quede SIEMPRE pisable: un Oráculo fuera del
+    // camino sería inalcanzable y se llevaría puesta la mecánica del Oráculo.
+    const Y_ORACULO = camino.bandaEn(70 + ANCHO_AGENTE / 2).min + 20 - ALTO_AGENTE;
+    const oraculo = crearOraculo(k, 70, Y_ORACULO);
     k.add([
       k.text("Oráculo", { size: 12 }),
-      k.pos(70, CARRIL_SUPERIOR + 20 + ALTO_AGENTE + 6),
+      k.pos(70, Y_ORACULO + ALTO_AGENTE + 6),
       k.color(...VERDE),
       k.z(1),
     ]);
@@ -457,7 +478,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
           const paso = Math.min(1, (velocidad * k.dt()) / distancia);
           agente.pos = agente.pos.add(hacia.scale(paso));
         }
-        agente.pos.y = k.clamp(agente.pos.y, CARRIL_SUPERIOR, CARRIL_INFERIOR - combate.alto);
+        // Los Agentes pisan el mismo camino que Neo (F14): si persiguieran por
+        // fuera de la banda, quedarían a una altura donde la piña no alinea.
+        acotarAlCamino(agente, combate.ancho, combate.alto);
         if (!esJefe && k.time() >= combate.proximoAtaque && enRangoPina(agente, combate)) {
           telegrafiarGolpeSmith(agente, combate);
         }
@@ -508,8 +531,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     // Agentes Smith: repartidos a lo largo del pasillo, en el mismo orden en que se enfrentan.
     for (let i = 0; i < nAgentes; i++) {
       const x = MARGEN_INICIO + (i + 1) * SEPARACION_AGENTE;
-      const y = k.rand(CARRIL_SUPERIOR + 10, CARRIL_INFERIOR - ALTO_AGENTE);
-      const info = crearAgente(k, x, y);
+      // Nacen SOBRE el camino (F14), a una altura cualquiera de su banda: fuera
+      // de ella el primer frame los teletransportaría al borde de un tirón.
+      const banda = camino.bandaEn(x + ANCHO_AGENTE / 2);
+      const info = crearAgente(k, x, k.rand(banda.min, banda.max) - ALTO_AGENTE);
       registrarCombate(info, HP_AGENTE_NORMAL);
       colaAgentes.push(info.root);
     }
@@ -521,32 +546,53 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     k.onKeyDown("right", () => !bloqueado() && player.move(VELOCIDAD, 0));
     k.onKeyDown("up", () => !bloqueado() && player.move(0, -VELOCIDAD));
     k.onKeyDown("down", () => !bloqueado() && player.move(0, VELOCIDAD));
-    const RADIO_ORACULO = 80;
-    let textoProximidad: GameObj | null = null;
+    // Señal de proximidad del Oráculo (wud#10). Dos correcciones sobre el
+    // primer intento, que no se veía nunca en pantalla:
+    //  - La Y era `oraculo.pos.y - ALTO_AGENTE - 10`. Como `pos` es la esquina
+    //    SUPERIOR del actor y ALTO_AGENTE son 160, eso daba y = -76: el cartel
+    //    se dibujaba fuera del cuadro, por encima del borde de arriba.
+    //  - El radio comparaba las esquinas superiores con `dist < 80`, pero los
+    //    actores miden 96x160: para cuando esas esquinas están a 80px, Neo y el
+    //    Oráculo ya se están tocando y el chat se abrió solo. Se mide de CENTRO
+    //    a centro con un radio que avisa ANTES del contacto, que es el punto.
+    const CENTRO_ORACULO = k.vec2(oraculo.pos.x + ANCHO_AGENTE / 2, oraculo.pos.y + ALTO_AGENTE / 2);
+    const RADIO_ORACULO = 210;
+    let senalOraculo: GameObj | null = null;
+
+    /** Cartel flotante sobre la cabeza del Oráculo, con fondo propio para que se
+     * lea sobre cualquiera de los 10 escenarios. Sin `k.fixed()`: va en
+     * coordenadas de mundo y scrollea con el NPC. */
+    const crearSenalOraculo = () => {
+      const texto = "Preguntame tus dudas";
+      const ancho = texto.length * 6 + 16;
+      // Sin corchetes en k.text(): Kaplay los parsea como tags de texto estilado
+      // y lanza "unclosed tags" en cada frame (ver AGENTS.md).
+      const contenedor = k.add([k.pos(CENTRO_ORACULO.x, oraculo.pos.y - 24), k.z(4)]);
+      contenedor.add([
+        k.rect(ancho, 18),
+        k.pos(-ancho / 2, -3),
+        k.color(...NEGRO),
+        k.opacity(0.75),
+        k.outline(1, k.rgb(...VERDE_OSCURO)),
+      ]);
+      contenedor.add([k.text(texto, { size: 11 }), k.pos(0, 0), k.anchor("top"), k.color(...VERDE)]);
+      return contenedor;
+    };
 
     player.onUpdate(() => {
       player.pos.x = k.clamp(player.pos.x, 0, anchoNivel - ANCHO_NEO);
-      player.pos.y = k.clamp(player.pos.y, CARRIL_SUPERIOR, CARRIL_INFERIOR - ALTO_NEO);
+      // F14: el clamp vertical ya no es una banda constante sino el camino.
+      acotarAlCamino(player, ANCHO_NEO, ALTO_NEO);
       const camX = k.clamp(player.pos.x, ANCHO / 2, Math.max(ANCHO / 2, anchoNivel - ANCHO / 2));
       k.setCamPos(camX, ALTO / 2);
 
-      // Señal de proximidad del Oráculo (wud#10): texto flotante cuando Neo está cerca.
-      // Sin k.fixed(): coordenadas de mundo, sigue al NPC (que es estático en x≈70).
-      // Sin corchetes en k.text(): Kaplay los parsea como tags y lanza error por frame.
-      if (player.pos.dist(oraculo.pos) < RADIO_ORACULO && !hayOverlayAbierto() && !bloqueado()) {
-        if (!textoProximidad) {
-          textoProximidad = k.add([
-            k.text("Preguntame tus dudas", { size: 11 }),
-            k.pos(oraculo.pos.x - 40, oraculo.pos.y - ALTO_AGENTE - 10),
-            k.color(...VERDE),
-            k.z(4),
-          ]);
-        }
-      } else {
-        if (textoProximidad) {
-          k.destroy(textoProximidad);
-          textoProximidad = null;
-        }
+      const centroNeo = k.vec2(player.pos.x + ANCHO_NEO / 2, player.pos.y + ALTO_NEO / 2);
+      const cerca = centroNeo.dist(CENTRO_ORACULO) < RADIO_ORACULO;
+      if (cerca && !bloqueado()) {
+        if (!senalOraculo) senalOraculo = crearSenalOraculo();
+      } else if (senalOraculo) {
+        k.destroy(senalOraculo);
+        senalOraculo = null;
       }
     });
 
@@ -675,7 +721,9 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       // jugador se veía absurda con los sprites 3x.
       const portal = k.add([
         k.rect(56, 180),
-        k.pos(anchoNivel - 100, ALTO / 2 - 90),
+        // Apoyado en el camino, no en el centro de la pantalla: una salida
+        // flotando fuera de la calzada rompe la lectura del recorrido.
+        k.pos(anchoNivel - 100, camino.centroEn(anchoNivel - 72) - 180),
         k.area(),
         k.color(...VERDE_OSCURO),
         k.outline(3, k.rgb(...VERDE)),
@@ -692,10 +740,16 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         "Un Agente Smith más fuerte bloquea la salida... ESPACIO = disparar. Esquivá sus tiros moviéndote.",
         6
       );
-      const info = crearAgente(k, anchoNivel - MARGEN_PORTAL - 80, ALTO / 2, true);
-      // Centrado vertical en el carril: con 240 de alto, ALTO/2 lo dejaría
-      // con los pies fuera del límite inferior.
-      info.root.pos.y = CARRIL_SUPERIOR + (CARRIL_INFERIOR - CARRIL_SUPERIOR - info.alto) / 2;
+      const xJefe = anchoNivel - MARGEN_PORTAL - 80;
+      const info = crearAgente(k, xJefe, ALTO / 2, true);
+      // Plantado en el centro del camino: con 240 de alto, ALTO/2 lo dejaría con
+      // los pies fuera del límite inferior. Ahí el camino ya es la arena abierta
+      // (ver domain/camino.ts) — un pasillo estrecho volvería injusto esquivar.
+      info.root.pos.y = k.clamp(
+        camino.centroEn(xJefe + info.ancho / 2) - info.alto,
+        CARRIL_SUPERIOR,
+        CARRIL_INFERIOR - info.alto
+      );
       registrarCombate(info, HP_JEFE);
       marcarActivo(info.root);
       actualizarHud();
