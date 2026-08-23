@@ -4,7 +4,7 @@ Videojuego web 8-bit (TFM, Máster en Desarrollo con IA). Repo **público** — 
 
 ## Stack
 
-TypeScript + Vite · Kaplay (motor 2D canvas) · Vitest · GitHub Actions CI/CD → GitHub Pages
+TypeScript + Vite · Kaplay (motor 2D canvas) · Vitest · GitHub Actions (CI) · Vercel (deploy + función edge)
 
 ## Comandos
 
@@ -17,7 +17,8 @@ TypeScript + Vite · Kaplay (motor 2D canvas) · Vitest · GitHub Actions CI/CD 
 | `npm run bridge` | Bridge headless (`bridge/server.mjs`, requiere CLI `claude` autenticado) |
 
 **Gate mínimo antes de commitear:** `npm run check` y `npm test` en verde.  
-Push a `main` → CI (typecheck + tests + build) + Deploy a GitHub Pages. Verificar con `gh run list --limit 2`.
+Push a `main` → CI (typecheck + tests + build) y build automático en Vercel. Verificar con `gh run list --limit 2`.
+No hay deploy a GitHub Pages: Vercel es el único destino, porque es el que ejecuta la función edge del Oráculo.
 
 ## Estructura
 
@@ -30,7 +31,8 @@ bridge/        Server headless local (Node puro). Spawnea `claude -p`.
 tests/         Vitest. Adapters con fetch mockeado/inyectado.
 api/           Función edge serverless (oraculo.ts).
 tools/         Scripts auxiliares (pixel-art, launcher). Sin agentes activos.
-docs/          Entregables del TFM (guión, slides, handoff). No tocar sin indicación explícita.
+docs/          Documentación del repo. El guion, los informes y las capturas son material
+               de trabajo y están en .gitignore: no volver a commitearlos.
 ```
 
 ## Reglas de arquitectura (transversales)

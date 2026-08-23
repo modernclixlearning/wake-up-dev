@@ -220,7 +220,7 @@
   <span>WAKE UP, DEV</span>
   <span class="sep larga">|</span>
   <span class="larga">TFM · Máster en Desarrollo con IA</span>
-  <span class="meta">Slide: <span id="hud-pos">1</span>/<span id="hud-total">17</span></span>
+  <span class="meta">Slide: <span id="hud-pos">1</span>/<span id="hud-total">18</span></span>
 </header>
 
 <main id="deck">
@@ -392,7 +392,7 @@ banco del nivel</pre>
   <!-- 7 · El reto al tribunal -->
   <section class="slide" data-modulo="TU TURNO">
     <p class="ojo" data-anim>El contenido evaluado como mecánica</p>
-    <p data-anim style="max-width:64ch">El juego carga los retos desde archivos JSON. Un test de CI valida sus invariantes.
+    <p data-anim style="max-width:64ch">Todo el contenido del juego entra por CI, y un test lo revisa antes de que llegue a un nivel.
     Esto es lo que valida — ¿lo sabés responder?</p>
     <div class="reto" data-anim>
       <p class="quien">AGENTE SMITH ATURDIDO — remátalo respondiendo:</p>
@@ -675,7 +675,7 @@ Contexto del módulo actual:
         <figure class="sin-rejilla">
           <img src="img/sb-01-proyecto-en-el-sistema.png" alt="Árbol del sistema: Second Brain con un proyecto, su coordinador y tres writers en paralelo">
         </figure>
-        <p style="font-size:.92em">El coordinador lanza writers en paralelo, uno por archivo o módulo.</p>
+        <p style="font-size:.92em">El coordinador reparte el trabajo en instancias headless, cada una en su propio worktree de git.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">2 · Trabaja</p>
@@ -694,9 +694,9 @@ Contexto del módulo actual:
       <div class="paso" data-anim>
         <p class="ojo">4 · Rinde cuentas</p>
         <figure class="sin-rejilla">
-          <img src="img/sb-04-orquestador.png" alt="Informe del coordinador: hecho y verificado">
+          <img src="img/sb-01-proyecto-en-el-sistema.png" alt="Árbol de agentes: el coordinador y sus writers, cada uno con su issue y su tiempo">
         </figure>
-        <p style="font-size:.92em">El coordinador reporta qué se hizo y qué se verificó. El humano revisa eso, no el diff.</p>
+        <p style="font-size:.92em">El coordinador reporta qué se hizo y qué se verificó, con el rastro de cada instancia. El humano revisa eso, no el diff.</p>
       </div>
     </div>
   </section>
