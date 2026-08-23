@@ -9,7 +9,7 @@
 | 🎮 Juego desplegado | **https://wake-up-dev.vercel.app** (Oráculo IA sin configurar nada) |
 | 📦 Repositorio | https://github.com/modernclixlearning/wake-up-dev |
 | 📊 Slides | **https://wake-up-dev.vercel.app/slides/** |
-| 🎥 Vídeo | _pendiente (ver [docs/guion-video.md](docs/guion-video.md))_ |
+| 🎥 Vídeo | _pendiente de publicar_ |
 | 🔑 Login | No aplica — el juego no tiene autenticación |
 
 ## 1. Descripción general
