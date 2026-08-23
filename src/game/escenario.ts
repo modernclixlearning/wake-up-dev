@@ -4,7 +4,6 @@ import { Camino, crearCamino } from "../domain/camino";
 import { generarCarrete, ItemCarrete, PiezaCarrete } from "../domain/carrete";
 import { ALTO_NEO } from "./actores";
 import {
-  ALTO,
   AMBAR,
   ANCHO,
   CARRIL_INFERIOR,
@@ -570,19 +569,6 @@ function agregarFondoLejano(k: KAPLAYCtx, nombre: string, anchoNivel: number): v
   agregarBandaHud(k);
 }
 
-/** Backdrop de INTERIOR, fijo a pantalla: la imagen del fondo a tamaño real —
- * la pared del cuarto está cerca y el recorte de cuerpo entero funciona.
- * El fondo procesado es 960x640 y el canvas 960x540; se ancla en y=-50 para
- * centrar verticalmente (recorta 50px arriba y 50px abajo, sin bandas negras). */
-function agregarFondoImagen(k: KAPLAYCtx, nombre: string): void {
-  k.add([k.sprite(`fondo-${nombre}`), k.pos(0, -(640 - ALTO) / 2), k.z(-100), k.fixed()]);
-  // Cálculo de la banda del HUD: el texto VERDE (0,255,70) necesita 4.5:1
-  // (WCAG AA) sobre el fondo más claro (el dojo blanco); con opacity=0.72
-  // sobre blanco el fondo efectivo da ratio ~6.8:1. La banda inferior que
-  // existía con el mismo fin ya no: el suelo tileado (F14 v3) la tapaba — los
-  // avisos de abajo llevan ahora su propio respaldo (level.ts).
-  agregarBandaHud(k);
-}
 
 /**
  * Dibuja el decorado del nivel según el módulo. Se llama una vez al entrar a la
@@ -600,16 +586,16 @@ export function dibujarEscenario(k: KAPLAYCtx, moduloId: string, anchoNivel: num
   // escenario camina sobre SU suelo pintado, no sobre una calzada genérica.
   const fondo = FONDO_POR_MODULO[moduloId];
   if (fondo) {
-    // Modelo de DOS carretes (pedido del alumno): el cercano es el piso que
-    // pisa el personaje (1:1 con la cámara) y el lejano son las imágenes de BG
-    // en pequeño con parallax lento. Los carretes procedurales intermedios
-    // (cercas/postes brillantes) quedaron redundantes y ensuciaban la escena.
-    // Interior: la pared del cuarto a tamaño real, fija.
-    if (FONDOS_EXTERIOR.has(fondo)) {
-      agregarFondoLejano(k, fondo, anchoNivel);
-    } else {
-      agregarFondoImagen(k, fondo);
-    }
+    // Modelo de DOS carretes, en LOS DIEZ niveles: el cercano es el piso que
+    // pisa el personaje (1:1 con la cámara) y el lejano es la imagen de fondo
+    // en pequeño, repetida a lo ancho y con parallax lento.
+    //
+    // La v5 reservaba el carrete lejano a los exteriores y dejaba los interiores
+    // con la imagen entera fija: estirada y sin avance, justo lo que el modelo
+    // venía a arreglar. Y el tileado le sienta igual de bien a un interior —
+    // un pasillo de oficina repetido son más puertas de oficina, que es
+    // exactamente lo que un pasillo largo debería tener.
+    agregarFondoLejano(k, fondo, anchoNivel);
     agregarSueloImagen(k, fondo, anchoNivel);
     // Sin flechas ">>" sobre el suelo: hacían falta cuando el escenario era un
     // cuarto único sin señal de avance, pero con el piso texturizado que
