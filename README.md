@@ -6,9 +6,9 @@
 
 | Entregable | Enlace |
 |---|---|
-| 🎮 Juego desplegado | **https://modernclixlearning.github.io/wake-up-dev/** |
+| 🎮 Juego desplegado | **https://wake-up-dev.vercel.app** (Oráculo IA sin configurar nada) |
 | 📦 Repositorio | https://github.com/modernclixlearning/wake-up-dev |
-| 📊 Slides | **https://modernclixlearning.github.io/wake-up-dev/slides/** |
+| 📊 Slides | **https://wake-up-dev.vercel.app/slides/** |
 | 🎥 Vídeo | _pendiente (ver [docs/guion-video.md](docs/guion-video.md))_ |
 | 🔑 Login | No aplica — el juego no tiene autenticación |
 
@@ -25,8 +25,8 @@ El proyecto demuestra el máster en dos planos:
 
 - **TypeScript** + **Vite** — build y dev server.
 - **Kaplay** — motor 2D estilo retro sobre canvas.
-- **Vitest** — **201 tests** del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con `fetch` mockeado; cero llamadas reales en CI).
-- **GitHub Actions** — CI (typecheck + tests + build) y deploy automático a GitHub Pages.
+- **Vitest** — **205 tests** del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con `fetch` mockeado; cero llamadas reales en CI).
+- **GitHub Actions** — CI (typecheck + tests + build).
 - **@anthropic-ai/sdk** — adapter oficial de Anthropic en el browser (BYOK).
 - **Node.js** — bridge headless local (`bridge/server.mjs`, sin dependencias) que spawnea el CLI de **Claude Code** o **GitHub Copilot**.
 
@@ -50,7 +50,7 @@ En Zion pulsá **A** y elegí:
 - **Anthropic / OpenAI / Gemini**: pegá tu propia API key (queda solo en el `localStorage` de tu navegador; las llamadas van directo al proveedor, sin backend intermedio).
 - **🕶 Claude Code headless** / **🤖 GitHub Copilot headless** (bridge local): sin key. Corré `npm run bridge` en una terminal — cada consulta del juego lanza una instancia headless del CLI (`claude -p` o Copilot), el mismo patrón de orquestación de agentes que enseña el máster (módulos 9 y 13). Un solo bridge sirve ambos motores; se elige en el selector.
 
-> El modo headless funciona jugando en **localhost**. La versión desplegada en GitHub Pages (`https://`) no puede hablar con el bridge local (`http://127.0.0.1`) por la política de _mixed content_ del navegador: ahí usá un proveedor BYOK con API key.
+> El modo headless funciona jugando en **localhost**. La versión desplegada en Vercel (`https://`) no puede hablar con el bridge local (`http://127.0.0.1`) por la política de _mixed content_ del navegador: ahí usá un proveedor BYOK con API key.
 
 Otros comandos:
 
@@ -63,14 +63,16 @@ npm run bridge    # modo "píldora roja": bridge headless (requiere el CLI claud
 
 ### 3.3. Despliegue
 
-El juego es 100 % estático (sin backend: las API keys son del jugador y viven en su navegador), así que se sirve desde CDN en dos destinos a la vez, cada uno con su pipeline:
+El juego se sirve desde **Vercel** — el único destino de producción:
 
-| Destino | URL | Pipeline |
-|---|---|---|
-| **GitHub Pages** | https://modernclixlearning.github.io/wake-up-dev/ | GitHub Actions: `ci.yml` (typecheck + tests + build) y, si pasa, `deploy.yml` |
-| **Vercel** | ver §7 | Integración Git nativa: build en cada push a `main` y **preview propio por cada Pull Request** |
+| Aspecto | Detalle |
+|---|---|
+| **URL** | https://wake-up-dev.vercel.app |
+| **Build automático** | En cada push a `main` (integración nativa de Vercel con el repo) |
+| **Preview por PR** | Cada Pull Request recibe su propio deploy de preview |
+| **Función edge del Oráculo** | `api/oraculo.ts` corre como serverless function — imposible en un CDN estático |
 
-`vite.config.ts` usa `base: "./"` (rutas relativas), que es lo que permite el mismo artefacto en una subcarpeta de Pages y en la raíz de un dominio, sin recompilar.
+`vite.config.ts` usa `base: "./"` (rutas relativas), compatible con la raíz de un dominio Vercel sin recompilar.
 
 La configuración de Vercel vive en [vercel.json](vercel.json) y no se limita a "conectar el repo":
 
@@ -110,7 +112,7 @@ vercel env add OPENAI_API_KEY production   # pega la key cuando lo pida
 vercel --prod                               # redespliega para que la función la recoja
 ```
 
-> **GitHub Pages no puede servir el proxy**: es un CDN estático sin soporte para funciones serverless. En ese deploy el juego sigue en modo BYOK (el jugador pega su propia API key en Zion).
+> **Por qué Vercel y no un CDN estático**: el proxy requiere una función serverless para mantener la key fuera del bundle del cliente. Pages (CDN estático puro) no puede ejecutar esa función; Vercel sí.
 
 ## 4. Estructura del proyecto
 
@@ -135,7 +137,7 @@ Reglas de arquitectura (detalle en [AGENTS.md](AGENTS.md)): el dominio es puro y
 
 - ✅ **Combate arcade 8-bit** inspirado en la acción de Matrix: personajes con **sprites pixel-art** (Neo, Smith, Jefe, Oráculo) generados con un pipeline propio desde referencias; piñas, esquive con _telegrafía_ del golpe enemigo, barra de HP y un **Agente Jefe** que dispara al cerrar cada módulo.
 - ✅ **Fondos de escena por nivel**: 10 backgrounds pixel-art (ciudad digital, pasillo de oficina, sala de entrenamiento, tejado bajo la lluvia, desierto de las máquinas, sala de pantallas…) que le dan identidad visual a cada módulo. Conceptos documentados en [docs/niveles.md](docs/niveles.md).
-- ✅ **312 retos** (287 de opción múltiple + 25 abiertas) en **10 niveles jugables**, 26 de ellos marcados **estado del arte 2026** — conceptos que hoy están en la frontera del oficio y que valen más puntos —, generados desde las notas reales del máster. Las opciones se **barajan en cada partida** para que no se pueda memorizar la posición de la correcta.
+- ✅ **312 retos** (287 de opción múltiple + 25 abiertas) en **10 niveles jugables**, 25 de ellos marcados **estado del arte 2026** — conceptos que hoy están en la frontera del oficio y que valen más puntos —, generados desde las notas reales del máster. Las opciones se **barajan en cada partida** para que no se pueda memorizar la posición de la correcta.
 - ✅ **El Oráculo**: NPC conversacional con IA y contexto del módulo actual.
 - ✅ **Evaluación de respuestas abiertas** con rúbrica (IA como grader; sin IA caen a su variante de opciones, sin penalizar).
 - ✅ **Modo "píldora roja"**: bridge local que resuelve el Oráculo, la evaluación y las pistas lanzando instancias headless de Claude Code o GitHub Copilot.
