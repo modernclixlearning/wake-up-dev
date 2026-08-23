@@ -58,13 +58,16 @@ const FONDO_POR_MODULO: Record<string, string> = {
 };
 
 /** Carga los fondos una vez al iniciar, junto a los sprites (main.ts).
- * Por cada fondo carga también su franja de suelo `suelo-*.png` (F14): un
- * recorte del propio suelo pintado de la escena (y 284..590 de la imagen,
- * generado por script con PIL) que se tilea en coordenadas de MUNDO. */
+ * Por cada fondo carga también su textura de piso `piso-*.png` (F14 v4):
+ * suelo OPACO generado por script (adoquín/losetas/tablones/alfombra/arena
+ * según el escenario, con la paleta muestreada del fondo real) que se tilea
+ * en coordenadas de MUNDO. La v3 recortaba la franja del propio fondo, pero
+ * en niveles sin piso pintado en esa banda (la ciudad son edificios) el
+ * suelo se leía "transparente" — pedido del alumno con mockup. */
 export function cargarFondos(k: KAPLAYCtx): void {
   for (const nombre of FONDOS) {
     k.loadSprite(`fondo-${nombre}`, `fondos/${nombre}.png`);
-    k.loadSprite(`suelo-${nombre}`, `fondos/suelo-${nombre}.png`);
+    k.loadSprite(`piso-${nombre}`, `fondos/piso-${nombre}.png`);
   }
 }
 
@@ -174,41 +177,41 @@ const ALTO_BORDILLO = 6;
 const ALTO_FALDON = 14;
 
 /**
- * Línea de contacto pared/suelo por fondo: un tono derivado del color real del
- * suelo pintado de cada escena (muestreado con PIL de la franja y 380..520).
- * Claro sobre suelos oscuros, oscuro sobre el único suelo claro (el dojo).
- */
-const LINEA_POR_FONDO: Record<string, [number, number, number]> = {
-  "01-ciudad-digital": [45, 115, 55],
-  "02-pasillo-oficina": [85, 105, 80],
-  "03-sala-entrenamiento": [150, 155, 160],
-  "04-tejado-lluvia": [20, 95, 85],
-  "05-cabina-telefonica": [60, 90, 60],
-  "06-apartamento-rojo": [115, 30, 25],
-  "07-desierto-maquinas": [155, 105, 65],
-  "08-nave-subterranea": [75, 80, 60],
-  "09-sala-pantallas": [50, 85, 50],
-  "10-corredor-hotel": [95, 55, 20],
-};
-
-/**
- * Suelo de imagen (F14 v3): tilea la franja `suelo-*.png` — el suelo pintado
- * del PROPIO fondo — en coordenadas de mundo, así scrollea con la cámara
- * mientras el backdrop queda fijo. Es la textura original del escenario
- * reutilizada "en modo carrete". Los tiles impares van espejados (flipX): las
- * costuras entre tiles quedan continuas por construcción, porque cada borde
- * empalma consigo mismo reflejado.
+ * Suelo de imagen (F14 v4): tilea la textura opaca `piso-*.png` en coordenadas
+ * de mundo, así scrollea con la cámara mientras el backdrop queda fijo. Los
+ * tiles impares van espejados (flipX): las costuras quedan continuas por
+ * construcción, porque cada borde empalma consigo mismo reflejado.
  */
 function agregarSueloImagen(k: KAPLAYCtx, nombre: string, anchoNivel: number): void {
   const tiles = Math.ceil(anchoNivel / ANCHO) + 1;
   for (let i = 0; i < tiles; i++) {
-    k.add([k.sprite(`suelo-${nombre}`, { flipX: i % 2 === 1 }), k.pos(i * ANCHO, PIES_MIN), k.z(-3)]);
+    k.add([k.sprite(`piso-${nombre}`, { flipX: i % 2 === 1 }), k.pos(i * ANCHO, PIES_MIN), k.z(-3)]);
   }
-  // Línea de contacto con el fondo: marca dónde termina la pared y empieza lo
-  // pisable — sin ella el mismo dibujo aparece dos veces (backdrop y franja) y
-  // no se lee cuál de los dos es el piso del combate.
-  const linea = LINEA_POR_FONDO[nombre] ?? [80, 90, 80];
-  k.add([k.rect(anchoNivel, 3), k.pos(0, PIES_MIN), k.color(...linea), k.z(-2)]);
+  if (FONDOS_EXTERIOR.has(nombre)) {
+    dibujarValla(k, anchoNivel);
+  } else {
+    // Interiores: junta pared/piso (zócalo) — una sombra fina y un filo de luz.
+    k.add([k.rect(anchoNivel, 3), k.pos(0, PIES_MIN), k.color(0, 0, 0), k.opacity(0.5), k.z(-2)]);
+    k.add([k.rect(anchoNivel, 2), k.pos(0, PIES_MIN + 3), k.color(255, 255, 255), k.opacity(0.1), k.z(-2)]);
+  }
+}
+
+/**
+ * Valla del horizonte (exteriores, mockup del alumno): silueta oscura de
+ * postes y dos travesaños plantada donde termina el fondo y empieza el piso.
+ * Scrollea con el mundo (z -2, sobre el piso y bajo los personajes).
+ */
+function dibujarValla(k: KAPLAYCtx, anchoNivel: number): void {
+  const SILUETA: [number, number, number] = [7, 14, 8];
+  const ALTO_POSTE = 26;
+  const yBase = PIES_MIN + 2;
+  k.add([k.rect(anchoNivel, 3), k.pos(0, yBase - ALTO_POSTE + 6), k.color(...SILUETA), k.z(-2)]);
+  k.add([k.rect(anchoNivel, 3), k.pos(0, yBase - 12), k.color(...SILUETA), k.z(-2)]);
+  for (let x = 0; x < anchoNivel; x += 56) {
+    k.add([k.rect(5, ALTO_POSTE, ), k.pos(x, yBase - ALTO_POSTE), k.color(...SILUETA), k.z(-2)]);
+  }
+  // Sombra al pie de la valla: asienta la silueta sobre el piso.
+  k.add([k.rect(anchoNivel, 4), k.pos(0, yBase), k.color(0, 0, 0), k.opacity(0.35), k.z(-2)]);
 }
 
 /** Un tono del acento: el mismo matiz, escalado en brillo (0..1). */
