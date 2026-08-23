@@ -43,6 +43,10 @@
     background:repeating-linear-gradient(180deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
     mix-blend-mode:multiply; opacity:.5;
   }
+  /* Las capturas del sistema Second Brain (texto de Obsidian/dashboard) quedan
+     por encima de la rejilla para que sean legibles. Las capturas del juego
+     (imágenes de pantalla del videojuego) no llevan esta clase y siguen con la rejilla. */
+  figure.sin-rejilla{position:relative; z-index:51}
 
   /* ───────── Chrome: la barra de estado del propio juego ───────── */
   .hud,.pie{
@@ -393,21 +397,19 @@ banco del nivel</pre>
   <!-- 10 · BYOK -->
   <section class="slide" data-modulo="SEGURIDAD">
     <p class="ojo" data-anim>Claves y coste</p>
-    <h2 data-decode data-anim>Sin backend, sin claves mías, sin factura</h2>
+    <h2 data-decode data-anim>La IA llega al jugador sin que configure nada</h2>
     <div class="cols">
       <ul>
-        <li data-anim>La API key es <strong>del jugador</strong> y vive solo en su <code>localStorage</code></li>
-        <li data-anim>Las llamadas van directo al proveedor: <strong>no hay backend intermedio</strong> que pueda filtrar nada</li>
-        <li data-anim><strong>Cero claves propias en el bundle</strong> — verificable en el <code>dist/</code> construido</li>
-        <li data-anim>Sin key, el juego se juega entero con el banco estático</li>
+        <li data-anim><strong>Proxy del TFM (por defecto)</strong> — en Vercel hay una función serverless <code>api/oraculo.ts</code> (runtime edge) que hace de proxy a OpenAI. La API key vive como variable de entorno <strong>en el servidor</strong>, nunca en el bundle ni en el repositorio. Quien abre la URL habla al Oráculo sin configurar nada.</li>
+        <li data-anim>El proxy lleva <strong>límites de coste</strong>: modelo económico, tope de tokens por respuesta, rate limit por IP y recorte de las entradas.</li>
+        <li data-anim><strong>BYOK sigue existiendo</strong> — el jugador puede poner su propia key de Anthropic / OpenAI / Gemini; vive solo en su <code>localStorage</code> y llama directo al proveedor. O usar el bridge headless local.</li>
+        <li data-anim>La <strong>invariante que no se mueve</strong>: el juego funciona completo sin ninguna IA — los retos abiertos caen a su variante de opciones sin penalizar.</li>
       </ul>
       <div class="caja" data-anim>
-        <p class="ojo">El hueco, dicho en voz alta</p>
-        <p>Quien abra la URL pública sin API key ve el juego completo, pero no las features de IA.
-        Es el precio de no montar un backend con costes.</p>
-        <p style="margin-top:.9em">Está en el backlog como decisión abierta: proxy serverless con
-        rate limit, modo demo pregrabado, o dejarlo así y documentarlo mejor en la propia UI.
-        <strong>La restricción firme no se mueve: nunca una clave propia en el cliente.</strong></p>
+        <p class="ojo">El matiz que da valor al segundo deploy</p>
+        <p>GitHub Pages es un CDN estático: no puede servir el proxy. Quien llegue desde allí juega en modo BYOK igual que antes.</p>
+        <p style="margin-top:.9em">Es un buen ejemplo de por qué se eligió un segundo destino de despliegue: <strong>Vercel añade capacidad de cómputo sin abandonar el CDN.</strong></p>
+        <p style="margin-top:.9em"><strong>La restricción firme no se mueve: nunca una clave propia en el cliente.</strong></p>
       </div>
     </div>
   </section>
@@ -417,7 +419,7 @@ banco del nivel</pre>
     <p class="ojo" data-anim>Gates</p>
     <h2 data-decode data-anim>El gate no es la opinión de nadie</h2>
     <div class="cifras" data-anim>
-      <div class="cifra"><b>112</b><span>tests</span></div>
+      <div class="cifra"><b>205</b><span>tests</span></div>
       <div class="cifra"><b>10</b><span>niveles jugables</span></div>
       <div class="cifra"><b>312</b><span>retos</span></div>
       <div class="cifra"><b>0</b><span>llamadas reales a IA en CI</span></div>
@@ -425,7 +427,7 @@ banco del nivel</pre>
     <ul>
       <li data-anim><strong>Vitest</strong> sobre el dominio, la capa de IA (adapters con <code>fetch</code> mockeado) y las invariantes de todos los bancos</li>
       <li data-anim><strong>GitHub Actions</strong> — typecheck + tests + build en cada push y cada PR</li>
-      <li data-anim><strong>Deploy automático</strong> a GitHub Pages: main en verde es main publicado</li>
+      <li data-anim><strong>Dos destinos de deploy</strong>: <em>Vercel</em> (push a main → build + preview por PR) y <em>GitHub Pages</em> (ci.yml + deploy.yml). El mismo artefacto sirve en los dos — <code>vite.config.ts</code> usa <code>base: "./"</code></li>
       <li data-anim>Verificación <strong>en navegador real</strong> antes de commitear</li>
     </ul>
     <p class="ancho" data-anim>Handlers de teclado sin cancelar que bloqueaban el segundo encuentro.
@@ -479,7 +481,7 @@ banco del nivel</pre>
         <p data-anim>Todo el sistema son directorios y archivos de texto versionados en git. Sin
         base de datos, sin servicio de pago: el esqueleto es el árbol de carpetas.</p>
       </div>
-      <figure data-anim>
+      <figure data-anim class="sin-rejilla">
         <img src="img/08-base-conocimiento.png" alt="El vault en Obsidian: árbol de carpetas y archivos markdown que forman el esqueleto del sistema">
         <figcaption>Markdown y git como sistema operativo de conocimiento</figcaption>
       </figure>
@@ -504,7 +506,7 @@ banco del nivel</pre>
         resultados; el <em>import</em> estaba en la primera línea. Aplicarlo rompía el build.
         Por eso el humano contrasta antes de mergear: el gate no es opcional.</p>
       </div>
-      <figure data-anim class="recorte">
+      <figure data-anim class="recorte sin-rejilla">
         <img src="img/13-issue-auditoria.png" alt="Issue público generado por la auditoría de diseño y UX, con sus tareas y criterios de aceptación">
         <figcaption>Un hallazgo de la auditoría, ya como issue accionable</figcaption>
       </figure>
@@ -518,28 +520,28 @@ banco del nivel</pre>
     <div class="circuito">
       <div class="paso" data-anim>
         <p class="ojo">1 · Reparte</p>
-        <figure>
+        <figure class="sin-rejilla">
           <img src="img/10-flujo-multiagente.png" alt="Panel del sistema con varias instancias headless corriendo en paralelo">
         </figure>
         <p style="font-size:.92em">Tres writers arrancan a la vez, una por módulo.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">2 · Trabaja</p>
-        <figure>
+        <figure class="sin-rejilla">
           <img src="img/11-instancia-headless.png" alt="Detalle de una instancia writer y el único archivo que tiene permitido tocar">
         </figure>
         <p style="font-size:.92em">Cada una declara su alcance: un archivo, y nada más.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">3 · Avisa</p>
-        <figure>
+        <figure class="sin-rejilla">
           <img src="img/12-notificacion-telegram.png" alt="Notificación en el móvil avisando de que una instancia terminó">
         </figure>
         <p style="font-size:.92em">Al terminar, el aviso llega al móvil. El humano vuelve solo cuando hace falta.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">4 · Rinde cuentas</p>
-        <figure>
+        <figure class="sin-rejilla">
           <img src="img/09-orquestador.png" alt="Informe del coordinador con lo hecho y lo verificado">
         </figure>
         <p style="font-size:.92em">El coordinador reporta qué se hizo y qué se verificó. El humano revisa eso, no el diff.</p>
