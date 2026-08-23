@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Second Brain — el sistema detrás del TFM</title>
+<link rel="icon" href="../favicon.png">
+<meta name="description" content="Documentación interactiva del Second Brain: la bóveda-sistema-operativo con la que se construyó Wake Up, Dev. Arquitectura, stack, MCP, skills y los prompts que moldean al Oráculo.">
+<style>
+  /* Mismo lenguaje visual que las slides de la defensa (../slides/). */
+  @font-face{font-family:"VT323";src:url("../slides/fonts/vt323.woff2") format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"Share Tech Mono";src:url("../slides/fonts/sharetechmono.woff2") format("woff2");font-weight:400;font-display:swap}
+
+  :root{
+    --vacio:#04060a;
+    --panel:#080d12;
+    --fosforo:#5dfc8a;
+    --fosforo-alto:#b6ffcd;
+    --fosforo-bajo:#1f6b3a;
+    --ambar:#ffb454;
+    --display:"VT323","Courier New",monospace;
+    --cuerpo:"Share Tech Mono",ui-monospace,"Courier New",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--vacio); color:var(--fosforo-alto);
+    font-family:var(--cuerpo); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; z-index:50; pointer-events:none;
+    background:repeating-linear-gradient(180deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+    mix-blend-mode:multiply; opacity:.5;
+  }
+
+  /* ── HUD superior, como el juego y las slides ── */
+  .hud{
+    position:fixed; top:0; left:0; right:0; z-index:40; height:44px;
+    display:flex; align-items:center; gap:1.2em; padding:0 clamp(14px,2.4vw,32px);
+    font-family:var(--display); font-size:21px; color:var(--fosforo);
+    border-bottom:1px solid var(--fosforo-bajo);
+    background:linear-gradient(180deg,rgba(4,6,10,.97),rgba(4,6,10,.8));
+  }
+  .hud a{color:var(--fosforo-bajo);text-decoration:none}
+  .hud a:hover{color:var(--fosforo)}
+  .hud .meta{margin-left:auto;color:var(--ambar)}
+  @media (max-width:760px){.hud .larga{display:none}}
+
+  main{max-width:980px;margin:0 auto;padding:92px clamp(18px,4vw,40px) 80px}
+
+  h1{font-family:var(--display);font-size:clamp(40px,7vw,72px);color:var(--fosforo);line-height:1.02;text-shadow:0 0 18px rgba(93,252,138,.35)}
+  h2{font-family:var(--display);font-size:clamp(28px,4.4vw,42px);color:var(--fosforo);margin:0 0 .35em}
+  h3{font-family:var(--display);font-size:clamp(21px,3vw,27px);color:var(--fosforo-alto);margin:0 0 .3em}
+  section{margin-top:clamp(48px,9vh,84px);scroll-margin-top:70px}
+  p{margin:.55em 0;max-width:72ch}
+  .amber{color:var(--ambar)}
+  .dim{color:var(--fosforo-bajo)}
+  a{color:var(--fosforo)}
+
+  .kicker{font-family:var(--display);font-size:19px;color:var(--ambar);letter-spacing:.08em;text-transform:uppercase}
+  .lede{font-size:1.05em}
+
+  /* ── Cajas terminal ── */
+  .term{
+    background:var(--panel); border:1px solid var(--fosforo-bajo);
+    border-radius:4px; margin:1em 0; overflow:hidden;
+  }
+  .term .barra{
+    display:flex; gap:.7em; align-items:center; padding:.3em .8em;
+    font-family:var(--display); font-size:17px; color:var(--fosforo-bajo);
+    border-bottom:1px solid rgba(31,107,58,.5);
+  }
+  .term pre{
+    padding:.8em 1em; overflow-x:auto; font-size:.86em; line-height:1.5;
+    color:var(--fosforo-alto); font-family:var(--cuerpo);
+  }
+  .term pre b{color:var(--fosforo);font-weight:400}
+  .term pre i{color:var(--ambar);font-style:normal}
+  .term pre u{color:var(--fosforo-bajo);text-decoration:none}
+
+  /* ── Grillas de tarjetas ── */
+  .grid{display:grid;gap:12px;margin:1em 0}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+  .card{
+    background:var(--panel); border:1px solid rgba(31,107,58,.6); border-radius:4px;
+    padding:.9em 1em;
+  }
+  .card h4{font-family:var(--display);font-size:20px;color:var(--fosforo);margin-bottom:.25em}
+  .card p{font-size:.88em;margin:0}
+  .card .tag{font-size:.72em;color:var(--ambar);letter-spacing:.06em}
+
+  /* ── Diagrama de capas (details interactivos) ── */
+  .capas{display:flex;flex-direction:column;gap:8px;margin:1.1em 0}
+  .capa{border:1px solid var(--fosforo-bajo);border-radius:4px;background:var(--panel)}
+  .capa summary{
+    cursor:pointer; list-style:none; display:flex; gap:.9em; align-items:baseline;
+    padding:.55em .9em; font-family:var(--display); font-size:21px; color:var(--fosforo);
+  }
+  .capa summary::-webkit-details-marker{display:none}
+  .capa summary .ruta{color:var(--ambar);min-width:9.5ch}
+  .capa summary .hint{margin-left:auto;color:var(--fosforo-bajo);font-size:16px}
+  .capa[open] summary .hint{transform:rotate(90deg)}
+  .capa .cuerpo{padding:0 1em .8em;font-size:.9em;border-top:1px dashed rgba(31,107,58,.5)}
+  .capa .cuerpo p{margin:.5em 0}
+
+  /* ── Flujo de delegación ── */
+  .flujo{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:1em 0}
+  .paso{
+    flex:1 1 150px; background:var(--panel); border:1px solid rgba(31,107,58,.7);
+    border-radius:4px; padding:.6em .8em; position:relative; font-size:.85em;
+  }
+  .paso b{font-family:var(--display);font-size:19px;color:var(--fosforo);display:block;font-weight:400}
+  .paso .n{position:absolute;top:.4em;right:.6em;color:var(--ambar);font-family:var(--display)}
+
+  table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:.86em}
+  th,td{border:1px solid rgba(31,107,58,.55);padding:.4em .7em;text-align:left;vertical-align:top}
+  th{color:var(--fosforo);font-weight:400;font-family:var(--display);font-size:18px}
+
+  .aviso{
+    border:1px dashed var(--ambar); border-radius:4px; padding:.7em 1em;
+    color:var(--ambar); font-size:.9em; margin:1em 0; max-width:none;
+  }
+
+  footer{margin-top:70px;padding-top:1em;border-top:1px solid var(--fosforo-bajo);color:var(--fosforo-bajo);font-size:.85em}
+</style>
+</head>
+<body>
+
+<nav class="hud">
+  <span>SECOND BRAIN</span>
+  <span class="larga dim">|</span>
+  <a class="larga" href="#que-es">sistema</a>
+  <a class="larga" href="#stack">stack</a>
+  <a class="larga" href="#mcp">mcp</a>
+  <a class="larga" href="#skills">skills</a>
+  <a class="larga" href="#oraculo">oráculo</a>
+  <span class="meta"><a href="../" style="color:var(--ambar)">← jugar</a> · <a href="../slides/" style="color:var(--ambar)">slides</a></span>
+</nav>
+
+<main>
+
+<header>
+  <p class="kicker">Wake Up, Dev — anexo técnico del TFM</p>
+  <h1>El sistema operativo<br>detrás del juego</h1>
+  <p class="lede">Este TFM no se construyó en un editor suelto: se construyó dentro de un
+  <b>Second Brain</b> — una bóveda de conocimiento que funciona como sistema operativo de
+  desarrollo, donde los agentes de IA leen el contexto, ejecutan el trabajo y dejan rastro.
+  La bóveda es privada (contiene proyectos personales); esta página documenta su
+  <span class="amber">diseño, stack y patrones</span>, que son la parte transferible.</p>
+</header>
+
+<section id="que-es">
+  <h2>&gt; ¿Qué es?</h2>
+  <p>Una carpeta de Markdown versionada con Git y visualizada con Obsidian. Nada más — y
+  eso es deliberado: texto plano que cualquier agente puede leer y escribir sin SDK, con
+  historial completo gratis y sincronización multi-PC vía GitHub. Sobre esa base se montan
+  tres roles a la vez:</p>
+  <div class="grid g3">
+    <div class="card"><h4>Base de conocimiento</h4><p>Notas del máster, prompts, plantillas, decisiones con su porqué. Lo que la IA necesita para trabajar con contexto real.</p></div>
+    <div class="card"><h4>Interfaz de agentes</h4><p>Los agentes (Claude Code, Copilot CLI, Codex) operan DENTRO de la bóveda: leen el contexto del proyecto y escriben journal, issues y aprendizajes.</p></div>
+    <div class="card"><h4>Registro de trabajo</h4><p>Issues, journal diario y ledger de delegaciones. El proceso queda auditable — parte de lo que se entrega en este TFM es el proceso.</p></div>
+  </div>
+
+  <h3>Anatomía (clic en cada capa)</h3>
+  <div class="capas">
+    <details class="capa" open>
+      <summary><span class="ruta">00_SYSTEM</span> Conocimiento reutilizable <span class="hint">▸</span></summary>
+      <div class="cuerpo"><p>Skills (procedimientos invocables), plantillas de proyecto y prompts compartidos.
+      Es la parte que no pertenece a ningún proyecto: el "userland" que cualquier agente carga bajo demanda.</p></div>
+    </details>
+    <details class="capa">
+      <summary><span class="ruta">01_PROJECTS</span> Un mini-OS por proyecto <span class="hint">▸</span></summary>
+      <div class="cuerpo"><p>Cada proyecto lleva su contexto para IA (<code>ai-context/</code>), issues, journal,
+      aprendizajes propios y una carpeta <code>code/</code> que es un repo Git independiente — la bóveda versiona el
+      conocimiento, el código se versiona aparte. Wake Up, Dev vive así: su repo público cuelga de un proyecto privado.</p></div>
+    </details>
+    <details class="capa">
+      <summary><span class="ruta">02_JOURNAL</span> Capa de ejecución <span class="hint">▸</span></summary>
+      <div class="cuerpo"><p>Journal global diario + notificaciones que los agentes se dejan entre sí
+      (una instancia termina → deja una nota → el heartbeat la procesa al día siguiente).</p></div>
+    </details>
+    <details class="capa">
+      <summary><span class="ruta">03_RESOURCES</span> Destilados consultables <span class="hint">▸</span></summary>
+      <div class="cuerpo"><p>Cápsulas de conocimiento extraídas de las notas largas — p. ej. las ~300 notas del máster
+      destiladas para que cualquier otro proyecto las consulte sin cargarlas enteras.</p></div>
+    </details>
+    <details class="capa">
+      <summary><span class="ruta">04_META</span> El sistema sobre sí mismo <span class="hint">▸</span></summary>
+      <div class="cuerpo"><p>Workflows, el motor de loops y los <b>aprendizajes</b>: reglas de cómo trabajar,
+      un archivo por regla, con índice que se carga en cada sesión. Acá vive el bucle de auto-mejora.</p></div>
+    </details>
+  </div>
+</section>
+
+<section id="stack">
+  <h2>&gt; Stack e infraestructura</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">DATOS</span><h4>Markdown + Git</h4><p>La "base de datos" es texto plano con frontmatter YAML. GitHub como único mecanismo de sync entre máquinas — sin servicios de pago, sin lock-in.</p></div>
+    <div class="card"><span class="tag">RUNTIME</span><h4>CLIs de agentes</h4><p>Claude Code como coordinador; instancias headless de Copilot CLI / Codex como ejecutoras. Cada CLI arranca en la bóveda y hereda el contexto del proyecto.</p></div>
+    <div class="card"><span class="tag">UI</span><h4>Dashboard local</h4><p>App web local (Vite + React) que expone la bóveda como API JSON: cola de delegaciones en vivo, loops programados, issues, journal. Solo escucha en localhost.</p></div>
+    <div class="card"><span class="tag">PUENTE</span><h4>Servidor MCP propio</h4><p>El corazón: un servidor Model Context Protocol que expone ~50 herramientas <code>sb_*</code> para que cualquier agente opere el sistema por contrato, no por convención.</p></div>
+  </div>
+
+  <div class="term">
+    <div class="barra">terminal — un día de trabajo típico</div>
+    <pre><u># el humano define QUÉ; el coordinador reparte; los writers ejecutan</u>
+<b>&gt; sb_overview</b>            <u># estado global: proyectos, issues, loops</u>
+<b>&gt; sb_issues</b> --actionable  <u># qué está listo para implementar</u>
+<b>&gt; sb_delegate</b> { project, prompt, cli: <i>"copilot"</i>, scope: [...] }
+                        <u># lanza un writer headless en su worktree</u>
+<b>&gt; sb_task_output</b> id      <u># el coordinador recoge el reporte y verifica</u>
+<b>&gt; sb_journal</b>             <u># el día queda escrito solo</u></pre>
+  </div>
+</section>
+
+<section id="mcp">
+  <h2>&gt; Delegación multiagente</h2>
+  <p>La regla operativa: <span class="amber">el coordinador no escribe código</span> — clasifica,
+  especifica y delega; los writers implementan; los reportes se verifican contra el repo real
+  (una hija puede afirmar cualquier cosa: la evidencia se contrasta, no se cree). Así se
+  corrigieron, por ejemplo, los bancos de retos de este juego: una revisión E2E produjo el
+  informe-spec, y dos writers Copilot aplicaron 61 correcciones en paralelo con scopes disjuntos.</p>
+
+  <div class="flujo">
+    <div class="paso"><span class="n">1</span><b>Spec</b>Análisis previo tipo SDD: un informe con ítems concretos y criterios verificables. Sin spec no hay delegación de tareas medianas o grandes.</div>
+    <div class="paso"><span class="n">2</span><b>sb_delegate</b>Cada writer nace headless en un <i>git worktree</i> propio (rama <code>task/&lt;id&gt;</code>), con un <b>scope</b> declarado de archivos: scopes disjuntos = paralelismo seguro.</div>
+    <div class="paso"><span class="n">3</span><b>Gates</b>El writer corre typecheck y tests en su worktree y commitea en su rama. Nunca toca main.</div>
+    <div class="paso"><span class="n">4</span><b>Verificación</b>El coordinador comprueba que el commit EXISTE en el repo, hace spot-checks del contenido y recién entonces mergea.</div>
+  </div>
+
+  <table>
+    <tr><th>Familia de tools</th><th>Ejemplos</th><th>Para qué</th></tr>
+    <tr><td>Trabajo</td><td><code>sb_delegate</code>, <code>sb_queue</code>, <code>sb_task_output</code>, <code>sb_leases</code></td><td>Delegar, ver la cola, recoger reportes, respetar la capacidad de la máquina (tope de writers y RAM)</td></tr>
+    <tr><td>Conocimiento</td><td><code>sb_search</code>, <code>sb_ask</code>, <code>sb_learnings</code>, <code>sb_read_doc</code></td><td>Consultar la bóveda sin cargarla entera en contexto</td></tr>
+    <tr><td>Tracking</td><td><code>sb_issues</code>, <code>sb_journal</code>, <code>sb_ledger</code>, <code>sb_overview</code></td><td>Issues, journal y rastro de cada delegación (quién, qué, cuánto costó)</td></tr>
+    <tr><td>Autonomía</td><td><code>sb_loops</code>, <code>sb_loop_run</code>, <code>sb_notify</code></td><td>Loops programados: heartbeat diario, auto-scan de issues, auto-mejora del propio sistema</td></tr>
+  </table>
+
+  <p class="dim">Los loops cierran el círculo: un heartbeat lee el estado cada mañana y genera un briefing;
+  un auto-scan detecta issues listos y propone la cascada; un loop de auto-mejora cruza los aprendizajes
+  con las métricas y abre issues sobre el propio sistema. El humano queda como gate de decisión, no como
+  cuello de botella de ejecución.</p>
+</section>
+
+<section id="skills">
+  <h2>&gt; El patrón de skills</h2>
+  <p>Una <b>skill</b> es un procedimiento en Markdown que el agente carga al invocarla —
+  la versión operativa de "cómo hacemos esto acá". La bóveda tiene decenas (orquestación,
+  debugging con análisis de causa raíz, journaling, transcripción de reuniones). La más
+  ilustrativa es la que convierte feedback en reglas permanentes:</p>
+
+  <div class="term">
+    <div class="barra">skill: registrar-aprendizaje</div>
+    <pre><u># El usuario corrige algo por segunda vez → eso es una regla, no un chat</u>
+1. Se escribe <b>04_META/aprendizajes/&lt;slug&gt;.md</b> — un archivo POR regla:
+     qué pasó, <i>por qué</i> importa, y cómo aplicarla la próxima vez.
+2. Se agrega una línea al <b>índice</b>, que se carga en cada sesión nueva.
+3. El agente siguiente arranca sabiendo lo que a este le costó aprender.
+
+<u># Ejemplo real (de esta misma semana, sanitizado):</u>
+<b>ruteo-coordinador.md</b> — "Claude coordina y delega la implementación a
+  writers Copilot para economizar tokens; el modelo grande escribe solo
+  en tareas de gráfica compleja; toda tarea mediana o grande lleva una
+  spec previa. <i>Why:</i> el usuario lo pidió tres veces en una sesión."</pre>
+  </div>
+
+  <p>El efecto compuesto es el punto: los errores se pagan una vez. La lista de "bugs ya
+  pagados" del propio juego funciona igual — el <a href="https://github.com/modernclixlearning/wake-up-dev/blob/main/AGENTS.md">AGENTS.md
+  del repo</a> es la versión pública del patrón: reglas de arquitectura y gotchas que cada
+  agente lee antes de tocar código.</p>
+</section>
+
+<section id="oraculo">
+  <h2>&gt; Caso aplicado: el Oráculo</h2>
+  <p>En el juego, la IA no es solo herramienta de construcción: es mecánica. El Oráculo
+  responde dudas, un evaluador califica respuestas abiertas contra rúbrica y hay pistas
+  generadas. Todo eso es <span class="amber">un personaje moldeado por system prompts</span>
+  sobre una capa de adapters intercambiables (Anthropic / OpenAI / Gemini / bridge local),
+  BYOK y con fallback estático: el juego entero funciona sin ninguna API key.</p>
+
+  <div class="term">
+    <div class="barra">src/ai/prompts.ts — systemOraculo (literal, del repo público)</div>
+    <pre>"Sos el Oráculo del juego educativo 'Wake Up, Dev', ambientado en Matrix.
+El jugador es un estudiante del Máster en Desarrollo con IA repasando un módulo.
+Respondé sus dudas sobre el contenido del módulo de forma didáctica, en español,
+en 120 palabras o menos. Usá analogías simples cuando ayuden.
+<i>Nunca des la respuesta literal de un reto del juego: guiá para que la deduzca.</i>
+Mantené un tono sereno y levemente enigmático, como el Oráculo de Matrix,
+<i>pero priorizá siempre la claridad didáctica sobre el personaje.</i>"
+
+<u>+ contexto del módulo actual (el campo modulo.resumen del banco JSON)</u></pre>
+  </div>
+
+  <div class="grid g2">
+    <div class="card"><h4>Por qué funciona</h4><p>Las dos líneas en ámbar son las que hacen al personaje jugable: la primera protege la mecánica (no regalar respuestas), la segunda subordina el disfraz a la didáctica. El resto es tono.</p></div>
+    <div class="card"><h4>El mismo patrón, tres roles</h4><p><code>systemEvaluador</code> exige JSON estricto y criterio justo ("no exijas terminología exacta si el concepto está bien"); <code>systemPista</code> limita a 30 palabras sin descartar opciones. Cada rol es un contrato de prompt, testeado con adapters mockeados.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>&gt; En números</h2>
+  <div class="grid g3">
+    <div class="card"><h4 class="amber">10 niveles</h4><p>Uno por módulo del máster, cada uno con su escenario pixel-art y su banco de retos.</p></div>
+    <div class="card"><h4 class="amber">312 retos</h4><p>Generados desde las notas reales del curso con un pipeline documentado, revisados E2E con una spec de 67 correcciones aplicada por writers en paralelo.</p></div>
+    <div class="card"><h4 class="amber">140+ tests</h4><p>Dominio puro y adapters mockeados; CI + deploy automático a GitHub Pages en cada push. El backlog del juego es público: compartir el proceso es parte de la entrega.</p></div>
+  </div>
+  <div class="aviso">La bóveda en sí no se publica: contiene proyectos personales y de trabajo. Lo
+  compartible es esto — la arquitectura, el stack y los patrones — más todo el repo del juego,
+  cuyo desarrollo completo (issues, auditorías multiagente, decisiones) sí es público.</div>
+</section>
+
+<footer>
+  <p>Wake Up, Dev — TFM del Máster en Desarrollo con IA · <a href="../">jugar</a> ·
+  <a href="../slides/">slides de la defensa</a> ·
+  <a href="https://github.com/modernclixlearning/wake-up-dev">repo</a></p>
+</footer>
+
+</main>
+</body>
+</html>
