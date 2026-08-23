@@ -39,7 +39,7 @@ import {
   orientarHacia,
 } from "../actores";
 import { estaMuteado, musicaDeModulo, reproducirMusica, sfx } from "../audio";
-import { dibujarEscenario } from "../escenario";
+import { ALTO_PORTAL, ANCHO_PORTAL, crearPortal, dibujarEscenario } from "../escenario";
 import { guardarPartida } from "../persistencia";
 import { GameState } from "../state";
 import { ANCHO, ALTO, CARRIL_INFERIOR, CARRIL_SUPERIOR, VERDE, VERDE_OSCURO, ROJO, BLANCO, NEGRO } from "../theme";
@@ -784,18 +784,15 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       sfx.victoria();
       // Portal a escala de Neo (160 de alto): una salida más baja que el
       // jugador se veía absurda con los sprites 3x.
-      const portal = k.add([
-        k.rect(56, 180),
-        // Apoyado en el camino, no en el centro de la pantalla: una salida
-        // flotando fuera de la calzada rompe la lectura del recorrido.
-        k.pos(anchoNivel - 100, camino.centroEn(anchoNivel - 72) - 180),
-        k.area(),
-        k.color(...VERDE_OSCURO),
-        k.outline(3, k.rgb(...VERDE)),
-        k.z(1),
-        "portal",
-      ]);
-      portal.add([k.text("EXIT", { size: 12 }), k.pos(13, 84), k.color(...VERDE)]);
+      // Puerta propia de cada escenario (F17). Apoyada en el camino, no en el
+      // centro de la pantalla: una salida flotando fuera de la calzada rompe la
+      // lectura del recorrido.
+      crearPortal(
+        k,
+        anchoNivel - 100,
+        camino.centroEn(anchoNivel - 100 + ANCHO_PORTAL / 2) - ALTO_PORTAL,
+        moduloId
+      );
       player.onCollide("portal", () => k.go("zion"));
     };
 

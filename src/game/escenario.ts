@@ -12,6 +12,8 @@ import {
   CIAN,
   LIMA,
   NARANJA,
+  NEGRO,
+  ROJO,
   VERDE,
   VERDE_OSCURO,
   VIOLETA,
@@ -636,4 +638,214 @@ export function dibujarEscenario(k: KAPLAYCtx, moduloId: string, anchoNivel: num
   }
 
   return camino;
+}
+
+// ---------------------------------------------------------------------------
+// Puerta de salida por escenario (F17)
+// ---------------------------------------------------------------------------
+//
+// La salida era un rectángulo verde con la palabra EXIT, igual en los diez
+// niveles. Ahora cada escenario tiene la suya, construida con las mismas
+// primitivas que el resto del decorado: marco + hoja + un detalle propio del
+// lugar. Un solo `switch` con las diferencias (DRY): la estructura común se
+// dibuja una vez y cada estilo solo añade lo suyo.
+
+export const ANCHO_PORTAL = 72;
+export const ALTO_PORTAL = 190;
+
+/** Estilos de puerta; cada fondo apunta a uno. */
+type EstiloPuerta =
+  | "cabina-codigo"
+  | "oficina"
+  | "shoji"
+  | "azotea"
+  | "telefono"
+  | "hotel"
+  | "apartamento"
+  | "compuerta"
+  | "escotilla"
+  | "monitor";
+
+const PUERTA_POR_FONDO: Record<string, EstiloPuerta> = {
+  "01-ciudad-digital": "cabina-codigo",
+  "02-pasillo-oficina": "oficina",
+  "03-sala-entrenamiento": "shoji",
+  "04-tejado-lluvia": "azotea",
+  "05-cabina-telefonica": "telefono",
+  "06-apartamento-rojo": "apartamento",
+  "07-desierto-maquinas": "compuerta",
+  "08-nave-subterranea": "escotilla",
+  "09-sala-pantallas": "monitor",
+  "10-corredor-hotel": "hotel",
+};
+
+/**
+ * Crea la puerta de salida del nivel: un objeto con `area()` y tag "portal"
+ * (level.ts engancha la colisión) más las piezas visuales como hijos, que
+ * siguen al padre sin recalcular posiciones.
+ *
+ * El halo latiendo es lo que la hace leer como SALIDA y no como decorado: tras
+ * limpiar el nivel, el jugador tiene que encontrarla de un vistazo.
+ */
+export function crearPortal(k: KAPLAYCtx, x: number, y: number, moduloId: string): GameObj {
+  const acento = acentoDe(moduloId);
+  const vivo: [number, number, number] = acento === VERDE_OSCURO ? VERDE : acento;
+  const fondo = FONDO_POR_MODULO[moduloId];
+  const estilo = PUERTA_POR_FONDO[fondo ?? ""] ?? "cabina-codigo";
+
+  const portal = k.add([k.pos(x, y), areaPortal(k), k.z(1), "portal"]);
+  const pieza = (
+    dx: number,
+    dy: number,
+    ancho: number,
+    alto: number,
+    color: readonly [number, number, number],
+    opacidad = 1,
+    z = 1
+  ) =>
+    portal.add([
+      k.rect(ancho, alto),
+      k.pos(dx, dy),
+      k.color(color[0], color[1], color[2]),
+      k.opacity(opacidad),
+      k.z(z),
+    ]);
+
+  // Halo: aura tenue que late detrás del marco. Común a todas las puertas.
+  const halo = portal.add([
+    k.rect(ANCHO_PORTAL + 16, ALTO_PORTAL + 16),
+    k.pos(-8, -8),
+    k.color(...vivo),
+    k.opacity(0.16),
+    k.z(-1),
+  ]);
+  let t = 0;
+  halo.onUpdate(() => {
+    t += k.dt();
+    halo.opacity = 0.12 + 0.12 * (1 + Math.sin(t * 3)) * 0.5;
+  });
+
+  // Estructura común: marco iluminado + hoja oscura + umbral en el suelo.
+  pieza(0, 0, ANCHO_PORTAL, ALTO_PORTAL, vivo, 0.85);
+  pieza(4, 4, ANCHO_PORTAL - 8, ALTO_PORTAL - 4, NEGRO, 0.92, 2);
+  pieza(-6, ALTO_PORTAL - 4, ANCHO_PORTAL + 12, 5, vivo, 0.5, 3);
+
+  const centro = ANCHO_PORTAL / 2;
+  switch (estilo) {
+    case "cabina-codigo": {
+      // Lluvia de código congelada dentro del vano: la puerta a la Matrix.
+      for (let i = 0; i < 7; i++) {
+        pieza(12 + (i % 3) * 16, 18 + i * 22, 3, 12, vivo, 0.55, 3);
+      }
+      break;
+    }
+    case "oficina": {
+      // Puerta de oficina: ventanita superior, placa y picaporte.
+      pieza(14, 20, ANCHO_PORTAL - 28, 44, vivo, 0.3, 3);
+      pieza(14, 20, ANCHO_PORTAL - 28, 2, vivo, 0.7, 3);
+      pieza(18, 86, ANCHO_PORTAL - 36, 12, vivo, 0.45, 3);
+      pieza(ANCHO_PORTAL - 20, 118, 8, 4, vivo, 0.9, 3);
+      break;
+    }
+    case "shoji": {
+      // Puerta corredera japonesa: retícula de papel, encaja con el dojo.
+      for (let fx = 12; fx < ANCHO_PORTAL - 10; fx += 16) pieza(fx, 8, 2, ALTO_PORTAL - 14, vivo, 0.4, 3);
+      for (let fy = 20; fy < ALTO_PORTAL - 10; fy += 30) pieza(8, fy, ANCHO_PORTAL - 16, 2, vivo, 0.4, 3);
+      break;
+    }
+    case "azotea": {
+      // Puerta metálica de azotea: refuerzos diagonales y barra antipánico.
+      pieza(10, 30, ANCHO_PORTAL - 20, 3, vivo, 0.5, 3);
+      pieza(10, ALTO_PORTAL - 50, ANCHO_PORTAL - 20, 3, vivo, 0.5, 3);
+      // Refuerzo en diagonal: 96px y anclado al CENTRO del vano — con 120px
+      // desde y=34 el rectángulo rotado se salía por la esquina del marco.
+      portal.add([
+        k.rect(4, 96),
+        k.pos(centro, ALTO_PORTAL / 2),
+        k.anchor("center"),
+        k.rotate(38),
+        k.color(vivo[0], vivo[1], vivo[2]),
+        k.opacity(0.35),
+        k.z(3),
+      ]);
+      pieza(8, 104, ANCHO_PORTAL - 16, 6, vivo, 0.8, 3);
+      break;
+    }
+    case "telefono": {
+      // Cabina: cristal alto, auricular colgado y el rótulo encendido arriba.
+      pieza(12, 26, ANCHO_PORTAL - 24, ALTO_PORTAL - 60, vivo, 0.22, 3);
+      pieza(12, 26, ANCHO_PORTAL - 24, 2, vivo, 0.6, 3);
+      pieza(6, 8, ANCHO_PORTAL - 12, 12, vivo, 0.75, 3);
+      pieza(20, 70, 6, 22, vivo, 0.7, 3);
+      pieza(20, 70, 16, 5, vivo, 0.7, 3);
+      break;
+    }
+    case "hotel": {
+      // Puerta de habitación: placa con número, mirilla y picaporte.
+      pieza(centro - 16, 26, 32, 16, vivo, 0.5, 3);
+      portal.add([
+        k.text("101", { size: 11 }),
+        k.pos(centro, 34),
+        k.anchor("center"),
+        k.color(...NEGRO),
+        k.z(4),
+      ]);
+      pieza(centro - 2, 58, 4, 4, vivo, 0.9, 3);
+      pieza(ANCHO_PORTAL - 22, 116, 10, 4, vivo, 0.9, 3);
+      break;
+    }
+    case "apartamento": {
+      // El cuarto de la píldora: mirilla, cadena de seguridad descolgada y la
+      // rendija de luz roja por debajo de la hoja.
+      pieza(centro - 3, 46, 6, 6, vivo, 0.9, 3);
+      pieza(14, 74, 26, 3, vivo, 0.55, 3);
+      pieza(14, 74, 3, 12, vivo, 0.55, 3);
+      pieza(ANCHO_PORTAL - 24, 112, 12, 5, vivo, 0.9, 3);
+      pieza(6, ALTO_PORTAL - 12, ANCHO_PORTAL - 12, 4, ROJO, 0.55, 3);
+      break;
+    }
+    case "compuerta": {
+      // Compuerta industrial: dos hojas que se abren al medio, con remaches.
+      pieza(centro - 1, 6, 2, ALTO_PORTAL - 14, vivo, 0.6, 3);
+      for (let fy = 20; fy < ALTO_PORTAL - 20; fy += 26) {
+        pieza(10, fy, 4, 4, vivo, 0.65, 3);
+        pieza(ANCHO_PORTAL - 14, fy, 4, 4, vivo, 0.65, 3);
+      }
+      break;
+    }
+    case "escotilla": {
+      // Escotilla de nave: aro exterior, volante central y luces de estado.
+      pieza(10, 40, ANCHO_PORTAL - 20, ANCHO_PORTAL - 20, vivo, 0.18, 3);
+      pieza(10, 40, ANCHO_PORTAL - 20, 3, vivo, 0.6, 3);
+      pieza(10, 40 + ANCHO_PORTAL - 23, ANCHO_PORTAL - 20, 3, vivo, 0.6, 3);
+      pieza(centro - 14, 70, 28, 4, vivo, 0.8, 3);
+      pieza(centro - 2, 58, 4, 28, vivo, 0.8, 3);
+      pieza(centro - 12, 150, 6, 6, vivo, 0.9, 3);
+      pieza(centro + 6, 150, 6, 6, ROJO, 0.7, 3);
+      break;
+    }
+    case "monitor": {
+      // Portal-monitor: pantalla encendida con líneas de escaneo.
+      pieza(10, 16, ANCHO_PORTAL - 20, ALTO_PORTAL - 44, vivo, 0.2, 3);
+      for (let fy = 24; fy < ALTO_PORTAL - 34; fy += 8) {
+        pieza(12, fy, ANCHO_PORTAL - 24, 1, vivo, 0.4, 4);
+      }
+      pieza(centro - 10, ALTO_PORTAL - 22, 20, 5, vivo, 0.7, 3);
+      break;
+    }
+  }
+
+  // Rótulo: fuera del vano para no taparlo, sobre el dintel.
+  portal.add([
+    k.text("SALIDA", { size: 12 }),
+    k.pos(centro, -22),
+    k.anchor("center"),
+    k.color(...vivo),
+    k.z(4),
+  ]);
+  return portal;
+}
+
+function areaPortal(k: KAPLAYCtx) {
+  return k.area({ shape: new k.Rect(k.vec2(0, 0), ANCHO_PORTAL, ALTO_PORTAL) });
 }
