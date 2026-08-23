@@ -25,7 +25,7 @@ El proyecto demuestra el máster en dos planos:
 
 - **TypeScript** + **Vite** — build y dev server.
 - **Kaplay** — motor 2D estilo retro sobre canvas.
-- **Vitest** — **112 tests** del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con `fetch` mockeado; cero llamadas reales en CI).
+- **Vitest** — **201 tests** del dominio, la capa IA y la validación de los bancos de contenido (adapters testeados con `fetch` mockeado; cero llamadas reales en CI).
 - **GitHub Actions** — CI (typecheck + tests + build) y deploy automático a GitHub Pages.
 - **@anthropic-ai/sdk** — adapter oficial de Anthropic en el browser (BYOK).
 - **Node.js** — bridge headless local (`bridge/server.mjs`, sin dependencias) que spawnea el CLI de **Claude Code** o **GitHub Copilot**.
