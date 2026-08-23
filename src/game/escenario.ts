@@ -544,19 +544,51 @@ function agregarLluviaTenue(k: KAPLAYCtx, anchoNivel: number, color: [number, nu
   });
 }
 
-/** Backdrop fijo a pantalla: la imagen del fondo, sin scroll, detrás de todo.
+/** Banda oscura tras el HUD: sin ella el texto verde es ilegible sobre fondos
+ * claros (WCAG AA con opacity 0.72, ver el cálculo en la nota de abajo). */
+function agregarBandaHud(k: KAPLAYCtx): void {
+  k.add([k.rect(ANCHO, 56), k.pos(0, 0), k.color(0, 0, 0), k.opacity(0.72), k.z(-99), k.fixed()]);
+}
+
+/** Factor de parallax del paisaje lejano: casi quieto, pero se mueve. */
+const PARALLAX_LEJANO = 0.22;
+
+/**
+ * Carrete LEJANO de exterior (F14 v5): el paisaje. La imagen entera del fondo
+ * se encaja EN PEQUEÑO en la banda entre el borde superior y el horizonte del
+ * piso, repetida a lo ancho — se ven los edificios completos a lo lejos, en
+ * vez de un recorte gigante de la franja del medio (mockup del alumno). Y es
+ * un CARRETE, no un backdrop fijo: scrollea despacio (parallax 0.22) mientras
+ * el piso corre 1:1. El modelo es dos carretes — el cercano es el piso que
+ * pisa el personaje, el lejano son las imágenes de BG.
+ */
+function agregarFondoLejano(k: KAPLAYCtx, nombre: string, anchoNivel: number): void {
+  const ALTO_IMAGEN = 640;
+  const escala = PIES_MIN / ALTO_IMAGEN;
+  const anchoTile = Math.round(ANCHO * escala);
+  const capa = crearCapaParallax(k, PARALLAX_LEJANO, -100);
+  // En espacio de carrete la cámara avanza a `factor`, y al principio del
+  // nivel el borde izquierdo mira espacio NEGATIVO (gotcha ya pagado con los
+  // carretes): se siembra desde -2 tiles hasta cubrir todo el recorrido.
+  const hasta = anchoNivel * PARALLAX_LEJANO + ANCHO;
+  for (let x = -2 * anchoTile; x < hasta; x += anchoTile) {
+    capa.add([k.sprite(`fondo-${nombre}`), k.pos(x, 0), k.scale(escala)]);
+  }
+  agregarBandaHud(k);
+}
+
+/** Backdrop de INTERIOR, fijo a pantalla: la imagen del fondo a tamaño real —
+ * la pared del cuarto está cerca y el recorte de cuerpo entero funciona.
  * El fondo procesado es 960x640 y el canvas 960x540; se ancla en y=-50 para
  * centrar verticalmente (recorta 50px arriba y 50px abajo, sin bandas negras). */
 function agregarFondoImagen(k: KAPLAYCtx, nombre: string): void {
   k.add([k.sprite(`fondo-${nombre}`), k.pos(0, -(640 - ALTO) / 2), k.z(-100), k.fixed()]);
-  // Banda oscura arriba (detrás del HUD): sin ella, el texto verde de la UI se
-  // vuelve ilegible sobre los fondos claros (la sala de entrenamiento blanca lo
-  // dejó invisible). Opacidad calculada para que el texto VERDE (0,255,70)
-  // alcance al menos 4.5:1 sobre fondos claros (WCAG AA): con opacity=0.72
+  // Cálculo de la banda del HUD: el texto VERDE (0,255,70) necesita 4.5:1
+  // (WCAG AA) sobre el fondo más claro (el dojo blanco); con opacity=0.72
   // sobre blanco el fondo efectivo da ratio ~6.8:1. La banda inferior que
   // existía con el mismo fin ya no: el suelo tileado (F14 v3) la tapaba — los
   // avisos de abajo llevan ahora su propio respaldo (level.ts).
-  k.add([k.rect(ANCHO, 56), k.pos(0, 0), k.color(0, 0, 0), k.opacity(0.72), k.z(-99), k.fixed()]);
+  agregarBandaHud(k);
 }
 
 /**
@@ -575,12 +607,15 @@ export function dibujarEscenario(k: KAPLAYCtx, moduloId: string, anchoNivel: num
   // escenario camina sobre SU suelo pintado, no sobre una calzada genérica.
   const fondo = FONDO_POR_MODULO[moduloId];
   if (fondo) {
-    agregarFondoImagen(k, fondo);
-    // Carretes solo en exteriores. Van con el color VIVO, no con el acento
-    // crudo: sobre los fondos pintados (la ciudad del módulo 1 es densísima)
-    // un verde oscuro al 40% desaparece y el parallax deja de comunicar.
+    // Modelo de DOS carretes (pedido del alumno): el cercano es el piso que
+    // pisa el personaje (1:1 con la cámara) y el lejano son las imágenes de BG
+    // en pequeño con parallax lento. Los carretes procedurales intermedios
+    // (cercas/postes brillantes) quedaron redundantes y ensuciaban la escena.
+    // Interior: la pared del cuarto a tamaño real, fija.
     if (FONDOS_EXTERIOR.has(fondo)) {
-      dibujarCarretes(k, moduloId, anchoNivel, colorCamino);
+      agregarFondoLejano(k, fondo, anchoNivel);
+    } else {
+      agregarFondoImagen(k, fondo);
     }
     agregarSueloImagen(k, fondo, anchoNivel);
     // Flechas de dirección sobre el suelo: la única señal de "hacia dónde ir".
