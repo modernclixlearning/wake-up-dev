@@ -61,6 +61,24 @@ npm run build     # build de producción en dist/
 npm run bridge    # modo "píldora roja": bridge headless (requiere el CLI claude o copilot autenticado)
 ```
 
+### 3.3. Despliegue
+
+El juego es 100 % estático (sin backend: las API keys son del jugador y viven en su navegador), así que se sirve desde CDN en dos destinos a la vez, cada uno con su pipeline:
+
+| Destino | URL | Pipeline |
+|---|---|---|
+| **GitHub Pages** | https://modernclixlearning.github.io/wake-up-dev/ | GitHub Actions: `ci.yml` (typecheck + tests + build) y, si pasa, `deploy.yml` |
+| **Vercel** | ver §7 | Integración Git nativa: build en cada push a `main` y **preview propio por cada Pull Request** |
+
+`vite.config.ts` usa `base: "./"` (rutas relativas), que es lo que permite el mismo artefacto en una subcarpeta de Pages y en la raíz de un dominio, sin recompilar.
+
+La configuración de Vercel vive en [vercel.json](vercel.json) y no se limita a "conectar el repo":
+
+- **Caché por tipo de recurso**: los bundles con hash en el nombre van `immutable` a un año; los assets pesados que no llevan hash (música, fondos, sprites) a una semana; el HTML sin caché, para que un despliegue se vea al instante. Sin esto, cada visita se volvía a bajar ~57 MB de audio.
+- **Cabeceras de seguridad**: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` y `Permissions-Policy` denegando geolocalización, micrófono y cámara.
+
+Para reproducir el despliegue en una cuenta propia: `vercel login` y después `vercel --prod` desde la raíz del repo (o enlazar el repo desde el panel de Vercel, que además activa los previews por PR).
+
 ## 4. Estructura del proyecto
 
 ```
