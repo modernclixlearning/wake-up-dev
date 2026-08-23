@@ -22,8 +22,10 @@ import {
   ActorAgente,
   ALTO_AGENTE,
   ALTO_NEO,
+  ALTO_ORACULO,
   ANCHO_AGENTE,
   ANCHO_NEO,
+  ANCHO_ORACULO,
   BarraHP,
   crearAgente,
   crearBarraHP,
@@ -158,23 +160,25 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       k.fixed(),
     ]);
 
-    // Jugador (Neo)
-    const player = crearNeo(k, 60, ALTO / 2);
-    acotarAlCamino(player, ANCHO_NEO, ALTO_NEO);
-
     // El Oráculo (NPC): al principio del camino y pegado a su borde de fondo,
     // donde la entrada del nivel está abierta a todo lo ancho (ver el perfil
     // del camino en domain/camino.ts). Derivar la Y de la banda en vez de
     // fijarla a mano garantiza que quede SIEMPRE pisable: un Oráculo fuera del
     // camino sería inalcanzable y se llevaría puesta la mecánica del Oráculo.
-    const Y_ORACULO = camino.bandaEn(70 + ANCHO_AGENTE / 2).min + 20 - ALTO_AGENTE;
+    // Se crea ANTES que Neo: junto al z (0 vs 2), el orden de creación asegura
+    // que el jugador se dibuje en primer plano al pasarle por delante.
+    const Y_ORACULO = camino.bandaEn(70 + ANCHO_ORACULO / 2).min + 20 - ALTO_ORACULO;
     const oraculo = crearOraculo(k, 70, Y_ORACULO);
     k.add([
       k.text("Oráculo", { size: 12 }),
-      k.pos(70, Y_ORACULO + ALTO_AGENTE + 6),
+      k.pos(70, Y_ORACULO + ALTO_ORACULO + 6),
       k.color(...VERDE),
       k.z(1),
     ]);
+
+    // Jugador (Neo)
+    const player = crearNeo(k, 60, ALTO / 2);
+    acotarAlCamino(player, ANCHO_NEO, ALTO_NEO);
 
     // Aviso neutro en pantalla (instrucciones, anuncios): sin el prefijo
     // CORRECTO/FALLASTE de mostrarFeedback y un poco más arriba para no pisarlo.
@@ -570,8 +574,8 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     //    actores miden 96x160: para cuando esas esquinas están a 80px, Neo y el
     //    Oráculo ya se están tocando y el chat se abrió solo. Se mide de CENTRO
     //    a centro con un radio que avisa ANTES del contacto, que es el punto.
-    const CENTRO_ORACULO = k.vec2(oraculo.pos.x + ANCHO_AGENTE / 2, oraculo.pos.y + ALTO_AGENTE / 2);
-    const RADIO_ORACULO = 210;
+    const CENTRO_ORACULO = k.vec2(oraculo.pos.x + ANCHO_ORACULO / 2, oraculo.pos.y + ALTO_ORACULO / 2);
+    const RADIO_ORACULO = 220;
     let senalOraculo: GameObj | null = null;
 
     /** Cartel flotante sobre la cabeza del Oráculo, con fondo propio para que se
@@ -1050,12 +1054,12 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         k.wait(1.2, () => {
           if (oraculo.exists()) {
             fijarPose(oraculo, null);
-            oraculo.z = 1;
+            oraculo.z = 0;
           }
         });
         // Alejar a Neo para no reabrir el chat al instante: siempre por debajo
         // del área del Oráculo (con sprites 3x, un offset fijo quedaba adentro).
-        player.pos = k.vec2(70, CARRIL_SUPERIOR + 20 + ALTO_AGENTE + 24);
+        player.pos = k.vec2(70, oraculo.pos.y + ALTO_ORACULO + 24);
       });
     });
   });

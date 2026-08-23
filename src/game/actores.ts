@@ -281,11 +281,19 @@ export function crearAgente(k: KAPLAYCtx, x: number, y: number, esJefe = false):
   return { root, ancho, alto };
 }
 
-/** El Oráculo: NPC sereno que flota (el aura verde viene incorporada en el sprite). */
+/** El Oráculo se dibuja a escala de NIÑO: en la película es una nena, y a
+ * tamaño adulto tapaba a Neo en el arranque del nivel (pedido del alumno). */
+export const ESCALA_ORACULO = 0.62;
+export const ANCHO_ORACULO = ANCHO_AGENTE * ESCALA_ORACULO;
+export const ALTO_ORACULO = ALTO_AGENTE * ESCALA_ORACULO;
+
+/** El Oráculo: NPC sereno que flota (el aura verde viene incorporada en el sprite).
+ * En z(0), por debajo de Agentes (1) y de Neo (2): el jugador SIEMPRE queda en
+ * primer plano al pasar por delante. */
 export function crearOraculo(k: KAPLAYCtx, x: number, y: number): GameObj {
-  const ancho = ANCHO_AGENTE;
-  const alto = ALTO_AGENTE;
-  const oraculo = k.add([k.pos(x, y), areaRectangular(k, ancho, alto), k.z(1), "oraculo"]);
+  const ancho = ANCHO_ORACULO;
+  const alto = ALTO_ORACULO;
+  const oraculo = k.add([k.pos(x, y), areaRectangular(k, ancho, alto), k.z(0), "oraculo"]);
   const estado = montarSprite(k, oraculo, "oraculo", ancho, alto, {
     caminata: false,
     poses: POSES_ORACULO,
