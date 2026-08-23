@@ -1,6 +1,7 @@
 import { KAPLAYCtx } from "kaplay";
 import { reproducirMusica, estaMuteado } from "../audio";
-import { ANCHO, ALTO, CHARS_MATRIX, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
+import { crearIconoSonido } from "../iconos";
+import { ANCHO, ALTO, CHARS_MATRIX, VERDE, VERDE_OSCURO, BLANCO } from "../theme";
 
 export function registrarTitle(k: KAPLAYCtx): void {
   k.scene("title", () => {
@@ -46,23 +47,20 @@ export function registrarTitle(k: KAPLAYCtx): void {
     ]);
     k.loop(0.6, () => (prompt.opacity = prompt.opacity > 0 ? 0 : 1));
 
-    // Indicador del estado del sonido: visible para que el tester sepa que hay
-    // música y cómo activarla si la silenció por descuido (M persiste en
-    // localStorage y sin aviso el estado era invisible).
-    const avisoMute = k.add([
-      k.text("", { size: 14 }),
-      k.pos(ANCHO / 2, ALTO - 22),
+    // Indicador del estado del sonido: texto "M = " + icono de altavoz 8-bit.
+    // El icono se dibuja con rectángulos (no emoji/glifo) para que sea
+    // determinista con la fuente bitmap del juego.
+    k.add([
+      k.text("M = ", { size: 14 }),
+      k.pos(ANCHO / 2 - 22, ALTO - 22),
       k.anchor("center"),
       k.color(...VERDE),
       k.z(1),
     ]);
-    const actualizarMute = () => {
-      const silenciado = estaMuteado();
-      avisoMute.text = silenciado ? "M = música: SILENCIADA" : "M = música: ACTIVADA";
-      avisoMute.color = silenciado ? k.rgb(...ROJO) : k.rgb(...VERDE);
-    };
+    const icono = crearIconoSonido(k, ANCHO / 2 + 10, ALTO - 22);
+    const actualizarMute = () => icono.actualizar(estaMuteado());
     actualizarMute();
-    // Escuchar M en la escena SOLO para refrescar el cartel; el toggle ya lo
+    // Escuchar M en la escena SOLO para refrescar el icono; el toggle ya lo
     // hace iniciarAudio() a nivel window — NO llamar alternarMute() aquí.
     k.onKeyPress("m", () => k.wait(0, actualizarMute));
 

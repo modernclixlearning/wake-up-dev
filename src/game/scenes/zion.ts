@@ -4,6 +4,7 @@ import { GameSession } from "../../domain/session";
 import { teclaDeModulo } from "../../domain/teclado";
 import { reproducirMusica, estaMuteado } from "../audio";
 import { borrarPartida } from "../persistencia";
+import { crearIconoSonido } from "../iconos";
 import { GameState } from "../state";
 import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
 import { abrirAjustes, hayOverlayAbierto } from "../ui/overlay";
@@ -71,22 +72,18 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
       k.color(...VERDE),
     ]);
 
-    // Estado del sonido: misma lógica que level.ts (avisoMute) para que el
-    // tester sepa que hay 10 pistas y cómo recuperar el audio si pulsó M.
-    const avisoMute = k.add([
-      k.text("", { size: 14 }),
-      k.pos(ANCHO / 2, ALTO - 20),
+    // Estado del sonido: "M = " + icono altavoz 8-bit (misma lógica que title.ts).
+    k.add([
+      k.text("M = ", { size: 14 }),
+      k.pos(ANCHO / 2 - 22, ALTO - 20),
       k.anchor("center"),
       k.color(...VERDE),
       k.z(1),
     ]);
-    const actualizarMute = () => {
-      const silenciado = estaMuteado();
-      avisoMute.text = silenciado ? "M = música: SILENCIADA" : "M = música: ACTIVADA";
-      avisoMute.color = silenciado ? k.rgb(...ROJO) : k.rgb(...VERDE);
-    };
+    const icono = crearIconoSonido(k, ANCHO / 2 + 10, ALTO - 20);
+    const actualizarMute = () => icono.actualizar(estaMuteado());
     actualizarMute();
-    // Solo refrescar el cartel; el toggle ya lo hace iniciarAudio() en window.
+    // Solo refrescar el icono; el toggle ya lo hace iniciarAudio() en window.
     k.onKeyPress("m", () => k.wait(0, actualizarMute));
 
     // Reinicio de partida con confirmación doble: la primera R avisa, la

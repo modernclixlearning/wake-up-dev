@@ -40,6 +40,7 @@ import {
 } from "../actores";
 import { estaMuteado, musicaDeModulo, reproducirMusica, sfx } from "../audio";
 import { ALTO_PORTAL, ANCHO_PORTAL, crearPortal, dibujarEscenario } from "../escenario";
+import { crearIconoSonido } from "../iconos";
 import { guardarPartida } from "../persistencia";
 import { GameState } from "../state";
 import { ANCHO, ALTO, CARRIL_INFERIOR, CARRIL_SUPERIOR, VERDE, VERDE_OSCURO, ROJO, BLANCO, NEGRO } from "../theme";
@@ -156,21 +157,23 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const actualizarHud = () => {
       hud.text = `${banco.modulo.nombre}  |  Vidas: ${st.session.vidas}  Score: ${st.session.score}  Agentes: ${k.get("agente").length}`;
     };
-    // Estado del sonido SIEMPRE visible: el mute se persiste en localStorage,
-    // así que alguien que pulse M sin querer se queda sin audio para siempre en
-    // ese navegador y concluye que el juego no tiene sonido. Sin este cartel el
-    // estado era invisible y no había forma de descubrir el porqué.
-    const avisoMute = k.add([
-      k.text("", { size: 13 }),
-      k.pos(ANCHO - 16, 12),
-      k.anchor("topright"),
-      k.color(...ROJO),
+    // Estado del sonido SIEMPRE visible: icono 8-bit de altavoz en la esquina
+    // superior derecha. Si está muteado muestra el icono tachado en rojo.
+    // El icono necesita k.fixed() para no moverse con la cámara de scroll.
+    // Lo agregamos dentro de un objeto fijo manual: crearIconoSonido añade a
+    // la escena con k.add, así que pasamos las coordenadas de pantalla fijas.
+    const iconoMute = crearIconoSonido(k, ANCHO - 24, 20);
+    // El root del icono necesita k.fixed() para ignorar el scroll de cámara.
+    iconoMute.root.use(k.fixed());
+    k.add([
+      k.text("M = ", { size: 13 }),
+      k.pos(ANCHO - 78, 20),
+      k.anchor("left"),
+      k.color(...VERDE),
       k.z(5),
       k.fixed(),
     ]);
-    const actualizarMute = () => {
-      avisoMute.text = estaMuteado() ? "SONIDO SILENCIADO — pulsá M" : "";
-    };
+    const actualizarMute = () => iconoMute.actualizar(estaMuteado());
     actualizarMute();
     k.onKeyPress("m", () => k.wait(0, actualizarMute));
     k.add([
