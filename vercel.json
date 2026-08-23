@@ -6,11 +6,6 @@
   "installCommand": "npm ci",
   "cleanUrls": false,
   "trailingSlash": true,
-  "functions": {
-    "api/oraculo.ts": {
-      "maxDuration": 25
-    }
-  },
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -33,9 +28,18 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
         {
           "key": "Permissions-Policy",
           "value": "geolocation=(), microphone=(), camera=(), interest-cohort=()"

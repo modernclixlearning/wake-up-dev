@@ -265,11 +265,21 @@ async function llamarModelo(
 // Configuración del runtime de Vercel
 // ---------------------------------------------------------------------------
 
-// El campo `runtime` solo acepta "nodejs" | "edge" | "experimental-edge";
-// una versión concreta como "nodejs20.x" hace fallar el build de Vercel con
-// `unsupported "runtime" value in config`. La versión de Node se fija en el
-// panel del proyecto o en package.json#engines, no acá.
-export const config = { runtime: "nodejs" };
+// Runtime EDGE, y no es un detalle cosmético: el handler de abajo usa la firma
+// Web estándar —recibe un `Request` y devuelve un `Response`—, que es la del
+// runtime edge. Con `runtime: "nodejs"` Vercel invoca con la firma de Node
+// `(req, res)`, el `Response` devuelto se descarta y la petición NO se contesta
+// nunca: todas las llamadas mueren con FUNCTION_INVOCATION_TIMEOUT (504),
+// incluso un DELETE que debería salir por el 405 inmediato. Verificado contra
+// el despliegue real.
+//
+// Edge además le viene bien a un proxy: arranque en frío casi nulo y ejecución
+// cerca del usuario. `fetch` y `process.env` están disponibles.
+//
+// Ojo con el otro valor inválido: `runtime` solo acepta "nodejs" | "edge" |
+// "experimental-edge" — una versión concreta como "nodejs20.x" hace fallar el
+// build con `unsupported "runtime" value in config`.
+export const config = { runtime: "edge" };
 
 // ---------------------------------------------------------------------------
 // Handler principal
