@@ -2,7 +2,7 @@ import { KAPLAYCtx } from "kaplay";
 import { crearProvider } from "../../ai/factory";
 import { GameSession } from "../../domain/session";
 import { teclaDeModulo } from "../../domain/teclado";
-import { reproducirMusica } from "../audio";
+import { reproducirMusica, estaMuteado } from "../audio";
 import { borrarPartida } from "../persistencia";
 import { GameState } from "../state";
 import { ANCHO, ALTO, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
@@ -71,11 +71,29 @@ export function registrarZion(k: KAPLAYCtx, estado: () => GameState): void {
       k.color(...VERDE),
     ]);
 
+    // Estado del sonido: misma lógica que level.ts (avisoMute) para que el
+    // tester sepa que hay 10 pistas y cómo recuperar el audio si pulsó M.
+    const avisoMute = k.add([
+      k.text("", { size: 14 }),
+      k.pos(ANCHO / 2, ALTO - 20),
+      k.anchor("center"),
+      k.color(...VERDE),
+      k.z(1),
+    ]);
+    const actualizarMute = () => {
+      const silenciado = estaMuteado();
+      avisoMute.text = silenciado ? "M = musica: SILENCIADA" : "M = musica: ACTIVADA";
+      avisoMute.color = silenciado ? k.rgb(...ROJO) : k.rgb(...VERDE);
+    };
+    actualizarMute();
+    // Solo refrescar el cartel; el toggle ya lo hace iniciarAudio() en window.
+    k.onKeyPress("m", () => k.wait(0, actualizarMute));
+
     // Reinicio de partida con confirmación doble: la primera R avisa, la
     // segunda (dentro de los 4s) borra el avance guardado y arranca de cero.
     const avisoReinicio = k.add([
       k.text("", { size: 14 }),
-      k.pos(ANCHO / 2, ALTO - 20),
+      k.pos(ANCHO / 2, ALTO - 4),
       k.anchor("center"),
       k.color(...ROJO),
     ]);
