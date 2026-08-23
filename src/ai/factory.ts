@@ -32,3 +32,24 @@ export function crearProvider(config: AIConfig): AIProvider {
 export function hayIA(provider: AIProvider): boolean {
   return provider.nombre !== "static-fallback";
 }
+
+/**
+ * Sonda el proxy en background y, si está disponible, llama a `alCambiar` con un ProxyAdapter.
+ * Solo actúa cuando no hay config guardada en localStorage (provider "ninguno").
+ * No guarda nada en localStorage: es una decisión de arranque, no una preferencia del jugador.
+ * Degrada en silencio si el GET falla, tarda o devuelve disponible:false.
+ */
+export function activarProxySiDisponible(
+  alCambiar: (p: AIProvider) => void,
+  fetchImpl: typeof fetch = (...args) => fetch(...args)
+): void {
+  const proxy = new ProxyAdapter(fetchImpl);
+  proxy
+    .disponible()
+    .then((disponible) => {
+      if (disponible) alCambiar(proxy);
+    })
+    .catch(() => {
+      // Degradar en silencio: el fallback estático sigue activo.
+    });
+}
