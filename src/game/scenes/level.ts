@@ -692,7 +692,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         combate.proximoAtaque = k.time() + RECUPERACION_STAGGER;
       }
       orientarHacia(agente, player.pos.x + ANCHO_NEO / 2);
-      flashGolpe(k, agente, combate.ancho, combate.alto, BLANCO);
+      flashGolpe(k, agente, combate.ancho, combate.alto, ROJO);
       // Retroceso corto del Smith: vende el impacto y te da aire entre piñas.
       if (!agente.is("jefe")) {
         const direccion = agente.pos.x + combate.ancho / 2 < player.pos.x + ANCHO_NEO / 2 ? -1 : 1;
@@ -850,7 +850,7 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         orientarHacia(player, agente.pos.x + combate.ancho / 2);
         fijarPose(player, agente.is("jefe") ? "disparo" : "ataque");
         k.wait(0.35, () => fijarPose(player, null));
-        flashGolpe(k, agente, combate.ancho, combate.alto, BLANCO);
+        flashGolpe(k, agente, combate.ancho, combate.alto, ROJO);
         if (derrotado(combate.estado)) {
           // Derrota (F11 v3): el Agente cae (frame "derrota") y recién después
           // explota — `muriendo` evita que dispare encuentros en esa ventana.

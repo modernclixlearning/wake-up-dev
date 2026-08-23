@@ -314,35 +314,39 @@ export function flashGolpe(
   actor: GameObj,
   _ancho: number,
   _alto: number,
-  color: [number, number, number],
-  duracion = 0.12
+  color: [number, number, number] = ROJO,
+  _duracion = 0.20
 ): void {
   const estado = estadosSprite.get(actor);
   if (!estado) {
     // Fallback para actores sin sprite montado (no debería ocurrir en la práctica).
-    const rect = actor.add([k.rect(_ancho, _alto), k.color(...color), k.opacity(0.55), k.z(5)]);
-    k.wait(duracion, () => { if (rect.exists()) k.destroy(rect); });
+    const rect = actor.add([k.rect(_ancho, _alto), k.color(...color), k.opacity(0.88), k.z(5)]);
+    k.wait(0.25, () => { if (rect.exists()) k.destroy(rect); });
     return;
   }
   const skin = estado.skin;
   // Copia del sprite en el mismo frame/escala/flip/posición que el skin actual.
   // k.color(...color) tiñe toda la textura → el resultado tiene la silueta exacta.
+  // Parpadeo doble (dos pulsos cortos): se percibe mucho mejor que un tinte plano de la
+  // misma duración, especialmente sobre fondos oscuros y trajes negros.
   const flash = actor.add([
     k.sprite(skin.sprite as string, { frame: skin.frame }),
     k.pos(skin.pos.x, skin.pos.y),
     k.scale(skin.scale.x, skin.scale.y),
     k.color(...color),
-    k.opacity(0.6),
+    k.opacity(0.88),  // alta opacidad → se distingue sobre negro
     k.z(5),
   ]);
   flash.flipX = skin.flipX;
 
-  const timer = k.wait(duracion, () => {
-    if (flash.exists()) k.destroy(flash);
-  });
+  // Pulso 1: 0.10s → apagar → 0.05s hueco → Pulso 2: 0.10s → destruir  (total ≈ 0.25s)
+  const t1 = k.wait(0.10, () => { if (flash.exists()) flash.opacity = 0; });
+  const t2 = k.wait(0.15, () => { if (flash.exists()) flash.opacity = 0.88; });
+  const t3 = k.wait(0.25, () => { if (flash.exists()) k.destroy(flash); });
+
   // Si el actor muere durante el flash, limpiar la copia para no dejar objetos huérfanos.
   actor.onDestroy(() => {
-    timer.cancel();
+    t1.cancel(); t2.cancel(); t3.cancel();
     if (flash.exists()) k.destroy(flash);
   });
 }
