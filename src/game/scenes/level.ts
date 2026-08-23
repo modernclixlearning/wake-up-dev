@@ -162,12 +162,13 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     // El icono necesita k.fixed() para no moverse con la cámara de scroll.
     // Lo agregamos dentro de un objeto fijo manual: crearIconoSonido añade a
     // la escena con k.add, así que pasamos las coordenadas de pantalla fijas.
-    const iconoMute = crearIconoSonido(k, ANCHO - 24, 20);
+    // Icono nuevo ≈26px ancho: mover x a ANCHO-32 para que quepa en el canvas.
+    const iconoMute = crearIconoSonido(k, ANCHO - 32, 20);
     // El root del icono necesita k.fixed() para ignorar el scroll de cámara.
     iconoMute.root.use(k.fixed());
     k.add([
       k.text("M = ", { size: 13 }),
-      k.pos(ANCHO - 78, 20),
+      k.pos(ANCHO - 86, 20),
       k.anchor("left"),
       k.color(...VERDE),
       k.z(5),
