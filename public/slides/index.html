@@ -126,8 +126,14 @@
   .tres{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:start}
 
   pre{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.12);
-      padding:clamp(14px,1.8vw,24px); overflow:auto; line-height:1.6;
-      font-size:clamp(10.5px,1.05vw,15px); color:var(--fosforo-alto)}
+      padding:clamp(12px,1.5vw,20px); overflow:auto; line-height:1.5;
+      font-size:clamp(10px,.95vw,13.5px); color:var(--fosforo-alto)}
+  /* Las slides con mucho contenido no deben desbordar el alto de la diapositiva:
+     el pie taparía la última línea. Se ajusta la densidad en pantallas bajas. */
+  @media (max-height:860px){
+    .slide p{line-height:1.5}
+    .paso figure{height:clamp(120px,20vh,190px)}
+  }
   pre b{color:var(--fosforo); font-weight:400}
   pre i{color:var(--ambar); font-style:normal}
 
@@ -409,10 +415,7 @@ Contexto del módulo actual:
         <p data-anim>Dos líneas hacen el trabajo real. La primera protege la mecánica: si el Oráculo
         da la respuesta, el reto desaparece como obstáculo. La segunda subordina el disfraz: cuando
         el personaje y la didáctica entran en conflicto, gana la didáctica.</p>
-        <p data-anim>El mismo patrón en los otros dos roles: <code>systemEvaluador</code> exige un
-        JSON estricto y criterio verificable; <code>systemPista</code> impone máximo 30 palabras
-        y prohíbe descartar opciones explícitamente. Cada prompt declara exactamente lo que
-        no puede ceder.</p>
+        <p data-anim>El mismo patrón en los otros dos roles: <code>systemEvaluador</code> exige JSON estricto y criterio verificable; <code>systemPista</code>, máximo 30 palabras sin descartar opciones.</p>
       </div>
       <div class="caja" data-anim>
         <p class="ojo">Por qué funciona</p>
@@ -493,39 +496,6 @@ Contexto del módulo actual:
     <code>"10"</code>. Ninguno lo vieron los tests: todos salieron jugando.</p>
   </section>
 
-  <!-- 13 · La cocina -->
-  <section class="slide" data-modulo="EL FLUJO">
-    <p class="ojo" data-anim>Cómo se construyó</p>
-    <h2 data-decode data-anim>Un coordinador, varias manos en paralelo</h2>
-    <div class="cols mas-figura">
-      <div class="pila">
-        <p data-anim>El juego se construyó con el flujo que enseña el propio máster: <strong>un
-        coordinador reparte el trabajo en instancias headless que corren en paralelo</strong>, cada
-        una en su propio worktree de git.</p>
-        <p data-anim>El reparto se hace por <em>blast radius</em>: dos instancias corren a la vez
-        solo si los archivos que van a tocar no se cruzan. Las auditorías son de solo lectura, así
-        que corren todas juntas; los bancos de contenido nuevos también, porque cada uno tocaba
-        <strong>un archivo distinto</strong>.</p>
-        <p data-anim>El humano no copia prompts ni espera: recibe un aviso al móvil cuando hay algo
-        que revisar, decide y mergea. <strong>Lo que hace el humano es juzgar, no ejecutar.</strong></p>
-      </div>
-      <div class="pila" data-anim>
-        <figure>
-          <img class="tarjeta-sb" src="img/sb-01-proyecto-en-el-sistema.png"
-               alt="Árbol de agentes: Second Brain arriba, luego el proyecto, coordinador y tres writers en paralelo">
-          <figcaption>Un coordinador, tres writers, un proyecto</figcaption>
-        </figure>
-        <div class="video-sb">
-          <video poster="media/sb-auditorias-paralelas-poster.jpg" autoplay muted loop playsinline
-                 aria-label="Varias instancias de auditoría corriendo en paralelo">
-            <source src="media/sb-auditorias-paralelas.mp4" type="video/mp4">
-          </video>
-        </div>
-        <figcaption style="font-size:12.5px;color:var(--fosforo-bajo);margin-top:.3em">Seis auditorías en paralelo, una por punto de vista</figcaption>
-      </div>
-    </div>
-  </section>
-
   <!-- 14 · Qué es Second Brain -->
   <section class="slide" data-modulo="SECOND BRAIN">
     <p class="ojo" data-anim>El sistema detrás del sistema</p>
@@ -555,11 +525,6 @@ Contexto del módulo actual:
           </video>
         </div>
         <figcaption style="font-size:12.5px;color:var(--fosforo-bajo);margin-top:.4em">La red de notas en Obsidian — cada nodo es un archivo markdown</figcaption>
-        <figure style="margin-top:.7em">
-          <img class="tarjeta-sb" src="img/sb-05-obsidian-arbol.png"
-               alt="Árbol de carpetas en Obsidian: proyectos, journal, issues y context por proyecto">
-          <figcaption>El árbol de carpetas: la estructura es la arquitectura</figcaption>
-        </figure>
       </div>
     </div>
   </section>
@@ -635,6 +600,34 @@ Contexto del módulo actual:
         </ul>
         <p style="margin-top:.9em">El <code>AGENTS.md</code> del repo público es la versión visible
         del mismo patrón: las reglas que cada agente tiene que conocer antes de empezar.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · La cocina -->
+  <section class="slide" data-modulo="EL FLUJO">
+    <p class="ojo" data-anim>Cómo se construyó</p>
+    <h2 data-decode data-anim>Un coordinador, varias manos en paralelo</h2>
+    <div class="cols mas-figura">
+      <div class="pila">
+        <p data-anim>El juego se construyó con el flujo que enseña el propio máster: <strong>un
+        coordinador reparte el trabajo en instancias headless que corren en paralelo</strong>, cada
+        una en su propio worktree de git.</p>
+        <p data-anim>El reparto se hace por <em>blast radius</em>: dos instancias corren a la vez
+        solo si los archivos que van a tocar no se cruzan. Las auditorías son de solo lectura, así
+        que corren todas juntas; los bancos de contenido nuevos también, porque cada uno tocaba
+        <strong>un archivo distinto</strong>.</p>
+        <p data-anim>El humano no copia prompts ni espera: recibe un aviso al móvil cuando hay algo
+        que revisar, decide y mergea. <strong>Lo que hace el humano es juzgar, no ejecutar.</strong></p>
+      </div>
+      <div class="pila" data-anim>
+                <div class="video-sb">
+          <video poster="media/sb-auditorias-paralelas-poster.jpg" autoplay muted loop playsinline
+                 aria-label="Varias instancias de auditoría corriendo en paralelo">
+            <source src="media/sb-auditorias-paralelas.mp4" type="video/mp4">
+          </video>
+        </div>
+        <figcaption style="font-size:12.5px;color:var(--fosforo-bajo);margin-top:.3em">Seis auditorías en paralelo, una por punto de vista</figcaption>
       </div>
     </div>
   </section>
