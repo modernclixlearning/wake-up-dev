@@ -13,6 +13,8 @@ import { ANCHO, ALTO } from "../theme";
 let overlayActual: HTMLDivElement | null = null;
 /** Listener de resize del overlay abierto, para removerlo al cerrar. */
 let overlayResize: (() => void) | null = null;
+/** Listeners de teclado a nivel documento del overlay abierto (ver abajo). */
+let overlayTeclasDoc: ((e: KeyboardEvent) => void) | null = null;
 
 export function hayOverlayAbierto(): boolean {
   return overlayActual !== null;
@@ -67,6 +69,11 @@ function cerrarOverlay(): void {
   if (overlayResize) {
     window.removeEventListener("resize", overlayResize);
     overlayResize = null;
+  }
+  if (overlayTeclasDoc) {
+    document.removeEventListener("keydown", overlayTeclasDoc);
+    document.removeEventListener("keypress", overlayTeclasDoc);
+    overlayTeclasDoc = null;
   }
   liberarTeclasDeJuego();
   // Devolver el foco al canvas: Kaplay escucha el teclado en el canvas (lo
@@ -145,6 +152,26 @@ function crearOverlay(
       }
     });
   }
+
+  // Red para el foco perdido (bug real: ESC "no funcionaba" tras el cartel
+  // sin API key): un CLICK sobre el log u otro div del panel manda el foco a
+  // <body>, y un keydown con target body jamás pasa por el root del overlay —
+  // el listener de arriba no ve la tecla y el ESC muere. Este handler a nivel
+  // documento atrapa las teclas cuyo target quedó FUERA del overlay: cierra
+  // con ESC, corta el resto para que el juego no las reciba, y devuelve el
+  // foco al primer campo del panel. Se remueve en cerrarOverlay().
+  overlayTeclasDoc = (e: KeyboardEvent) => {
+    if (!overlayActual || overlayActual.contains(e.target as Node)) return;
+    e.stopPropagation();
+    if (e.type === "keydown" && e.key === "Escape") {
+      cerrarOverlay();
+      onCerrar?.();
+      return;
+    }
+    overlayActual.querySelector<HTMLElement>("input, textarea, button")?.focus();
+  };
+  document.addEventListener("keydown", overlayTeclasDoc);
+  document.addEventListener("keypress", overlayTeclasDoc);
 
   document.body.appendChild(root);
   overlayActual = root;
