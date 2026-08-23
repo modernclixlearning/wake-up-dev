@@ -175,6 +175,22 @@
   /* contain, no cover: recortar estas capturas corta justo lo que prueban el punto. */
   .paso img{height:100%; width:100%; object-fit:contain; border:0}
   .paso p{font-size:clamp(12px,1.15vw,15px); line-height:1.5}
+
+  /* ───────── Tarjeta para capturas con fondo blanco ───────── */
+  /* Sustituye el filtro que destruye la imagen. Fondo oscuro + marco fósforo
+     dejan la captura legible y la integran al estilo CRT sin teñirla. */
+  .tarjeta-sb{border:1px solid var(--fosforo-bajo); background:#060a0e; padding:6px; display:block}
+  .tarjeta-sb img{border:0; width:100%; height:auto; display:block; opacity:.88}
+  /* El vídeo de Obsidian: visible, sin filtro destructivo. */
+  .video-sb{border:1px solid var(--fosforo-bajo); background:#060a0e; padding:4px; display:block}
+  .video-sb video{display:block; width:100%; height:auto; border:0; opacity:.9}
+
+  /* ───────── Bloque MCP — familias de herramientas ───────── */
+  .mcp-familias{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+  @media (max-width:900px){.mcp-familias{grid-template-columns:1fr}}
+  .mcp-fam{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.08); padding:clamp(10px,1.4vw,18px)}
+  .mcp-fam .ojo{font-size:12px; letter-spacing:.22em; margin-bottom:.5em}
+  .mcp-fam code{display:inline-block; margin:.12em .06em; font-size:.84em}
   @media (max-width:900px){.circuito{grid-template-columns:1fr}.paso figure{height:auto}.paso img{height:auto;object-fit:fill}}
 
   @media (max-width:900px){
@@ -370,6 +386,47 @@ banco del nivel</pre>
     rúbrica, headless, fallbacks— terminaron siendo mecánicas del juego.</p>
   </section>
 
+  <!-- 9 · El system prompt del Oráculo -->
+  <section class="slide" data-modulo="EL ORÁCULO">
+    <p class="ojo" data-anim>Un personaje hecho de instrucciones</p>
+    <h2 data-decode data-anim>El prompt es corto. La tensión, no.</h2>
+    <div class="cols mas-texto">
+      <div class="pila">
+        <pre data-anim>Sos el Oráculo del juego educativo 'Wake Up, Dev',
+ambientado en Matrix. El jugador es un estudiante
+del Máster repasando un módulo.
+Respondé sus dudas sobre el contenido del módulo
+de forma didáctica, en español, en 120 palabras o menos.
+<i>Nunca des la respuesta literal de un reto del juego:
+guiá para que la deduzca.</i>
+Mantené un tono sereno y levemente enigmático,
+como el Oráculo de Matrix,
+<b>pero priorizá siempre la claridad didáctica
+sobre el personaje.</b>
+
+Contexto del módulo actual:
+  [se inyecta en tiempo de ejecución]</pre>
+        <p data-anim>Dos líneas hacen el trabajo real. La primera protege la mecánica: si el Oráculo
+        da la respuesta, el reto desaparece como obstáculo. La segunda subordina el disfraz: cuando
+        el personaje y la didáctica entran en conflicto, gana la didáctica.</p>
+        <p data-anim>El mismo patrón en los otros dos roles: <code>systemEvaluador</code> exige un
+        JSON estricto y criterio verificable; <code>systemPista</code> impone máximo 30 palabras
+        y prohíbe descartar opciones explícitamente. Cada prompt declara exactamente lo que
+        no puede ceder.</p>
+      </div>
+      <div class="caja" data-anim>
+        <p class="ojo">Por qué funciona</p>
+        <ul>
+          <li>El contexto del módulo se inyecta en cada consulta: el Oráculo sabe de qué trata el
+          nivel actual sin necesidad de fine-tuning ni base de datos vectorial</li>
+          <li>La restricción de 120 palabras obliga a síntesis: el modelo no puede escapar por tangentes</li>
+          <li>Sin IA el juego es idéntico: el fallback estático devuelve el texto de ayuda pregrabado
+          del reto, sin coste ni latencia</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <!-- 9 · Píldora roja -->
   <section class="slide" data-modulo="PÍLDORA ROJA">
     <p class="ojo" data-anim>El diferencial</p>
@@ -436,55 +493,149 @@ banco del nivel</pre>
     <code>"10"</code>. Ninguno lo vieron los tests: todos salieron jugando.</p>
   </section>
 
-  <!-- 12 · La cocina -->
-  <section class="slide" data-modulo="LA COCINA">
-    <p class="ojo" data-anim>El proceso</p>
-    <h2 data-decode data-anim>Un coordinador, varias manos</h2>
+  <!-- 13 · La cocina -->
+  <section class="slide" data-modulo="EL FLUJO">
+    <p class="ojo" data-anim>Cómo se construyó</p>
+    <h2 data-decode data-anim>Un coordinador, varias manos en paralelo</h2>
     <div class="cols mas-figura">
       <div class="pila">
-        <p data-anim>El juego se construyó con el flujo que enseña el propio máster, sobre un
-        sistema personal de orquestación: <strong>un coordinador reparte el trabajo en instancias
-        headless que corren en paralelo</strong>, cada una en su worktree de git.</p>
+        <p data-anim>El juego se construyó con el flujo que enseña el propio máster: <strong>un
+        coordinador reparte el trabajo en instancias headless que corren en paralelo</strong>, cada
+        una en su propio worktree de git.</p>
         <p data-anim>El reparto se hace por <em>blast radius</em>: dos instancias corren a la vez
-        solo si los archivos que van a tocar no se cruzan. Las seis auditorías del vídeo son de
-        solo lectura, así que corren todas juntas; los tres bancos de contenido nuevos también,
-        porque cada uno tocaba <strong>un archivo distinto</strong>. Los archivos compartidos los
-        toca un único agente al integrar.</p>
-        <p data-anim>El humano no copia prompts ni espera: revisa, decide y mergea.</p>
+        solo si los archivos que van a tocar no se cruzan. Las auditorías son de solo lectura, así
+        que corren todas juntas; los bancos de contenido nuevos también, porque cada uno tocaba
+        <strong>un archivo distinto</strong>.</p>
+        <p data-anim>El humano no copia prompts ni espera: recibe un aviso al móvil cuando hay algo
+        que revisar, decide y mergea. <strong>Lo que hace el humano es juzgar, no ejecutar.</strong></p>
       </div>
-      <figure data-anim>
-        <video class="pieza" poster="media/auditorias-poster.jpg" autoplay muted loop playsinline aria-label="Seis instancias de auditoría corriendo en paralelo desde un mismo coordinador">
-          <source src="media/auditorias.mp4" type="video/mp4">
-        </video>
-        <figcaption>Seis auditorías en paralelo, una por punto de vista, desde un solo coordinador</figcaption>
-      </figure>
+      <div class="pila" data-anim>
+        <figure>
+          <img class="tarjeta-sb" src="img/sb-01-proyecto-en-el-sistema.png"
+               alt="Árbol de agentes: Second Brain arriba, luego el proyecto, coordinador y tres writers en paralelo">
+          <figcaption>Un coordinador, tres writers, un proyecto</figcaption>
+        </figure>
+        <div class="video-sb">
+          <video poster="media/sb-auditorias-paralelas-poster.jpg" autoplay muted loop playsinline
+                 aria-label="Varias instancias de auditoría corriendo en paralelo">
+            <source src="media/sb-auditorias-paralelas.mp4" type="video/mp4">
+          </video>
+        </div>
+        <figcaption style="font-size:12.5px;color:var(--fosforo-bajo);margin-top:.3em">Seis auditorías en paralelo, una por punto de vista</figcaption>
+      </div>
     </div>
   </section>
 
-  <!-- 13 · La base de conocimiento -->
-  <section class="slide con-fondo" data-modulo="LA BASE">
-    <video class="fondo" poster="media/grafo-poster.jpg" autoplay muted loop playsinline aria-hidden="true">
-      <source src="media/grafo.mp4" type="video/mp4">
-    </video>
-    <div class="velo"></div>
-    <p class="ojo" data-anim>De dónde sale el contenido</p>
-    <h2 data-decode data-anim>Las notas dejan de ser un archivo muerto</h2>
-    <div class="cols mas-figura">
+  <!-- 14 · Qué es Second Brain -->
+  <section class="slide" data-modulo="SECOND BRAIN">
+    <p class="ojo" data-anim>El sistema detrás del sistema</p>
+    <h2 data-decode data-anim>¿Qué es Second Brain?</h2>
+    <div class="cols mas-texto">
       <div class="pila">
-        <p data-anim>Los dieciséis módulos del máster dejaron unas <strong>300 notas en
-        markdown</strong>. De ahí salen los retos del juego — pero morirse en una carpeta habría
-        sido el destino natural del resto.</p>
-        <p data-anim>Así que las destilé en <strong>cápsulas de conocimiento</strong>: un módulo por
-        archivo, con principios accionables, checklist, gates y antipatrones. Cualquier proyecto
-        puede abrir <em>solo la que aplica</em> a lo que está decidiendo, en vez de releer el curso
-        entero o no consultarlo nunca.</p>
-        <p data-anim>Todo el sistema son directorios y archivos de texto versionados en git. Sin
-        base de datos, sin servicio de pago: el esqueleto es el árbol de carpetas.</p>
+        <p data-anim>Una <strong>bóveda de conocimiento en Markdown</strong>, versionada con git y
+        visualizada en Obsidian, que funciona como sistema operativo de desarrollo. Texto plano:
+        cualquier agente lo lee y escribe sin SDK, con historial gratis y sincronización entre
+        máquinas.</p>
+        <ul>
+          <li data-anim><strong>Base de conocimiento</strong> — notas del curso, decisiones,
+          cápsulas por módulo</li>
+          <li data-anim><strong>Interfaz de agentes</strong> — cualquier instancia headless
+          lee y escribe el mismo árbol de carpetas</li>
+          <li data-anim><strong>Registro de trabajo</strong> — issues, journal por proyecto,
+          bitácora de cada delegación</li>
+        </ul>
+        <p data-anim>Es personal y privado. Lo que sí es público es su arquitectura, documentada
+        en el despliegue del propio juego: <a href="https://modernclixlearning.github.io/wake-up-dev/second-brain/">…/second-brain/</a></p>
       </div>
-      <figure data-anim class="sin-rejilla">
-        <img src="img/08-base-conocimiento.png" alt="El vault en Obsidian: árbol de carpetas y archivos markdown que forman el esqueleto del sistema">
-        <figcaption>Markdown y git como sistema operativo de conocimiento</figcaption>
-      </figure>
+      <div class="pila" data-anim>
+        <div class="video-sb">
+          <video poster="media/sb-obsidian-grafo-poster.jpg" autoplay muted loop playsinline
+                 aria-label="Vista gráfica de Obsidian mostrando la red de notas interconectadas">
+            <source src="media/sb-obsidian-grafo.mp4" type="video/mp4">
+          </video>
+        </div>
+        <figcaption style="font-size:12.5px;color:var(--fosforo-bajo);margin-top:.4em">La red de notas en Obsidian — cada nodo es un archivo markdown</figcaption>
+        <figure style="margin-top:.7em">
+          <img class="tarjeta-sb" src="img/sb-05-obsidian-arbol.png"
+               alt="Árbol de carpetas en Obsidian: proyectos, journal, issues y context por proyecto">
+          <figcaption>El árbol de carpetas: la estructura es la arquitectura</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 · El servidor MCP -->
+  <section class="slide" data-modulo="SERVIDOR MCP">
+    <p class="ojo" data-anim>El puente entre el sistema y los agentes</p>
+    <h2 data-decode data-anim>~50 herramientas <code>sb_*</code> por contrato</h2>
+    <div class="cols mas-texto">
+      <div class="pila">
+        <p data-anim>Un servidor <strong>Model Context Protocol</strong> propio expone el sistema
+        operativo a cualquier agente: en vez de operar por convención (leer/escribir archivos a
+        mano), el agente llama a una herramienta con nombre y contrato. El servidor hace el resto.</p>
+        <p data-anim>Es lo que convierte "una carpeta de notas" en algo <em>operable</em>
+        por agentes de forma fiable y auditable.</p>
+      </div>
+      <div class="mcp-familias" data-anim>
+        <div class="mcp-fam">
+          <p class="ojo">Trabajo</p>
+          <code>sb_delegate</code>
+          <code>sb_queue</code>
+          <code>sb_task_output</code>
+          <code>sb_leases</code>
+        </div>
+        <div class="mcp-fam">
+          <p class="ojo">Conocimiento</p>
+          <code>sb_search</code>
+          <code>sb_ask</code>
+          <code>sb_learnings</code>
+          <code>sb_read_doc</code>
+        </div>
+        <div class="mcp-fam">
+          <p class="ojo">Tracking</p>
+          <code>sb_issues</code>
+          <code>sb_journal</code>
+          <code>sb_ledger</code>
+          <code>sb_notify</code>
+        </div>
+        <div class="mcp-fam">
+          <p class="ojo">Autonomía</p>
+          <code>sb_loops</code>
+          <code>sb_loop_run</code>
+          <code>sb_delegate</code>
+          <code>sb_wait_task</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 · Skills propias -->
+  <section class="slide" data-modulo="SKILLS">
+    <p class="ojo" data-anim>Procedimientos como código</p>
+    <h2 data-decode data-anim>Una skill es un procedimiento en Markdown</h2>
+    <div class="cols">
+      <div class="pila">
+        <p data-anim>Una skill es un archivo que el agente carga al invocarla: la versión operativa
+        de <em>"cómo hacemos esto acá"</em>. No es un prompt genérico: es la decisión de diseño
+        convertida en instrucción reutilizable con su contexto, sus gates y sus restricciones.</p>
+        <p data-anim>Ejemplo concreto: <strong><code>registrar-aprendizaje</code></strong>. Cuando el
+        humano corrige algo por segunda vez, deja de ser conversación y pasa a ser una regla en un
+        archivo — con su porqué, cómo aplicarla y cuándo. Se indexa y se carga en cada sesión nueva.</p>
+        <p data-anim>Efecto compuesto: <strong>los errores se pagan una vez.</strong> La décima sesión
+        arranca sabiendo lo que aprendieron las nueve anteriores.</p>
+      </div>
+      <div class="caja" data-anim>
+        <p class="ojo">Skills usadas en este TFM</p>
+        <ul>
+          <li><code>orquestador-feature</code> — diseña y reparte una feature en issues</li>
+          <li><code>director-mcp</code> — resuelve N issues en cascada sin humano entre medio</li>
+          <li><code>auditoria-funcional / diseño / ux</code> — las tres lentes de la auditoría</li>
+          <li><code>debug-root-cause</code> — análisis de causa raíz antes de tocar código</li>
+          <li><code>registrar-aprendizaje</code> — cristaliza la corrección en regla</li>
+        </ul>
+        <p style="margin-top:.9em">El <code>AGENTS.md</code> del repo público es la versión visible
+        del mismo patrón: las reglas que cada agente tiene que conocer antes de empezar.</p>
+      </div>
     </div>
   </section>
 
@@ -501,19 +652,21 @@ banco del nivel</pre>
         <p data-anim>Cosecha: <em>18 mejoras rápidas y 9 de fondo</em>, cada una con evidencia,
         criterio de verificación y los archivos que tocaría. Salieron a GitHub como issues públicos:
         el backlog también es parte de lo que se entrega.</p>
-        <p data-anim><strong>Dos hallazgos no sobrevivieron a la verificación.</strong> Uno afirmaba
-        que cierta dependencia no se usaba en ningún archivo, con un <code>grep</code> de cero
-        resultados; el <em>import</em> estaba en la primera línea. Aplicarlo rompía el build.
-        Por eso el humano contrasta antes de mergear: el gate no es opcional.</p>
+        <p data-anim>El gate de verificación funciona en ambos sentidos: antes de mergear, el humano
+        contrasta cada hallazgo contra el código real. <strong>Dos no sobrevivieron a esa
+        verificación</strong> — uno de ellos citaba una dependencia sin usar, pero el import estaba
+        en la primera línea. Aplicarlo rompía el build. El sistema atrapa eso <em>antes</em> de que
+        entre: eso no es un fallo del proceso, es el proceso trabajando exactamente como tiene que
+        trabajar.</p>
       </div>
-      <figure data-anim class="recorte sin-rejilla">
-        <img src="img/13-issue-auditoria.png" alt="Issue público generado por la auditoría de diseño y UX, con sus tareas y criterios de aceptación">
+      <figure data-anim class="recorte">
+        <img class="tarjeta-sb" src="img/sb-06-issue-auditoria.png" alt="Issue público generado por la auditoría de diseño y UX, con sus tareas y criterios de aceptación">
         <figcaption>Un hallazgo de la auditoría, ya como issue accionable</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- 13 · El circuito -->
+  <!-- 19 · El circuito -->
   <section class="slide" data-modulo="EL CIRCUITO">
     <p class="ojo" data-anim>De punta a punta</p>
     <h2 data-decode data-anim>Reparte, trabaja, avisa, rinde cuentas</h2>
@@ -521,28 +674,28 @@ banco del nivel</pre>
       <div class="paso" data-anim>
         <p class="ojo">1 · Reparte</p>
         <figure class="sin-rejilla">
-          <img src="img/10-flujo-multiagente.png" alt="Panel del sistema con varias instancias headless corriendo en paralelo">
+          <img src="img/sb-01-proyecto-en-el-sistema.png" alt="Árbol del sistema: Second Brain con un proyecto, su coordinador y tres writers en paralelo">
         </figure>
-        <p style="font-size:.92em">Tres writers arrancan a la vez, una por módulo.</p>
+        <p style="font-size:.92em">El coordinador lanza writers en paralelo, uno por archivo o módulo.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">2 · Trabaja</p>
         <figure class="sin-rejilla">
-          <img src="img/11-instancia-headless.png" alt="Detalle de una instancia writer y el único archivo que tiene permitido tocar">
+          <img src="img/sb-02-instancia-writer.png" alt="Ficha de una instancia writer con su prompt, su scope de un archivo y su estado">
         </figure>
-        <p style="font-size:.92em">Cada una declara su alcance: un archivo, y nada más.</p>
+        <p style="font-size:.92em">Cada writer declara su alcance: un archivo, y nada más.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">3 · Avisa</p>
         <figure class="sin-rejilla">
-          <img src="img/12-notificacion-telegram.png" alt="Notificación en el móvil avisando de que una instancia terminó">
+          <img src="img/sb-03-telegram.png" alt="Notificación en el móvil avisando de que una instancia terminó">
         </figure>
         <p style="font-size:.92em">Al terminar, el aviso llega al móvil. El humano vuelve solo cuando hace falta.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">4 · Rinde cuentas</p>
         <figure class="sin-rejilla">
-          <img src="img/09-orquestador.png" alt="Informe del coordinador con lo hecho y lo verificado">
+          <img src="img/sb-04-orquestador.png" alt="Informe del coordinador: hecho y verificado">
         </figure>
         <p style="font-size:.92em">El coordinador reporta qué se hizo y qué se verificó. El humano revisa eso, no el diff.</p>
       </div>
