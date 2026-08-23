@@ -265,7 +265,11 @@ async function llamarModelo(
 // Configuración del runtime de Vercel
 // ---------------------------------------------------------------------------
 
-export const config = { runtime: "nodejs20.x" };
+// El campo `runtime` solo acepta "nodejs" | "edge" | "experimental-edge";
+// una versión concreta como "nodejs20.x" hace fallar el build de Vercel con
+// `unsupported "runtime" value in config`. La versión de Node se fija en el
+// panel del proyecto o en package.json#engines, no acá.
+export const config = { runtime: "nodejs" };
 
 // ---------------------------------------------------------------------------
 // Handler principal
