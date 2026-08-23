@@ -123,7 +123,8 @@
   .caja{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.12);
         padding:clamp(14px,1.8vw,24px)}
   .caja .ojo{margin-bottom:.7em}
-  .tres{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:start}
+  .tres{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:stretch}
+  .tres .caja{display:flex; flex-direction:column}
 
   pre{border:1px solid var(--fosforo-bajo); background:rgba(31,107,58,.12);
       padding:clamp(12px,1.5vw,20px); overflow:auto; line-height:1.5;
@@ -148,12 +149,19 @@
   .portada{position:absolute; inset:var(--hud) 0; display:none; place-items:center}
   .portada.on{display:grid}
   .portada video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-                 filter:saturate(.85) brightness(.5); z-index:0}
+                 filter:saturate(.85) brightness(.55); z-index:0}
   .portada .velo{position:absolute; inset:0; z-index:1;
-                 background:radial-gradient(ellipse at 32% 50%,rgba(4,6,10,.5),rgba(4,6,10,.93) 72%)}
+                 background:linear-gradient(90deg,rgba(4,6,10,.88) 0%,rgba(4,6,10,.6) 50%,rgba(4,6,10,.22) 100%)}
   .portada .contenido{position:relative; z-index:2; width:100%;
-                      padding:0 clamp(24px,6vw,96px); display:flex; flex-direction:column;
-                      gap:clamp(10px,1.6vh,22px)}
+                      padding:0 clamp(24px,6vw,96px);
+                      display:grid; grid-template-columns:1fr 1fr;
+                      gap:clamp(24px,4vw,72px); align-items:center}
+  .portada .contenido-texto{display:flex; flex-direction:column; gap:clamp(10px,1.6vh,22px)}
+  .portada .contenido-figura figure{margin:0}
+  .portada .contenido-figura img{width:100%; height:auto; display:block;
+                                  border:1px solid rgba(93,252,138,.28);
+                                  box-shadow:0 0 40px rgba(93,252,138,.12)}
+  @media (max-width:760px){.portada .contenido{grid-template-columns:1fr}.portada .contenido-figura{display:none}}
   .urls{display:flex; flex-direction:column; gap:.42em; font-size:clamp(12px,1.28vw,16.5px)}
   .urls span b{color:var(--fosforo-bajo); font-weight:400; letter-spacing:.1em;
                text-transform:uppercase; font-size:.86em}
@@ -183,13 +191,14 @@
   .paso p{font-size:clamp(12px,1.15vw,15px); line-height:1.5}
 
   /* ───────── Tarjeta para capturas con fondo blanco ───────── */
-  /* Sustituye el filtro que destruye la imagen. Fondo oscuro + marco fósforo
-     dejan la captura legible y la integran al estilo CRT sin teñirla. */
-  .tarjeta-sb{border:1px solid var(--fosforo-bajo); background:#060a0e; padding:6px; display:block}
-  .tarjeta-sb img{border:0; width:100%; height:auto; display:block; opacity:.88}
+  /* Fondo oscuro + marco fósforo dejan la captura legible y la integran al estilo CRT. */
+  .tarjeta-sb{border:1px solid var(--fosforo-bajo); background:#060a0e; padding:6px; display:block;
+              position:relative; z-index:51}
+  .tarjeta-sb img{border:0; width:100%; height:auto; display:block; opacity:.95}
   /* El vídeo de Obsidian: visible, sin filtro destructivo. */
-  .video-sb{border:1px solid var(--fosforo-bajo); background:#060a0e; padding:4px; display:block}
-  .video-sb video{display:block; width:100%; height:auto; border:0; opacity:.9}
+  .video-sb{border:1px solid var(--fosforo-bajo); background:#060a0e; padding:4px; display:block;
+            position:relative; z-index:51}
+  .video-sb video{display:block; width:100%; height:auto; border:0; opacity:.95}
 
   /* ───────── Bloque MCP — familias de herramientas ───────── */
   .mcp-familias{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
@@ -233,31 +242,39 @@
     </video>
     <div class="velo"></div>
     <div class="contenido">
-      <p class="ojo" data-anim>Trabajo de Fin de Máster</p>
-      <h1 data-decode data-anim>WAKE UP, DEV</h1>
-      <p class="lead" data-anim>Un videojuego 8-bit inspirado en Matrix que repasa el máster
-      jugándolo. La IA no es solo la herramienta con la que se construyó:
-      <strong>es parte del gameplay</strong>.</p>
-      <div class="urls" data-anim>
-        <span><b>Juego</b> · <a href="https://wake-up-dev.vercel.app">wake-up-dev.vercel.app</a></span>
-        <span><b>Código</b> · <a href="https://github.com/modernclixlearning/wake-up-dev">github.com/modernclixlearning/wake-up-dev</a></span>
-        <span><b>Autor</b> · Juan José Mayotte · Entrega 24/08/2026</span>
+      <div class="contenido-texto">
+        <p class="ojo" data-anim>Trabajo de Fin de Máster</p>
+        <h1 data-decode data-anim>WAKE UP, DEV</h1>
+        <p class="lead" data-anim>Un videojuego 8-bit inspirado en Matrix que repasa el máster
+        jugándolo. La IA no es solo la herramienta con la que se construyó:
+        <strong>es parte del gameplay</strong>.</p>
+        <div class="urls" data-anim>
+          <span><b>Juego</b> · <a href="https://wake-up-dev.vercel.app">wake-up-dev.vercel.app</a></span>
+          <span><b>Código</b> · <a href="https://github.com/modernclixlearning/wake-up-dev">github.com/modernclixlearning/wake-up-dev</a></span>
+          <span><b>Autor</b> · Juan José Mayotte · Entrega 24/08/2026</span>
+        </div>
+      </div>
+      <div class="contenido-figura" data-anim>
+        <figure>
+          <img src="img/04-reto.png" alt="Reto de opción múltiple en el juego: el Agente Smith aturdido espera respuesta">
+        </figure>
       </div>
     </div>
   </section>
 
   <!-- 2 · La idea -->
   <section class="slide" data-modulo="LA IDEA">
-    <p class="ojo" data-anim>El problema</p>
-    <h2 data-decode data-anim>Un máster se olvida. Un juego se repite.</h2>
+    <p class="ojo" data-anim>La propuesta</p>
+    <h2 data-decode data-anim>La memoria activa retiene lo que la pasiva no consolida.</h2>
     <div class="cols mas-texto">
       <div class="pila">
-        <p data-anim>Terminás dieciséis módulos, cientos de notas, y a los tres meses te acordás
-        de la mitad. Quería un repaso que no se sintiera como un repaso.</p>
-        <p data-anim><strong>Sos Neo.</strong> Cada módulo del máster es un nivel de la Matrix
-        custodiado por Agentes Smith — los bugs, los antipatrones, la deuda técnica. Los peleás
-        cuerpo a cuerpo y, al aturdirlos, respondés un reto salido del contenido real del curso.
-        Fallás, perdés una vida. Acertás, el Agente cae.</p>
+        <p data-anim>Dieciséis módulos de máster generan cientos de notas. La memoria pasiva —releer,
+        subrayar— no consolida. La memoria activa —recuperar, aplicar, equivocarse y corregir— sí.
+        Este proyecto convierte el temario en algo que se practica.</p>
+        <p data-anim><strong>Sos Neo.</strong> Cada módulo es un nivel de la Matrix donde aparecen
+        Agentes Smith: enemigos que te persiguen y atacan. Golpeás a un Agente hasta aturdirlo, y
+        entonces te lanza un reto del contenido real del módulo. Respondés bien y el Agente cae.
+        Fallás, perdés una vida. <strong>Aprender es lo que te permite avanzar.</strong></p>
       </div>
       <figure data-anim>
         <img src="img/01-titulo.png" alt="Pantalla de título del juego, con lluvia de código verde sobre negro">
@@ -274,10 +291,9 @@
       <ul>
         <li data-anim><strong>Zion</strong> — el hub: elegís módulo, ves score y vidas</li>
         <li data-anim><strong>Niveles</strong> — un módulo del máster cada uno, con su escenario propio</li>
-        <li data-anim><strong>Agentes Smith</strong> — bugs y antipatrones: se pelean y se responden</li>
+        <li data-anim><strong>Agentes Smith</strong> — enemigos que te persiguen y atacan; al aturdirlos, te retan con una pregunta del módulo</li>
         <li data-anim><strong>Agente Jefe</strong> — cierra el módulo, y dispara</li>
-        <li data-anim><strong>El Oráculo</strong> — NPC con IA que responde dudas del módulo actual</li>
-        <li data-anim><strong>Píldora roja</strong> — el juego conectado a instancias headless reales</li>
+        <li data-anim><strong>El Oráculo</strong> — agente de IA que responde dudas del módulo actual</li>
       </ul>
       <figure data-anim>
         <img src="img/02-zion.png" alt="Pantalla de Zion listando los diez módulos del máster">
@@ -300,9 +316,11 @@
         <figcaption>Agente aturdido · el reto sale de las notas del curso</figcaption>
       </figure>
     </div>
-    <p class="ancho" data-anim>El combate no es decorado. Sin el <em>stagger</em> —que tu golpe
-    interrumpa el del Agente— pelear bien igual te costaba una vida cada dos segundos. Lo descubrió
-    un bot de Playwright muriendo con respuestas perfectas.</p>
+    <p class="ancho" data-anim>El combate y el examen están acoplados por diseño. El <em>stagger</em>
+    —que tu golpe interrumpa el del Agente— es la clave: sin él, un Smith en pleno ataque no te
+    deja tiempo de responder. Respondés bien porque ganaste el intercambio físico primero;
+    si perdiste el combate, perdés la vida antes de que la respuesta importe.
+    <strong>Saber el contenido no alcanza si no peleás bien: las dos cosas se requieren entre sí.</strong></p>
   </section>
 
   <!-- 5 · Arquitectura -->
@@ -320,6 +338,38 @@ src/game      presentación — escenas Kaplay + overlays DOM
 bridge/       server local que spawnea el CLI headless (Node puro, sin deps)</pre>
     <p class="ancho" data-anim>Tres reglas sostienen todo: el dominio es puro, el contenido es data,
     y <strong>cualquier feature de IA degrada al fallback sin penalizar al jugador</strong>.</p>
+  </section>
+
+  <!-- 5b · Stack -->
+  <section class="slide" data-modulo="STACK">
+    <p class="ojo" data-anim>Tecnología</p>
+    <h2 data-decode data-anim>El stack, sin invención</h2>
+    <div class="cols">
+      <div class="pila">
+        <div class="caja" data-anim>
+          <p class="ojo">Juego</p>
+          <ul>
+            <li><strong>TypeScript</strong> — tipado estricto en todo el dominio y la capa de IA</li>
+            <li><strong>Vite</strong> — dev server + build de producción; <code>base: "./"</code> para deploy relativo</li>
+            <li><strong>Kaplay</strong> — motor 2D canvas (ex Kaboom); escenas, sprites, física arcade</li>
+            <li><strong>Vitest</strong> — 205 tests sobre dominio y adapters; cero llamadas reales a IA en CI</li>
+          </ul>
+        </div>
+        <div class="caja" data-anim>
+          <p class="ojo">Infraestructura</p>
+          <ul>
+            <li><strong>Vercel</strong> — deploy en cada push a <code>main</code>; preview por PR</li>
+            <li><strong>Función edge</strong> — <code>api/oraculo.ts</code> en runtime edge de Vercel: proxy a OpenAI con la key en el servidor, nunca en el cliente</li>
+            <li><strong>GitHub Actions</strong> — typecheck + tests + build en cada PR</li>
+          </ul>
+        </div>
+      </div>
+      <div class="caja" data-anim>
+        <p class="ojo">Por qué este stack</p>
+        <p>Kaplay corre en canvas puro: el dominio (puro TypeScript, sin deps de UI) es completamente testeable con Vitest sin necesidad de browser. La separación de capas no es doctrina — es lo que hizo posible tener 205 tests sin simular el canvas.</p>
+        <p style="margin-top:.9em">La función edge agrega cómputo al CDN: el Oráculo responde sin que el jugador configure nada, y el coste queda acotado en el servidor.</p>
+      </div>
+    </div>
   </section>
 
   <!-- 6 · Contenido -->
@@ -350,6 +400,9 @@ banco del nivel</pre>
 
   <!-- 7 · El reto al tribunal -->
   <section class="slide" data-modulo="TU TURNO">
+    <p class="ojo" data-anim>El contenido evaluado como mecánica</p>
+    <p data-anim style="max-width:64ch">El juego carga los retos desde archivos JSON. Un test de CI valida sus invariantes.
+    Esto es lo que valida — ¿lo sabés responder?</p>
     <div class="reto" data-anim>
       <p class="quien">AGENTE SMITH ATURDIDO — remátalo respondiendo:</p>
       <p class="pregunta">El juego carga los retos desde archivos JSON y un test valida que ningún
@@ -373,7 +426,7 @@ banco del nivel</pre>
     <div class="tres">
       <div class="caja" data-anim>
         <p class="ojo">El Oráculo</p>
-        <p>NPC conversacional con el resumen del módulo actual inyectado como contexto. Le
+        <p>Agente de IA conversacional con el resumen del módulo actual inyectado como contexto. Le
         preguntás lo que no entendiste, ahí mismo, sin salir del juego.</p>
       </div>
       <div class="caja" data-anim>
@@ -396,9 +449,8 @@ banco del nivel</pre>
   <section class="slide" data-modulo="EL ORÁCULO">
     <p class="ojo" data-anim>Un personaje hecho de instrucciones</p>
     <h2 data-decode data-anim>El prompt es corto. La tensión, no.</h2>
-    <div class="cols mas-texto">
-      <div class="pila">
-        <pre data-anim>Sos el Oráculo del juego educativo 'Wake Up, Dev',
+    <div class="cols">
+      <pre data-anim>Sos el Oráculo del juego educativo 'Wake Up, Dev',
 ambientado en Matrix. El jugador es un estudiante
 del Máster repasando un módulo.
 Respondé sus dudas sobre el contenido del módulo
@@ -412,91 +464,57 @@ sobre el personaje.</b>
 
 Contexto del módulo actual:
   [se inyecta en tiempo de ejecución]</pre>
-        <p data-anim>Dos líneas hacen el trabajo real. La primera protege la mecánica: si el Oráculo
+      <div class="pila" data-anim>
+        <p>Dos líneas hacen el trabajo real. La primera protege la mecánica: si el Oráculo
         da la respuesta, el reto desaparece como obstáculo. La segunda subordina el disfraz: cuando
         el personaje y la didáctica entran en conflicto, gana la didáctica.</p>
-        <p data-anim>El mismo patrón en los otros dos roles: <code>systemEvaluador</code> exige JSON estricto y criterio verificable; <code>systemPista</code>, máximo 30 palabras sin descartar opciones.</p>
-      </div>
-      <div class="caja" data-anim>
-        <p class="ojo">Por qué funciona</p>
-        <ul>
-          <li>El contexto del módulo se inyecta en cada consulta: el Oráculo sabe de qué trata el
-          nivel actual sin necesidad de fine-tuning ni base de datos vectorial</li>
-          <li>La restricción de 120 palabras obliga a síntesis: el modelo no puede escapar por tangentes</li>
-          <li>Sin IA el juego es idéntico: el fallback estático devuelve el texto de ayuda pregrabado
-          del reto, sin coste ni latencia</li>
-        </ul>
+        <p>El mismo patrón en los otros dos roles: <code>systemEvaluador</code> exige JSON estricto y criterio verificable; <code>systemPista</code>, máximo 30 palabras sin descartar opciones.</p>
+        <div class="caja">
+          <p class="ojo">Por qué funciona</p>
+          <ul>
+            <li>El contexto del módulo se inyecta en cada consulta: el Oráculo sabe de qué trata el
+            nivel actual sin fine-tuning ni base vectorial</li>
+            <li>La restricción de 120 palabras obliga a síntesis: el modelo no puede escapar por tangentes</li>
+            <li>Sin IA el juego es idéntico: el fallback estático devuelve el texto de ayuda pregrabado
+            del reto, sin coste ni latencia</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- 9 · Píldora roja -->
-  <section class="slide" data-modulo="PÍLDORA ROJA">
-    <p class="ojo" data-anim>El diferencial</p>
-    <h2 data-decode data-anim>El juego lanza agentes de verdad</h2>
+  <!-- 10 · Infraestructura y calidad -->
+  <section class="slide" data-modulo="INFRAESTRUCTURA">
+    <p class="ojo" data-anim>Deploy y calidad</p>
+    <h2 data-decode data-anim>El gate no es la opinión de nadie</h2>
     <div class="cols">
       <div class="pila">
-        <pre data-anim>juego  →  bridge local (Node)  →  <b>claude -p</b>
-                               →  <b>copilot</b> headless</pre>
-        <p data-anim>En modo developer, cada consulta al Oráculo <strong>lanza una instancia
-        headless real</strong> del CLI de Claude Code o de GitHub Copilot. No es una simulación del
-        patrón de orquestación de agentes que enseña el máster: es el patrón, corriendo, visible
-        desde dentro del juego.</p>
-      </div>
-      <div class="caja" data-anim>
-        <p class="ojo">Decisiones de seguridad</p>
+        <div class="cifras" data-anim>
+          <div class="cifra"><b>205</b><span>tests</span></div>
+          <div class="cifra"><b>10</b><span>niveles jugables</span></div>
+          <div class="cifra"><b>312</b><span>retos</span></div>
+          <div class="cifra"><b>0</b><span>llamadas reales a IA en CI</span></div>
+        </div>
         <ul>
-          <li>El prompt va al CLI <strong>por stdin</strong>, nunca como argumento de shell — inyección de comandos</li>
-          <li>El bridge escucha solo en <code>127.0.0.1</code></li>
-          <li>En la web desplegada no hay bridge: <em>mixed content</em> lo impide, y está documentado</li>
+          <li data-anim><strong>Vitest</strong> sobre el dominio puro, los adapters de IA (con <code>fetch</code> mockeado) y las invariantes de todos los bancos de contenido</li>
+          <li data-anim><strong>GitHub Actions</strong> — typecheck + tests + build en cada push y cada PR; sin verde no se integra</li>
+          <li data-anim><strong>Vercel</strong> — build automático en cada push a <code>main</code>; preview por PR; la misma URL desde el primer deploy</li>
         </ul>
       </div>
-    </div>
-  </section>
-
-  <!-- 10 · BYOK -->
-  <section class="slide" data-modulo="SEGURIDAD">
-    <p class="ojo" data-anim>Claves y coste</p>
-    <h2 data-decode data-anim>La IA llega al jugador sin que configure nada</h2>
-    <div class="cols">
-      <ul>
-        <li data-anim><strong>Proxy del TFM (por defecto)</strong> — en Vercel hay una función serverless <code>api/oraculo.ts</code> (runtime edge) que hace de proxy a OpenAI. La API key vive como variable de entorno <strong>en el servidor</strong>, nunca en el bundle ni en el repositorio. Quien abre la URL habla al Oráculo sin configurar nada.</li>
-        <li data-anim>El proxy lleva <strong>límites de coste</strong>: modelo económico, tope de tokens por respuesta, rate limit por IP y recorte de las entradas.</li>
-        <li data-anim><strong>BYOK sigue existiendo</strong> — el jugador puede poner su propia key de Anthropic / OpenAI / Gemini; vive solo en su <code>localStorage</code> y llama directo al proveedor. O usar el bridge headless local.</li>
-        <li data-anim>La <strong>invariante que no se mueve</strong>: el juego funciona completo sin ninguna IA — los retos abiertos caen a su variante de opciones sin penalizar.</li>
-      </ul>
       <div class="caja" data-anim>
-        <p class="ojo">El matiz que da valor al segundo deploy</p>
-        <p>GitHub Pages es un CDN estático: no puede servir el proxy. Quien llegue desde allí juega en modo BYOK igual que antes.</p>
-        <p style="margin-top:.9em">Es un buen ejemplo de por qué se eligió un segundo destino de despliegue: <strong>Vercel añade capacidad de cómputo sin abandonar el CDN.</strong></p>
-        <p style="margin-top:.9em"><strong>La restricción firme no se mueve: nunca una clave propia en el cliente.</strong></p>
+        <p class="ojo">La función edge del Oráculo</p>
+        <p><code>api/oraculo.ts</code> corre en runtime edge de Vercel: hace de proxy a OpenAI
+        con la API key como variable de entorno en el servidor, nunca en el bundle ni en el repo.</p>
+        <p style="margin-top:.9em">El jugador habla al Oráculo sin configurar nada. El proxy lleva
+        límites de coste: modelo económico, tope de tokens por respuesta y rate limit por IP.</p>
+        <p style="margin-top:.9em">La <strong>invariante que no se mueve</strong>: el dominio es puro,
+        todos los retos abiertos degradan a su variante de opciones sin IA, y
+        <strong>el juego funciona completo sin ninguna API key</strong>.</p>
       </div>
     </div>
   </section>
 
-  <!-- 11 · Calidad -->
-  <section class="slide" data-modulo="CALIDAD">
-    <p class="ojo" data-anim>Gates</p>
-    <h2 data-decode data-anim>El gate no es la opinión de nadie</h2>
-    <div class="cifras" data-anim>
-      <div class="cifra"><b>205</b><span>tests</span></div>
-      <div class="cifra"><b>10</b><span>niveles jugables</span></div>
-      <div class="cifra"><b>312</b><span>retos</span></div>
-      <div class="cifra"><b>0</b><span>llamadas reales a IA en CI</span></div>
-    </div>
-    <ul>
-      <li data-anim><strong>Vitest</strong> sobre el dominio, la capa de IA (adapters con <code>fetch</code> mockeado) y las invariantes de todos los bancos</li>
-      <li data-anim><strong>GitHub Actions</strong> — typecheck + tests + build en cada push y cada PR</li>
-      <li data-anim><strong>Dos destinos de deploy</strong>: <em>Vercel</em> (push a main → build + preview por PR) y <em>GitHub Pages</em> (ci.yml + deploy.yml). El mismo artefacto sirve en los dos — <code>vite.config.ts</code> usa <code>base: "./"</code></li>
-      <li data-anim>Verificación <strong>en navegador real</strong> antes de commitear</li>
-    </ul>
-    <p class="ancho" data-anim>Handlers de teclado sin cancelar que bloqueaban el segundo encuentro.
-    El parser de Kaplay rompiéndose con corchetes. Texto verde ilegible sobre fondo blanco. Un
-    décimo módulo inalcanzable porque la tecla se calculaba como <code>String(i+1)</code> y daba
-    <code>"10"</code>. Ninguno lo vieron los tests: todos salieron jugando.</p>
-  </section>
-
-  <!-- 14 · Qué es Second Brain -->
+  <!-- 11 · Qué es Second Brain -->
   <section class="slide" data-modulo="SECOND BRAIN">
     <p class="ojo" data-anim>El sistema detrás del sistema</p>
     <h2 data-decode data-anim>¿Qué es Second Brain?</h2>
@@ -507,15 +525,12 @@ Contexto del módulo actual:
         cualquier agente lo lee y escribe sin SDK, con historial gratis y sincronización entre
         máquinas.</p>
         <ul>
-          <li data-anim><strong>Base de conocimiento</strong> — notas del curso, decisiones,
-          cápsulas por módulo</li>
-          <li data-anim><strong>Interfaz de agentes</strong> — cualquier instancia headless
-          lee y escribe el mismo árbol de carpetas</li>
-          <li data-anim><strong>Registro de trabajo</strong> — issues, journal por proyecto,
-          bitácora de cada delegación</li>
+          <li data-anim><strong>00_SYSTEM</strong> — skills y plantillas reutilizables; el "userland" de agentes</li>
+          <li data-anim><strong>01_PROJECTS</strong> — un mini-OS por proyecto: contexto IA, issues, journal y <code>code/</code> como repo independiente</li>
+          <li data-anim><strong>02_JOURNAL</strong> — log diario global + notificaciones entre instancias</li>
+          <li data-anim><strong>04_META</strong> — workflows, aprendizajes y el bucle de auto-mejora del propio sistema</li>
         </ul>
-        <p data-anim>Es personal y privado. Lo que sí es público es su arquitectura, documentada
-        en el despliegue del propio juego: <a href="https://wake-up-dev.vercel.app/second-brain/">…/second-brain/</a></p>
+        <p data-anim>El proceso es auditable: issues, ledger de delegaciones, commits. <strong>Parte de lo que se entrega en este TFM es el proceso</strong>, no solo el resultado.</p>
       </div>
       <div class="pila" data-anim>
         <div class="video-sb">
@@ -634,27 +649,27 @@ Contexto del módulo actual:
 
   <!-- 14 · La auditoría -->
   <section class="slide" data-modulo="LA AUDITORÍA">
-    <p class="ojo" data-anim>El máster auditando al TFM</p>
-    <h2 data-decode data-anim>Seis lentes, una cosecha</h2>
+    <p class="ojo" data-anim>De lo general a lo particular</p>
+    <h2 data-decode data-anim>Un issue escrito dispara el flujo</h2>
     <div class="cols mas-figura">
       <div class="pila">
-        <p data-anim>Las cápsulas no son un archivo bonito: se usaron para auditar este mismo
-        juego. <strong>Seis agentes en paralelo</strong>, cada uno midiendo contra la suya —calidad,
-        infraestructura, cloud, seguridad, flujo con IA— y uno más de diseño y UX que jugó el juego
-        en el navegador.</p>
-        <p data-anim>Cosecha: <em>18 mejoras rápidas y 9 de fondo</em>, cada una con evidencia,
-        criterio de verificación y los archivos que tocaría. Salieron a GitHub como issues públicos:
-        el backlog también es parte de lo que se entrega.</p>
-        <p data-anim>El gate de verificación funciona en ambos sentidos: antes de mergear, el humano
-        contrasta cada hallazgo contra el código real. <strong>Dos no sobrevivieron a esa
-        verificación</strong> — uno de ellos citaba una dependencia sin usar, pero el import estaba
-        en la primera línea. Aplicarlo rompía el build. El sistema atrapa eso <em>antes</em> de que
-        entre: eso no es un fallo del proceso, es el proceso trabajando exactamente como tiene que
-        trabajar.</p>
+        <p data-anim>El mecanismo general: <strong>un issue con criterios claros es lo que alimenta
+        y dispara el flujo multiagente</strong>. El coordinador lo lee, lo divide en tareas, y delega
+        cada una a un writer headless en su worktree. Sin issue bien escrito, no hay delegación segura.</p>
+        <p data-anim>Caso concreto — la auditoría de este juego: seis issues de auditoría (uno por
+        lente: calidad, infraestructura, cloud, seguridad, flujo IA, diseño/UX) lanzaron
+        <strong>seis agentes en paralelo</strong>, cada uno midiendo contra las cápsulas del máster.
+        Uno más de diseño y UX jugó el juego en el navegador.</p>
+        <p data-anim>Cosecha: <em>18 mejoras rápidas y 9 de fondo</em>, cada una con evidencia y
+        criterio de verificación. Salieron a GitHub como issues públicos: el backlog también es
+        parte de lo que se entrega.</p>
+        <p data-anim>El gate funciona en ambos sentidos: antes de mergear, el humano contrasta
+        cada hallazgo contra el código real. <strong>Dos no sobrevivieron a esa verificación</strong> —
+        el sistema atrapa eso antes de que entre. Eso no es un fallo, es el proceso trabajando.</p>
       </div>
       <figure data-anim class="recorte">
         <img class="tarjeta-sb" src="img/sb-06-issue-auditoria.png" alt="Issue público generado por la auditoría de diseño y UX, con sus tareas y criterios de aceptación">
-        <figcaption>Un hallazgo de la auditoría, ya como issue accionable</figcaption>
+        <figcaption>Un hallazgo de la auditoría, ya como issue accionable en GitHub</figcaption>
       </figure>
     </div>
   </section>
@@ -676,7 +691,7 @@ Contexto del módulo actual:
         <figure class="sin-rejilla">
           <img src="img/sb-02-instancia-writer.png" alt="Ficha de una instancia writer con su prompt, su scope de un archivo y su estado">
         </figure>
-        <p style="font-size:.92em">Cada writer declara su alcance: un archivo, y nada más.</p>
+        <p style="font-size:.92em">Cada writer declara los paths que va a tocar (globs). Los que no se solapan corren en paralelo.</p>
       </div>
       <div class="paso" data-anim>
         <p class="ojo">3 · Avisa</p>
@@ -695,7 +710,7 @@ Contexto del módulo actual:
     </div>
   </section>
 
-  <!-- 14 · Cierre -->
+  <!-- Cierre -->
   <section class="slide" data-modulo="CIERRE">
     <p class="ojo" data-anim>Qué me llevo</p>
     <h2 data-decode data-anim>Lo que el proyecto me enseñó</h2>
@@ -705,13 +720,14 @@ Contexto del módulo actual:
         <li data-anim>Un <strong>gate automático</strong> vale más que una intención — atajó bancos que yo habría dado por buenos</li>
         <li data-anim>La IA acelera de verdad cuando le das <strong>criterios verificables</strong>, no cuando le pedís que adivine</li>
         <li data-anim>Lo que no se juega, no se sabe si funciona</li>
+        <li data-anim>Los agentes como flujo de trabajo no son una demo: son la forma de sostener un proyecto solo sin perder contexto ni calidad</li>
       </ul>
       <div class="caja" data-anim>
         <p class="ojo">Qué sigue</p>
         <ul>
           <li>Los módulos que faltan: solo agregar sus JSON</li>
-          <li>Decidir la estrategia de IA para quien juega sin API key</li>
           <li>Más mecánicas por nivel, no una sola para todos</li>
+          <li>Explorar mayor profundidad en los retos abiertos</li>
         </ul>
         <div class="urls" style="margin-top:1.3em">
           <span><b>Jugar</b> · <a href="https://wake-up-dev.vercel.app">wake-up-dev.vercel.app</a></span>
