@@ -1034,8 +1034,11 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         const aviso = k.add([
           // Mismo motivo que el cartel de teclas: VERDE_OSCURO sobre el panel
           // negro no llega al 4.5:1 de WCAG AA para texto de este tamaño.
-          k.text("P) Pedir una pista al Oráculo", { size: 14 }),
-          k.pos(60, ALTO - 112),
+          // `width` es obligatorio: este mismo objeto pasa a mostrar la pista del
+          // Oráculo, que es texto libre de un modelo. Sin ancho, Kaplay no
+          // envuelve y la pista se sale del panel por el lateral.
+          k.text("P) Pedir una pista al Oráculo", { size: 14, width: ANCHO - 140 }),
+          k.pos(60, ALTO - 132),
           k.color(...VERDE),
           k.z(11),
           k.fixed(),
@@ -1049,7 +1052,11 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
             aviso.text = "El Oráculo susurra...";
             try {
               const pista = await st.ai.generarPista(reto);
-              if (enEncuentro) aviso.text = `Oráculo: ${pista}`;
+              // El modelo puede ignorar el límite de 30 palabras del prompt; el
+              // panel no crece, así que se recorta antes de pintarlo.
+              const texto = pista.trim().replace(/\s+/g, " ");
+              const recortada = texto.length > 200 ? `${texto.slice(0, 197)}...` : texto;
+              if (enEncuentro) aviso.text = `Oráculo: ${recortada}`;
             } catch {
               if (enEncuentro) aviso.text = "El Oráculo guarda silencio (falló la conexión).";
             }
