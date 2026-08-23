@@ -178,7 +178,15 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
 
     // Aviso neutro en pantalla (instrucciones, anuncios): sin el prefijo
     // CORRECTO/FALLASTE de mostrarFeedback y un poco más arriba para no pisarlo.
+    /** Respaldo oscuro detrás de un texto de aviso: desde F14 v3 el suelo
+     * tileado tapa la banda oscura inferior que garantizaba la legibilidad,
+     * así que cada aviso lleva su propio fondo (mismo 0.72 que la banda del
+     * HUD, calculado para WCAG AA sobre el suelo blanco del dojo). */
+    const respaldoAviso = (y: number, alto: number) =>
+      k.add([k.rect(ANCHO - 96, alto), k.pos(48, y - 6), k.color(0, 0, 0), k.opacity(0.72), k.z(6), k.fixed()]);
+
     const mostrarAviso = (texto: string, duracion = 4) => {
+      const fondo = respaldoAviso(ALTO - 80, 44);
       const msg = k.add([
         k.text(texto, { size: 14, width: ANCHO - 120 }),
         k.pos(60, ALTO - 80),
@@ -186,10 +194,14 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         k.z(6),
         k.fixed(),
       ]);
-      k.wait(duracion, () => k.destroy(msg));
+      k.wait(duracion, () => {
+        k.destroy(msg);
+        k.destroy(fondo);
+      });
     };
 
     const mostrarFeedback = (ok: boolean, texto: string) => {
+      const fondo = respaldoAviso(ALTO - 46, 40);
       const msg = k.add([
         k.text(`${ok ? "CORRECTO" : "FALLASTE"} — ${texto}`, { size: 14, width: ANCHO - 120 }),
         k.pos(60, ALTO - 46),
@@ -197,7 +209,10 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         k.z(6),
         k.fixed(),
       ]);
-      k.wait(4, () => k.destroy(msg));
+      k.wait(4, () => {
+        k.destroy(msg);
+        k.destroy(fondo);
+      });
     };
 
     /**

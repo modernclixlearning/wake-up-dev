@@ -57,10 +57,14 @@ const FONDO_POR_MODULO: Record<string, string> = {
   "13-desarrollo-potenciado-ia": "06-apartamento-rojo",
 };
 
-/** Carga los fondos una vez al iniciar, junto a los sprites (main.ts). */
+/** Carga los fondos una vez al iniciar, junto a los sprites (main.ts).
+ * Por cada fondo carga también su franja de suelo `suelo-*.png` (F14): un
+ * recorte del propio suelo pintado de la escena (y 284..590 de la imagen,
+ * generado por script con PIL) que se tilea en coordenadas de MUNDO. */
 export function cargarFondos(k: KAPLAYCtx): void {
   for (const nombre of FONDOS) {
     k.loadSprite(`fondo-${nombre}`, `fondos/${nombre}.png`);
+    k.loadSprite(`suelo-${nombre}`, `fondos/suelo-${nombre}.png`);
   }
 }
 
@@ -126,8 +130,14 @@ export const PIES_MIN = CARRIL_SUPERIOR + ALTO_NEO;
 /** Y máxima donde pueden estar los pies: el borde frontal del carril. */
 export const PIES_MAX = CARRIL_INFERIOR;
 
-/** Semi-alto del camino en el tramo de recorrido (la banda mide el doble). */
-const SEMI_ALTO_ESTRECHO = 66;
+/** Semi-alto del suelo: IGUAL al máximo, o sea banda plana de borde a borde.
+ * El suelo tiene que verse como un suelo normal a lo Double Dragon — la mitad
+ * inferior de la pantalla caminable, sin serpenteo (pedido explícito tras ver
+ * la primera versión curva: "forma normal de suelo"). Con el presupuesto de
+ * ondulación en cero, crearCamino degenera a la banda rectangular clásica y el
+ * clamp de level.ts se comporta como siempre. La infraestructura del camino
+ * curvo queda en domain/camino.ts por si un nivel futuro la quiere. */
+const SEMI_ALTO_ESTRECHO = (PIES_MAX - PIES_MIN) / 2;
 /** La entrada se mantiene abierta hasta acá: es donde vive el Oráculo. */
 const ENTRADA_DESDE = 120;
 const ENTRADA_HASTA = 420;
@@ -159,62 +169,138 @@ export function caminoDelNivel(moduloId: string, anchoNivel: number): Camino {
 const PASO_CAMINO = 8;
 /** Grosor de los bordes de la calzada. */
 const GROSOR_BORDE = 3;
+/** Alto del bordillo frontal brillante y del faldón oscuro que cae debajo. */
+const ALTO_BORDILLO = 6;
+const ALTO_FALDON = 14;
 
 /**
- * Dibuja el camino: la calzada tenue, sus dos bordes, una línea discontinua
- * central (el signo universal de "esto es un camino") y las flechas de dirección
- * siguiendo la curva. Todo estático y sin `k.area()`: el camino no colisiona,
- * solo acota — paredes de verdad traerían riesgo de softlock (ver AGENTS.md).
+ * Línea de contacto pared/suelo por fondo: un tono derivado del color real del
+ * suelo pintado de cada escena (muestreado con PIL de la franja y 380..520).
+ * Claro sobre suelos oscuros, oscuro sobre el único suelo claro (el dojo).
+ */
+const LINEA_POR_FONDO: Record<string, [number, number, number]> = {
+  "01-ciudad-digital": [45, 115, 55],
+  "02-pasillo-oficina": [85, 105, 80],
+  "03-sala-entrenamiento": [150, 155, 160],
+  "04-tejado-lluvia": [20, 95, 85],
+  "05-cabina-telefonica": [60, 90, 60],
+  "06-apartamento-rojo": [115, 30, 25],
+  "07-desierto-maquinas": [155, 105, 65],
+  "08-nave-subterranea": [75, 80, 60],
+  "09-sala-pantallas": [50, 85, 50],
+  "10-corredor-hotel": [95, 55, 20],
+};
+
+/**
+ * Suelo de imagen (F14 v3): tilea la franja `suelo-*.png` — el suelo pintado
+ * del PROPIO fondo — en coordenadas de mundo, así scrollea con la cámara
+ * mientras el backdrop queda fijo. Es la textura original del escenario
+ * reutilizada "en modo carrete". Los tiles impares van espejados (flipX): las
+ * costuras entre tiles quedan continuas por construcción, porque cada borde
+ * empalma consigo mismo reflejado.
+ */
+function agregarSueloImagen(k: KAPLAYCtx, nombre: string, anchoNivel: number): void {
+  const tiles = Math.ceil(anchoNivel / ANCHO) + 1;
+  for (let i = 0; i < tiles; i++) {
+    k.add([k.sprite(`suelo-${nombre}`, { flipX: i % 2 === 1 }), k.pos(i * ANCHO, PIES_MIN), k.z(-3)]);
+  }
+  // Línea de contacto con el fondo: marca dónde termina la pared y empieza lo
+  // pisable — sin ella el mismo dibujo aparece dos veces (backdrop y franja) y
+  // no se lee cuál de los dos es el piso del combate.
+  const linea = LINEA_POR_FONDO[nombre] ?? [80, 90, 80];
+  k.add([k.rect(anchoNivel, 3), k.pos(0, PIES_MIN), k.color(...linea), k.z(-2)]);
+}
+
+/** Un tono del acento: el mismo matiz, escalado en brillo (0..1). */
+function tono(color: [number, number, number], factor: number): [number, number, number] {
+  return [
+    Math.min(255, Math.round(color[0] * factor)),
+    Math.min(255, Math.round(color[1] * factor)),
+    Math.min(255, Math.round(color[2] * factor)),
+  ];
+}
+
+/**
+ * Dibuja el camino como SUELO SÓLIDO, a la Double Dragon: una vereda opaca que
+ * ocupa la banda pisable, con su línea de contacto contra el fondo, un bordillo
+ * brillante en el borde frontal con faldón oscuro debajo (el "espesor" de la
+ * acera) y trazos diagonales paralelos sobre la superficie — son esas diagonales
+ * las que venden la fuga hacia la derecha y la profundidad del piso. La versión
+ * anterior era una banda translúcida y se leía como un overlay de debug, no
+ * como un lugar donde pisar.
  *
- * Los bordes se dibujan con rectángulos, no con polígonos, para no salirse de
- * las primitivas que ya usa el resto del juego. El truco para que una curva
- * hecha de rectángulos no se vea como una ESCALERA (que es exactamente como se
- * veía en el primer intento, con paso de 16) es que cada segmento cubra el
- * salto hasta el siguiente: se muestrea el camino en `x` y en `x + paso`, y el
- * rectángulo se estira para tapar ambas alturas. Con eso los tramos se solapan
- * y la diagonal queda continua.
+ * Sigue sin `k.area()`: el suelo no colisiona, solo acota (el clamp vive en
+ * level.ts) — paredes de verdad traerían riesgo de softlock (ver AGENTS.md).
+ *
+ * Los bordes se dibujan con rectángulos, no con polígonos. El truco para que
+ * una curva hecha de rectángulos no se vea como una ESCALERA es que cada
+ * segmento cubra el salto hasta el siguiente: se muestrea el camino en `x` y en
+ * `x + paso`, y el rectángulo se estira para tapar ambas alturas.
  */
 function dibujarCamino(k: KAPLAYCtx, camino: Camino, anchoNivel: number, color: [number, number, number]): void {
+  const suelo = tono(color, 0.2);
+  const bordeFondo = tono(color, 0.7);
+  const faldon = tono(color, 0.12);
   const ancho = PASO_CAMINO + 1;
+
   for (let x = 0; x < anchoNivel; x += PASO_CAMINO) {
     const aqui = camino.bandaEn(x);
     const siguiente = camino.bandaEn(x + PASO_CAMINO);
-
     const arriba = Math.min(aqui.min, siguiente.min);
     const abajo = Math.max(aqui.max, siguiente.max);
-    k.add([k.rect(ancho, abajo - arriba), k.pos(x, arriba), k.color(...color), k.opacity(0.14), k.z(-3)]);
 
-    // Borde de fondo: cubre desde la más alta de las dos muestras hasta la más
-    // baja, más el grosor — así el escalón entre segmentos queda relleno.
+    // Cuerpo del suelo: OPACO. Tapa la base de los carretes (z -4/-6) y el
+    // suelo pintado de los fondos F13, y así asienta a los personajes.
+    k.add([k.rect(ancho, abajo - arriba), k.pos(x, arriba), k.color(...suelo), k.z(-3)]);
+
+    // Línea de contacto con el fondo (donde la "pared" encuentra el piso).
     const bordeSuperior = Math.abs(aqui.min - siguiente.min) + GROSOR_BORDE;
+    k.add([k.rect(ancho, bordeSuperior), k.pos(x, arriba), k.color(...bordeFondo), k.z(-2)]);
+
+    // Bordillo frontal brillante + faldón oscuro debajo: el canto de la vereda.
+    const saltoInferior = Math.abs(aqui.max - siguiente.max);
     k.add([
-      k.rect(ancho, bordeSuperior),
-      k.pos(x, Math.min(aqui.min, siguiente.min)),
+      k.rect(ancho, saltoInferior + ALTO_BORDILLO),
+      k.pos(x, Math.min(aqui.max, siguiente.max) - ALTO_BORDILLO),
       k.color(...color),
-      k.opacity(0.55),
       k.z(-2),
     ]);
-    const bordeInferior = Math.abs(aqui.max - siguiente.max) + GROSOR_BORDE;
+    k.add([k.rect(ancho, ALTO_FALDON), k.pos(x, abajo), k.color(...faldon), k.z(-2)]);
+  }
+
+  // Trazos diagonales sobre el suelo (las "rayas" de Double Dragon): paralelos,
+  // inclinados hacia la derecha, siguiendo la curva. Son los que dan la fuga.
+  const diagonal = tono(color, 0.42);
+  for (let x = 40; x < anchoNivel - 20; x += 96) {
+    const centro = camino.centroEn(x);
+    const semi = camino.semiAltoEn(x);
     k.add([
-      k.rect(ancho, bordeInferior),
-      k.pos(x, Math.min(aqui.max, siguiente.max) - GROSOR_BORDE),
-      k.color(...color),
-      k.opacity(0.55),
+      k.rect(3, semi * 1.7),
+      k.pos(x, centro),
+      k.anchor("center"),
+      k.rotate(34),
+      k.color(...diagonal),
       k.z(-2),
     ]);
   }
-  // Línea discontinua del medio: refuerza la curva del recorrido. Rayas cortas
-  // (16px) a propósito: una raya larga sobre una pendiente se ve torcida.
-  for (let x = 0; x < anchoNivel; x += 64) {
-    k.add([k.rect(16, 2), k.pos(x, camino.centroEn(x + 8)), k.color(...color), k.opacity(0.3), k.z(-2)]);
+  // Rayas cortas del bordillo (el patrón del canto, como la banda de la vereda).
+  for (let x = 24; x < anchoNivel; x += 48) {
+    k.add([
+      k.rect(3, ALTO_BORDILLO + 6),
+      k.pos(x, camino.bandaEn(x).max - ALTO_BORDILLO / 2),
+      k.anchor("center"),
+      k.rotate(34),
+      k.color(...tono(color, 0.55)),
+      k.z(-2),
+    ]);
   }
+
   for (let x = 140; x < anchoNivel - 60; x += 220) {
     k.add([
       k.text(">>", { size: 18 }),
       k.pos(x, camino.centroEn(x) + camino.semiAltoEn(x) - 16),
       k.anchor("center"),
-      k.color(...color),
-      k.opacity(0.45),
+      k.color(...tono(color, 0.8)),
       k.z(-2),
     ]);
   }
@@ -376,6 +462,16 @@ const CARRETES: Carrete[] = [
   },
 ];
 
+/** Fondos de EXTERIOR: los únicos donde los carretes tienen sentido — siluetas
+ * de edificios, cercas y postes flotando dentro del apartamento rojo o del dojo
+ * blanco rompían la escena en vez de darle profundidad. */
+const FONDOS_EXTERIOR = new Set([
+  "01-ciudad-digital",
+  "04-tejado-lluvia",
+  "05-cabina-telefonica",
+  "07-desierto-maquinas",
+]);
+
 /**
  * Siembra los carretes del nivel. Cada capa lleva su propia semilla (módulo +
  * factor) para que no queden alineadas entre sí, que es lo que delataría el truco.
@@ -450,15 +546,14 @@ function agregarLluviaTenue(k: KAPLAYCtx, anchoNivel: number, color: [number, nu
  * centrar verticalmente (recorta 50px arriba y 50px abajo, sin bandas negras). */
 function agregarFondoImagen(k: KAPLAYCtx, nombre: string): void {
   k.add([k.sprite(`fondo-${nombre}`), k.pos(0, -(640 - ALTO) / 2), k.z(-100), k.fixed()]);
-  // Bandas oscuras arriba (detrás del HUD) y abajo (detrás del tutorial): sin
-  // ellas, el texto verde de la UI se vuelve ilegible sobre los fondos claros
-  // (la sala de entrenamiento blanca lo dejó invisible). Además asientan a los
-  // personajes y separan el piso del combate del suelo pintado (que queda
-  // estático mientras ellos scrollean). Opacidad calculada para que el texto
-  // VERDE (0,255,70) alcance al menos 4.5:1 sobre fondos claros (WCAG AA):
-  // con opacity=0.72 sobre blanco el fondo efectivo da ratio ~6.8:1.
+  // Banda oscura arriba (detrás del HUD): sin ella, el texto verde de la UI se
+  // vuelve ilegible sobre los fondos claros (la sala de entrenamiento blanca lo
+  // dejó invisible). Opacidad calculada para que el texto VERDE (0,255,70)
+  // alcance al menos 4.5:1 sobre fondos claros (WCAG AA): con opacity=0.72
+  // sobre blanco el fondo efectivo da ratio ~6.8:1. La banda inferior que
+  // existía con el mismo fin ya no: el suelo tileado (F14 v3) la tapaba — los
+  // avisos de abajo llevan ahora su propio respaldo (level.ts).
   k.add([k.rect(ANCHO, 56), k.pos(0, 0), k.color(0, 0, 0), k.opacity(0.72), k.z(-99), k.fixed()]);
-  k.add([k.rect(ANCHO, 110), k.pos(0, ALTO - 110), k.color(0, 0, 0), k.opacity(0.72), k.z(-99), k.fixed()]);
 }
 
 /**
@@ -472,16 +567,30 @@ export function dibujarEscenario(k: KAPLAYCtx, moduloId: string, anchoNivel: num
   const colorCamino = acento === VERDE_OSCURO ? VERDE : acento;
   const camino = caminoDelNivel(moduloId, anchoNivel);
 
-  // F13: si el módulo tiene fondo de imagen, es el decorado; el procedural se
-  // omite (choca con la escena pintada) y quedan los carretes y el camino.
+  // F13: si el módulo tiene fondo de imagen, es el decorado. El suelo es la
+  // franja recortada del propio fondo, tileada en mundo (F14 v3): así cada
+  // escenario camina sobre SU suelo pintado, no sobre una calzada genérica.
   const fondo = FONDO_POR_MODULO[moduloId];
   if (fondo) {
     agregarFondoImagen(k, fondo);
-    // Los carretes van con el color VIVO, no con el acento crudo: sobre los
-    // fondos pintados (la ciudad del módulo 1 es densísima) un verde oscuro al
-    // 40% desaparece y la capa de parallax deja de comunicar profundidad.
-    dibujarCarretes(k, moduloId, anchoNivel, colorCamino);
-    dibujarCamino(k, camino, anchoNivel, colorCamino);
+    // Carretes solo en exteriores. Van con el color VIVO, no con el acento
+    // crudo: sobre los fondos pintados (la ciudad del módulo 1 es densísima)
+    // un verde oscuro al 40% desaparece y el parallax deja de comunicar.
+    if (FONDOS_EXTERIOR.has(fondo)) {
+      dibujarCarretes(k, moduloId, anchoNivel, colorCamino);
+    }
+    agregarSueloImagen(k, fondo, anchoNivel);
+    // Flechas de dirección sobre el suelo: la única señal de "hacia dónde ir".
+    for (let x = 140; x < anchoNivel - 60; x += 220) {
+      k.add([
+        k.text(">>", { size: 18 }),
+        k.pos(x, PIES_MAX - 16),
+        k.anchor("center"),
+        k.color(...colorCamino),
+        k.opacity(0.5),
+        k.z(-2),
+      ]);
+    }
     return camino;
   }
 
