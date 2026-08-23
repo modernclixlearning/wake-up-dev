@@ -271,13 +271,44 @@ export function crearAgente(k: KAPLAYCtx, x: number, y: number, esJefe = false):
   const alto = ALTO_AGENTE * escala;
   const tags = esJefe ? ["agente", "jefe"] : ["agente"];
   const root = k.add([k.pos(x, y), areaRectangular(k, ancho, alto), k.z(1), ...tags]);
-  if (esJefe) {
-    root.add([k.rect(ancho + 6, alto + 6), k.pos(-3, -3), k.color(...ROJO), k.opacity(0.18), k.z(-1)]);
-  }
-  montarSprite(k, root, esJefe ? "jefe" : "smith", ancho, alto, {
+  const estado = montarSprite(k, root, esJefe ? "jefe" : "smith", ancho, alto, {
     caminata: true,
     poses: esJefe ? POSES_JEFE : POSES_SMITH,
   });
+  if (esJefe) {
+    // Aura roja con silueta del Jefe: copia del sprite teñida de rojo, detrás
+    // del personaje (z -1). Un factor de 1.08 la escala desde el centro para
+    // que sobresalga como halo sin descolgar la figura hacia un lado.
+    const FACTOR_HALO = 1.08;
+    const skin = estado.skin;
+    const aura = root.add([
+      k.sprite(skin.sprite as string, { frame: skin.frame }),
+      k.pos(skin.pos.x, skin.pos.y),
+      k.scale(skin.scale.x * FACTOR_HALO, skin.scale.y * FACTOR_HALO),
+      k.color(...ROJO),
+      k.opacity(0.18),
+      k.z(-1),
+    ]);
+    aura.flipX = skin.flipX;
+    // Sincronizar frame, escala y flip del aura con el skin en cada tick.
+    // El skin ya es actualizado por aplicarSprite antes de este onUpdate,
+    // así que leemos sus valores ya corregidos para la pose actual.
+    root.onUpdate(() => {
+      if (!aura.exists()) return;
+      aura.frame = skin.frame;
+      aura.flipX = skin.flipX;
+      // Escalar el halo un 8 % más grande, creciendo desde el centro para que
+      // el exceso se reparta igual a ambos lados (no se descuelgue).
+      aura.scale.x = skin.scale.x * FACTOR_HALO;
+      aura.scale.y = skin.scale.y * FACTOR_HALO;
+      const dw = (aura.scale.x - skin.scale.x) * FRAME_ANCHO;
+      const dh = (aura.scale.y - skin.scale.y) * FRAME_ALTO;
+      aura.pos.x = skin.pos.x - dw / 2;
+      aura.pos.y = skin.pos.y - dh / 2;
+    });
+    // Si el root se destruye, el aura (hijo) se destruye sola; no hace falta
+    // cleanup manual — Kaplay gestiona la jerarquía padre-hijo.
+  }
   return { root, ancho, alto };
 }
 
