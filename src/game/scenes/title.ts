@@ -1,6 +1,6 @@
 import { KAPLAYCtx } from "kaplay";
-import { reproducirMusica } from "../audio";
-import { ANCHO, ALTO, CHARS_MATRIX, VERDE, VERDE_OSCURO, BLANCO } from "../theme";
+import { reproducirMusica, estaMuteado } from "../audio";
+import { ANCHO, ALTO, CHARS_MATRIX, VERDE, VERDE_OSCURO, BLANCO, ROJO } from "../theme";
 
 export function registrarTitle(k: KAPLAYCtx): void {
   k.scene("title", () => {
@@ -45,6 +45,26 @@ export function registrarTitle(k: KAPLAYCtx): void {
       k.z(1),
     ]);
     k.loop(0.6, () => (prompt.opacity = prompt.opacity > 0 ? 0 : 1));
+
+    // Indicador del estado del sonido: visible para que el tester sepa que hay
+    // música y cómo activarla si la silenció por descuido (M persiste en
+    // localStorage y sin aviso el estado era invisible).
+    const avisoMute = k.add([
+      k.text("", { size: 14 }),
+      k.pos(ANCHO / 2, ALTO - 22),
+      k.anchor("center"),
+      k.color(...VERDE),
+      k.z(1),
+    ]);
+    const actualizarMute = () => {
+      const silenciado = estaMuteado();
+      avisoMute.text = silenciado ? "M = musica: SILENCIADA" : "M = musica: ACTIVADA";
+      avisoMute.color = silenciado ? k.rgb(...ROJO) : k.rgb(...VERDE);
+    };
+    actualizarMute();
+    // Escuchar M en la escena SOLO para refrescar el cartel; el toggle ya lo
+    // hace iniciarAudio() a nivel window — NO llamar alternarMute() aquí.
+    k.onKeyPress("m", () => k.wait(0, actualizarMute));
 
     k.onKeyPress("enter", () => k.go("zion"));
   });
