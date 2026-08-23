@@ -79,6 +79,39 @@ La configuración de Vercel vive en [vercel.json](vercel.json) y no se limita a 
 
 Para reproducir el despliegue en una cuenta propia: `vercel login` y después `vercel --prod` desde la raíz del repo (o enlazar el repo desde el panel de Vercel, que además activa los previews por PR).
 
+#### Proxy del Oráculo (modo TFM)
+
+Para que el tribunal evaluador pueda usar la IA sin necesitar su propia API key, el despliegue en Vercel incluye una función serverless (`api/oraculo.ts`) que actúa de proxy hacia OpenAI.
+
+**Por qué existe**: el juego es 100 % estático (modo BYOK: la key vive en el `localStorage` del jugador), pero durante la defensa del TFM el tribunal no debería tener que configurar nada. El proxy resuelve esto: la key vive en el servidor, **nunca en el bundle del cliente ni en el repositorio**.
+
+**Arquitectura del proxy**:
+- `GET  /api/oraculo` → `{ "disponible": true | false }` — el cliente lo consulta al arrancar para saber si ofrecer el modo proxy.
+- `POST /api/oraculo` → discriminado por `body.tipo`:
+
+  | tipo | campos requeridos | respuesta |
+  |---|---|---|
+  | `"oraculo"` | `contexto`, `pregunta` | `{ "texto": string }` |
+  | `"pista"` | `pregunta`, `opciones[]` | `{ "texto": string }` |
+  | `"evaluar"` | `pregunta`, `rubrica`, `respuesta` | `{ "aprobado": boolean, "feedback": string }` |
+
+  Errores: siempre `{ "error": string }` con status `400` (body inválido) · `429` (límite alcanzado) · `503` (falta la key) · `502` (fallo upstream).
+
+**Límites de coste integrados** (la key es personal del autor):
+- Modelo configurable con `OPENAI_MODEL` (por defecto `gpt-4o-mini`).
+- Tope de tokens por respuesta: ≈ 300 para oráculo/evaluar, ≈ 80 para pistas.
+- Rate limit de cortesía: **20 peticiones por IP cada 10 minutos por instancia serverless**. ⚠️ Vercel puede escalar a múltiples réplicas; el límite no es global. La defensa REAL contra el gasto descontrolado es el **tope de facturación de la cuenta OpenAI** (`platform.openai.com → Billing → Usage limits`).
+- Entradas recortadas antes de llamar al modelo: `pregunta`/`respuesta` a 1 000 caracteres, `contexto` a 4 000.
+
+**Configurar en Vercel (2 comandos)**:
+
+```bash
+vercel env add OPENAI_API_KEY production   # pega la key cuando lo pida
+vercel --prod                               # redespliega para que la función la recoja
+```
+
+> **GitHub Pages no puede servir el proxy**: es un CDN estático sin soporte para funciones serverless. En ese deploy el juego sigue en modo BYOK (el jugador pega su propia API key en Zion).
+
 ## 4. Estructura del proyecto
 
 ```

@@ -6,6 +6,11 @@
   "installCommand": "npm ci",
   "cleanUrls": false,
   "trailingSlash": true,
+  "functions": {
+    "api/oraculo.ts": {
+      "maxDuration": 25
+    }
+  },
   "headers": [
     {
       "source": "/assets/(.*)",
