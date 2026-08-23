@@ -153,9 +153,12 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       hud.text = `${banco.modulo.nombre}  |  Vidas: ${st.session.vidas}  Score: ${st.session.score}  Agentes: ${k.get("agente").length}`;
     };
     k.add([
+      // VERDE, no VERDE_OSCURO: sobre la banda del HUD (negro al 72%) apoyada
+      // en un fondo claro como el dojo, el verde oscuro da 1.6:1 — invisible.
+      // Con VERDE son 6.8:1 en ese mismo peor caso (WCAG AA pide 4.5:1).
       k.text("Flechas: moverte   ESPACIO: atacar   M: sonido", { size: 12 }),
       k.pos(16, 34),
-      k.color(...VERDE_OSCURO),
+      k.color(...VERDE),
       k.z(5),
       k.fixed(),
     ]);
@@ -924,12 +927,19 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
         );
       });
 
-      // Indicación explícita de las teclas para responder (sin corchetes — Kaplay los parsea como tags).
+      // Indicación explícita de las teclas para responder (sin corchetes — Kaplay
+      // los parsea como tags). Dos correcciones de legibilidad sobre la versión
+      // anterior, que era ilegible (reportado jugando):
+      //  - Estaba centrada en ALTO-60 = 480, que es EXACTAMENTE la Y del borde
+      //    inferior del panel (60 + ALTO-120): el texto se dibujaba encima de la
+      //    línea verde brillante del contorno. Ahora va dentro del panel.
+      //  - VERDE_OSCURO (0,120,40) sobre el negro del panel da 3.7:1, por debajo
+      //    del 4.5:1 que pide WCAG AA para texto normal. VERDE da 15:1.
       overlay.push(
         k.add([
-          k.text("Teclas 1, 2, 3 o 4 para responder", { size: 13 }),
-          k.pos(ANCHO / 2, ALTO - 60),
-          k.color(...VERDE_OSCURO),
+          k.text("Teclas 1, 2, 3 o 4 para responder", { size: 14 }),
+          k.pos(ANCHO / 2, ALTO - 82),
+          k.color(...VERDE),
           k.anchor("center"),
           k.z(11),
           k.fixed(),
@@ -940,9 +950,11 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
       const conPista = hayIA(st.ai) && st.session.nivelJugador(moduloId) === 1;
       if (conPista) {
         const aviso = k.add([
+          // Mismo motivo que el cartel de teclas: VERDE_OSCURO sobre el panel
+          // negro no llega al 4.5:1 de WCAG AA para texto de este tamaño.
           k.text("P) Pedir una pista al Oráculo", { size: 14 }),
-          k.pos(60, ALTO - 100),
-          k.color(...VERDE_OSCURO),
+          k.pos(60, ALTO - 112),
+          k.color(...VERDE),
           k.z(11),
           k.fixed(),
         ]);
