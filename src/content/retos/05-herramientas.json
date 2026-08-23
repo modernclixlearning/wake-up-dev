@@ -265,7 +265,7 @@
       "id": "her-016",
       "modulo": "05-herramientas",
       "tipo": "multiple-choice",
-      "pregunta": "¿Qué puede hacer GitHub Copilot CLI (gh copilot) y qué NO puede hacer?",
+      "pregunta": "¿Qué puede hacer la extensión `gh copilot` (los subcomandos explain y suggest) y qué NO puede hacer?",
       "opciones": [
         "Explica y sugiere comandos de terminal, pero no edita ni crea archivos",
         "Edita archivos del proyecto directamente desde la terminal",
@@ -273,7 +273,7 @@
         "Ejecuta cualquier comando que sugiere sin confirmación"
       ],
       "correcta": 0,
-      "explicacion": "gh copilot explain aclara qué hace un comando y gh copilot suggest propone el comando para una tarea descrita en lenguaje natural (git, gh o shell). Para editar ficheros desde la terminal necesitás Claude Code o Gemini CLI.",
+      "explicacion": "gh copilot explain aclara qué hace un comando y gh copilot suggest propone el comando para una tarea descrita en lenguaje natural (git, gh o shell). Ojo con el nombre: la extensión `gh copilot` no edita ficheros, pero el producto que hoy se llama GitHub Copilot CLI es otra cosa — un agente de terminal que sí lee y modifica el proyecto, en la misma liga que Claude Code o Gemini CLI.",
       "dificultad": 2,
       "tags": ["cli", "copilot", "github"],
       "estadoDelArte2026": false

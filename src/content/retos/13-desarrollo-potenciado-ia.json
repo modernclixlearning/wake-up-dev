@@ -10,19 +10,20 @@
       "id": "dpi-001",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "En el bloque práctico del máster, ¿qué característica fundamental diferencia la forma en que cada docente aborda su proyecto?",
+      "pregunta": "Tailwind CSS v4 cambió dónde vive la configuración del proyecto. ¿En qué consiste el cambio?",
       "opciones": [
-        "Todos siguen el mismo guión y las mismas tecnologías para garantizar coherencia en los contenidos",
-        "Cada docente elige sus propias herramientas y enfrenta el proyecto como lo haría en un caso real",
-        "Los proyectos están predefinidos y el docente solo los explica, sin tomar decisiones técnicas en clase",
-        "El alumno elige la tecnología y el docente adapta el contenido a esa elección"
+        "Se eliminaron las clases de utilidad y ahora hay que escribir CSS a mano con variables",
+        "La configuración pasó a un archivo JSON que se valida contra un esquema oficial",
+        "La paleta, los tamaños y el resto del tema se declaran en el propio CSS con `@theme`, en vez de en un `tailwind.config.js`",
+        "La configuración desapareció: v4 solo admite el tema por defecto, sin personalización"
       ],
-      "correcta": 1,
-      "explicacion": "El bloque práctico no tiene un guión único: cada docente construye su proyecto con el stack, los modelos y los agentes de IA que considera oportunos, simulando cómo un profesional lo haría en un entorno real. Esto expone al alumno a distintas formas de atacar problemas reales, no solo a una receta fija.",
-      "dificultad": 1,
+      "correcta": 2,
+      "explicacion": "Hasta v3 el tema se definía en JavaScript (`tailwind.config.js`) y el build lo traducía a CSS. En v4 la configuración es CSS-first: se importa con `@import \"tailwindcss\"` y el tema se declara con el bloque `@theme`, donde cada token es una custom property de CSS. La ventaja práctica es que esos tokens existen en tiempo de ejecución como variables CSS, así que se pueden leer y reutilizar desde fuera de Tailwind. El fichero de configuración en JS sigue soportado por compatibilidad, pero ya no es el camino recomendado.",
+      "dificultad": 2,
       "tags": [
-        "bloque-practico",
-        "flujo-profesional"
+        "front",
+        "tailwind",
+        "stack"
       ],
       "estadoDelArte2026": false
     },
@@ -30,15 +31,15 @@
       "id": "dpi-002",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "¿Cuál es la función principal del archivo CLAUDE.md (o AGENTS.md) en un proyecto donde se trabaja con un agente de IA como OpenCode o Claude Code?",
+      "pregunta": "Ya tenés un AGENTS.md con el stack y las convenciones. ¿Qué tipo de contenido NO conviene meter ahí?",
       "opciones": [
-        "Guardar el historial de prompts enviados al agente para poder auditarlos posteriormente",
-        "Configurar las credenciales y claves de API necesarias para conectar el agente al modelo",
-        "Definir las reglas de trabajo del agente: stack, convenciones de carpetas y procesos obligatorios como TDD",
-        "Documentar para humanos cómo usar el proyecto, similar a un README técnico"
+        "La regla de que todo cambio entra con test primero",
+        "El comando exacto que levanta el proyecto y el que corre los tests",
+        "Un volcado de la arquitectura completa y de la API de cada módulo, que el agente puede leer del propio código",
+        "Los errores que ya se cometieron una vez en el proyecto y no deben repetirse"
       ],
       "correcta": 2,
-      "explicacion": "El CLAUDE.md (o AGENTS.md) es el sistema de instrucciones del agente para ese proyecto concreto. Contiene el stack de tecnologías, las reglas de organización del código, procesos mandatorios como TDD y cualquier convención que el agente debe respetar siempre. Se escribe de forma compacta porque su lector es un LLM, no una persona.",
+      "explicacion": "El AGENTS.md compite por el contexto con el trabajo real, así que cada línea tiene que ganarse el sitio. Lo que el agente puede averiguar leyendo el repo (estructura de carpetas, firmas, dependencias) no hace falta duplicarlo: envejece mal y desplaza a lo que sí importa. Lo que rinde es lo que NO está en el código — las decisiones y sus porqués, los comandos exactos, y sobre todo los errores ya pagados, que es lo único que evita repetirlos.",
       "dificultad": 1,
       "tags": [
         "front",
@@ -517,15 +518,15 @@
       "id": "dpi-024",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "En la fase Verify de SDD con OpenSpec, ¿cómo se clasifican los hallazgos y qué categoría indica que lo implementado no cumple la especificación?",
+      "pregunta": "Al verificar una implementación contra su especificación, un agente devuelve una lista plana de hallazgos. ¿Por qué conviene exigirle que los clasifique por severidad?",
       "opciones": [
-        "Dos categorías (pass/fail); un fail indica incumplimiento total",
-        "Cuatro categorías (blocker, error, warning, info); blocker indica incumplimiento grave",
-        "Tres categorías (error, warning, info); error indica incumplimiento parcial o total",
-        "Tres categorías (crítico, warning, sugerencia); crítico indica que la implementación no cumple la especificación"
+        "Porque una lista plana ocupa más tokens que una clasificada, y el contexto es caro",
+        "Porque sin severidad no se distingue lo que incumple la especificación de lo que solo se podría mejorar, y todo acaba tratado igual: o se corrige de más, o se ignora un incumplimiento real",
+        "Porque la severidad permite calcular automáticamente el porcentaje de cobertura de la especificación",
+        "Porque los agentes de corrección solo aceptan entrada estructurada y fallan ante texto libre"
       ],
-      "correcta": 3,
-      "explicacion": "La fase Verify compara lo implementado contra las especificaciones y clasifica cada hallazgo en: crítico (no cumple la especificación, debe corregirse), warning (cumple pero hay algo a vigilar) y sugerencia (cumple y además podría mejorarse). Esta clasificación permite al orquestador priorizar qué debe corregir el fix agent y qué puede dejarse para una iteración posterior.",
+      "correcta": 1,
+      "explicacion": "Un verificador sin severidad mezcla en la misma lista \"esto no cumple lo que pedía la spec\" con \"esto se podría escribir mejor\". El resultado es que alguien —persona o agente de corrección— tiene que volver a juzgar hallazgo por hallazgo, que es justo el trabajo que se quería delegar. Pidiendo una severidad explícita (incumple / conviene vigilar / mejora opcional) el paso siguiente sabe qué bloquea la entrega y qué puede esperar a otra iteración. Las etiquetas concretas dan igual; lo que importa es que exista el eje.",
       "dificultad": 2,
       "tags": [
         "sdd",
@@ -561,7 +562,7 @@
       "id": "dpi-026",
       "modulo": "13-desarrollo-potenciado-ia",
       "tipo": "multiple-choice",
-      "pregunta": "La skill de 'juicio' lanza dos subagentes independientes en vez de uno solo. ¿Cuál es la razón principal para usar esa estrategia de doble revisor?",
+      "pregunta": "Para revisar un cambio de código se lanzan dos agentes revisores independientes en vez de uno solo. ¿Cuál es la razón principal de esa estrategia?",
       "opciones": [
         "Para que uno revise el código de producción y el otro revise los tests, dividiendo el trabajo por tipo de archivo",
         "Porque un LLM no es determinístico: una misma pasada puede pasar por alto un problema que otra detecta, y dos jueces independientes aumentan la probabilidad de cubrir todos los hallazgos reales",
@@ -572,7 +573,6 @@
       "explicacion": "Un LLM es probabilístico: no siempre detecta los mismos problemas en cada ejecución. Dos jueces con contextos completamente independientes tienen mayor probabilidad combinada de cubrir todos los hallazgos reales. El orquestador contrasta ambos reportes y confirma solo los que considera genuinos. Para proyectos críticos, esta estrategia compensa el coste extra de tokens.",
       "dificultad": 2,
       "tags": [
-        "skill-juicio",
         "subagentes",
         "revision-codigo",
         "no-determinismo"

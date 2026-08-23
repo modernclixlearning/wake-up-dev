@@ -171,7 +171,7 @@
         "La base de datos acepta solo una transacción activa al mismo tiempo para evitar conflictos"
       ],
       "correcta": 2,
-      "explicacion": "Aislamiento significa que, mientras una transacción está en curso, ninguna consulta concurrente verá los cambios a medias. Solo cuando la transacción termina con commit su resultado se vuelve visible para el resto. Esto previene lecturas sucias (dirty reads). La opción A describe la Atomicidad, la B describe la Durabilidad.",
+      "explicacion": "Aislamiento significa que, mientras una transacción está en curso, ninguna consulta concurrente verá los cambios a medias. Solo cuando la transacción termina con commit su resultado se vuelve visible para el resto. Esto previene lecturas sucias (dirty reads). Ejecutar todo o nada describe la Atomicidad; persistir el resultado tras un fallo describe la Durabilidad.",
       "dificultad": 2,
       "tags": ["bases-de-datos", "acid"],
       "estadoDelArte2026": false
@@ -215,7 +215,7 @@
       "modulo": "11-infraestructura-cloud",
       "tipo": "abierta",
       "pregunta": "Describe cuándo conviene usar una base de datos vectorial especializada (como Qdrant, Pinecone o Weaviate) frente a añadir la extensión pgvector a PostgreSQL. Justifica tu respuesta con argumentos técnicos.",
-      "rubrica": "La respuesta debe mencionar al menos tres de estos cuatro puntos con argumentos técnicos: (1) las bases de datos vectoriales especializadas están optimizadas para búsquedas por similaridad y rinden notablemente mejor a gran escala; (2) pgvector genera consultas muy lentas y consume mucha CPU y RAM cuando el volumen de vectores es alto; (3) migrar de pgvector a una base de datos especializada es costoso y doloroso, por lo que es mejor elegir bien desde el inicio; (4) las opciones cloud de Qdrant, Pinecone o Weaviate tienen precios bajos (por debajo de 10 €/mes para proyectos pequeños) y ofrecen autoescalado gestionado. Se valora positivamente que la respuesta mencione que para 25 usuarios concurrentes cualquiera de las tres opciones especializadas funciona bien, y negativamente que se defienda pgvector sin justificación técnica sólida.",
+      "rubrica": "La respuesta debe comparar las dos opciones sobre al menos tres de estos cuatro ejes, con un argumento técnico en cada uno: (1) rendimiento a escala — las bases vectoriales especializadas están construidas alrededor del índice de similaridad (HNSW, IVF) y sostienen mejor volúmenes grandes de vectores y alta concurrencia; (2) coste y complejidad operativa — pgvector no añade ningún componente nuevo al stack si ya hay PostgreSQL, mientras que un motor especializado suma un servicio que hay que desplegar, monitorizar y pagar; (3) coste de migrar más adelante, y qué lo abarata (mantener la indexación desacoplada del motor); (4) funcionalidades de consulta — filtrado híbrido, metadatos, cuantización, multi-tenancy. La conclusión debe elegir una opción y atarla al escenario. Se acepta como correcta cualquiera de las dos elecciones si está justificada: defender pgvector es válido argumentando volumen moderado, filtrado relacional o la ventaja de mantener un solo motor. Se rechaza la respuesta que solo enumere nombres de productos sin comparar, o que decida sin referirse al volumen ni a la carga esperada.",
       "fallbackId": "inf-012",
       "dificultad": 3,
       "tags": ["bases-de-datos-vectoriales", "pgvector"],
@@ -244,13 +244,13 @@
       "tipo": "multiple-choice",
       "pregunta": "¿Por qué muchas empresas han migrado de Docker a containerd en sus entornos de producción y en los clústeres de Kubernetes gestionados?",
       "opciones": [
-        "Docker cambió su política de licencias y exige una licencia de pago (Docker Enterprise) para empresas que superan cierto umbral de facturación, mientras que containerd es completamente open source sin restricciones",
-        "Docker dejó de dar soporte a Linux y solo funciona en macOS y Windows desde 2024",
+        "Kubernetes deprecó dockershim, la capa que traducía sus llamadas al motor de Docker: Docker arrastra piezas que el clúster no necesita (CLI, build, su propia API) y containerd es el runtime mínimo que ya habla CRI de forma nativa",
+        "Docker cambió su política de licencias y exige una licencia de pago para usar el runtime en cualquier clúster de producción",
         "Containerd puede construir imágenes directamente sin necesidad de Dockerfile, lo que simplifica el pipeline",
         "Containerd reduce el tamaño de las imágenes a la mitad automáticamente respecto a las generadas con Docker"
       ],
       "correcta": 0,
-      "explicacion": "Docker cambió su modelo de negocio y requiere Docker Enterprise (de pago, con multas por incumplimiento) para empresas que superen un determinado nivel de facturación. Containerd es open source sin restricciones de uso comercial, su interfaz de comandos es prácticamente idéntica a la de Docker, y hoy es el container runtime por defecto en los clústeres de Kubernetes gestionados de AWS, Azure y GCP.",
+      "explicacion": "El motivo es técnico, no de licencias: Kubernetes hablaba con Docker a través de dockershim, un adaptador que mantenía el propio proyecto. Se marcó como deprecado en la 1.20 y se eliminó en la 1.24, así que los clústeres pasaron a containerd, que implementa CRI directamente y es justo la parte de Docker que el clúster necesita (Docker lo usa por debajo desde hace años). El cambio de licencias de Docker afecta a Docker Desktop en empresas grandes, no al runtime de un clúster. Hoy containerd es el runtime por defecto en los Kubernetes gestionados de AWS, Azure y GCP.",
       "dificultad": 2,
       "tags": ["contenedores", "containerd"],
       "estadoDelArte2026": false
@@ -448,7 +448,7 @@
         "Llama a una API externa utilizando las credenciales del agente activo en ese momento sin exponerlas al LLM"
       ],
       "correcta": 2,
-      "explicacion": "`transfer_to_agent` es una tool que ADK inyecta automáticamente en todos los agentes. Cuando el modelo decide que otra persona del equipo debería responder, invoca esta tool y el framework transfiere la conversación al subagente indicado. Esto es lo que hace posible el patrón Network: desde cualquier agente se puede saltar a cualquier otro libremente. Google ADK, disponible desde finales de 2024 y con versión 1.x estable en 2025-2026, simplifica enormemente este tipo de arquitecturas.",
+      "explicacion": "`transfer_to_agent` es una tool que ADK inyecta automáticamente en todos los agentes. Cuando el modelo decide que otra persona del equipo debería responder, invoca esta tool y el framework transfiere la conversación al subagente indicado. Esto es lo que hace posible el patrón Network: desde cualquier agente se puede saltar a cualquier otro libremente. Google ADK, presentado en abril de 2025 en Cloud Next y con versión 1.x estable en 2025-2026, simplifica enormemente este tipo de arquitecturas.",
       "dificultad": 2,
       "tags": ["multi-agentes", "adk"],
       "estadoDelArte2026": true
