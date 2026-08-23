@@ -36,7 +36,7 @@ import {
   flashGolpe,
   orientarHacia,
 } from "../actores";
-import { musicaDeModulo, reproducirMusica, sfx } from "../audio";
+import { estaMuteado, musicaDeModulo, reproducirMusica, sfx } from "../audio";
 import { dibujarEscenario } from "../escenario";
 import { guardarPartida } from "../persistencia";
 import { GameState } from "../state";
@@ -152,6 +152,23 @@ export function registrarLevel(k: KAPLAYCtx, estado: () => GameState): void {
     const actualizarHud = () => {
       hud.text = `${banco.modulo.nombre}  |  Vidas: ${st.session.vidas}  Score: ${st.session.score}  Agentes: ${k.get("agente").length}`;
     };
+    // Estado del sonido SIEMPRE visible: el mute se persiste en localStorage,
+    // así que alguien que pulse M sin querer se queda sin audio para siempre en
+    // ese navegador y concluye que el juego no tiene sonido. Sin este cartel el
+    // estado era invisible y no había forma de descubrir el porqué.
+    const avisoMute = k.add([
+      k.text("", { size: 13 }),
+      k.pos(ANCHO - 16, 12),
+      k.anchor("topright"),
+      k.color(...ROJO),
+      k.z(5),
+      k.fixed(),
+    ]);
+    const actualizarMute = () => {
+      avisoMute.text = estaMuteado() ? "SONIDO SILENCIADO — pulsá M" : "";
+    };
+    actualizarMute();
+    k.onKeyPress("m", () => k.wait(0, actualizarMute));
     k.add([
       // VERDE, no VERDE_OSCURO: sobre la banda del HUD (negro al 72%) apoyada
       // en un fondo claro como el dojo, el verde oscuro da 1.6:1 — invisible.

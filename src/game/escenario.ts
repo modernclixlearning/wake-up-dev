@@ -298,15 +298,6 @@ function dibujarCamino(k: KAPLAYCtx, camino: Camino, anchoNivel: number, color: 
     ]);
   }
 
-  for (let x = 140; x < anchoNivel - 60; x += 220) {
-    k.add([
-      k.text(">>", { size: 18 }),
-      k.pos(x, camino.centroEn(x) + camino.semiAltoEn(x) - 16),
-      k.anchor("center"),
-      k.color(...tono(color, 0.8)),
-      k.z(-2),
-    ]);
-  }
 }
 
 /** Glifos de graffiti: subconjunto seguro de CHARS_MATRIX (sin corchetes, que
@@ -618,17 +609,9 @@ export function dibujarEscenario(k: KAPLAYCtx, moduloId: string, anchoNivel: num
       agregarFondoImagen(k, fondo);
     }
     agregarSueloImagen(k, fondo, anchoNivel);
-    // Flechas de dirección sobre el suelo: la única señal de "hacia dónde ir".
-    for (let x = 140; x < anchoNivel - 60; x += 220) {
-      k.add([
-        k.text(">>", { size: 18 }),
-        k.pos(x, PIES_MAX - 16),
-        k.anchor("center"),
-        k.color(...colorCamino),
-        k.opacity(0.5),
-        k.z(-2),
-      ]);
-    }
+    // Sin flechas ">>" sobre el suelo: hacían falta cuando el escenario era un
+    // cuarto único sin señal de avance, pero con el piso texturizado que
+    // scrollea y el paisaje en parallax la dirección ya se lee sola (F14 v6).
     return camino;
   }
 
